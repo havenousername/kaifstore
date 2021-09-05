@@ -1,0 +1,7 @@
+const path = require('path');
+
+module.exports = {
+    'seeders-path': path.resolve('src/backend/database', 'seeders'),
+    'migrations-path': path.resolve('src/backend/database', 'migrations'),
+    'config': path.resolve('src/backend/database', 'config.ts')
+};
