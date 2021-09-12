@@ -10,4 +10,8 @@ export class UsersService {
   async create(dto: CreateUserDto) {
     return await this.userRepository.create(dto);
   }
+
+  async getAll() {
+    return await this.userRepository.findAll({ include: { all: true } });
+  }
 }
