@@ -12,7 +12,7 @@ module.exports = {
           email: faker.internet.email(),
           createdAt: faker.date.past(),
           updatedAt: faker.date.past(),
-          // password: faker.internet.password(),
+          password: faker.internet.password(),
           // firstName: faker.name.firstName(),
           // lastName: faker.name.lastName(),
           // sex: Math.random() < 0.5 ? 'male' : 'female',
