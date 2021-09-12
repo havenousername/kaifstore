@@ -1,10 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ServerModule } from './server.module';
+import { VersioningType } from '@nestjs/common';
 
 async function bootstrap() {
   const PORT = process.env.PORT || '5000';
   const app = await NestFactory.create(ServerModule);
+
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
   // app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
