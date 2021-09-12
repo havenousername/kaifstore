@@ -13,10 +13,10 @@ module.exports = {
           createdAt: faker.date.past(),
           updatedAt: faker.date.past(),
           password: faker.internet.password(),
-          // firstName: faker.name.firstName(),
-          // lastName: faker.name.lastName(),
-          // sex: Math.random() < 0.5 ? 'male' : 'female',
-          // birthDate: faker.date.past(),
+          firstName: faker.name.firstName(),
+          lastName: faker.name.lastName(),
+          gender: Math.random() < 0.5 ? 'male' : 'female',
+          birthDate: faker.date.past(),
         };
       });
 

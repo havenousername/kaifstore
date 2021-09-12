@@ -19,6 +19,22 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
+      firstName: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      lastName: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      gender: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      birthDate: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
