@@ -10,12 +10,11 @@ async function bootstrap() {
   app.enableVersioning({
     type: VersioningType.URI,
   });
-  // app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
     .setTitle('Kaifstore')
-    .setDescription('REST API documentation')
-    .setTitle('v0.0.1')
+    .setDescription('REST V1 API documentation')
+    .setTitle('v1.0.0')
     .addTag('backend')
     .build();
 
