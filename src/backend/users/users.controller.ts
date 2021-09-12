@@ -9,7 +9,7 @@ import { CreateUserDto } from './dto/CreateUserDto';
 export class UsersController {
   constructor(private userService: UsersService) {}
 
-  @Post('/create')
+  @Post()
   create(@Body() userDto: CreateUserDto) {
     return this.userService.create(userDto);
   }
