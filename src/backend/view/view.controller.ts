@@ -16,9 +16,9 @@ export class ViewController {
       .render(req, res, parsedUrl.pathname, parsedUrl.query);
   }
 
-  @ApiOperation({ summary: 'Home Page' })
-  @Get('/home')
-  public async showHome(@Req() req: Request, @Res() res: Response) {
+  @ApiOperation({ summary: 'Index Page' })
+  @Get('/')
+  public async showIndex(@Req() req: Request, @Res() res: Response) {
     await this.handler(req, res);
   }
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import { NextPage } from 'next';
 
-const Home: NextPage = () => {
+const Index: NextPage = () => {
   return <div>Hello world</div>;
 };
 
-export default Home;
+export default Index;
