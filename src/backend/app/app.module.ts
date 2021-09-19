@@ -19,9 +19,6 @@ import { FavouriteModule } from '../favourite/favourite.module';
       database: process.env.DB_NAME,
       models: [User],
       autoLoadModels: true,
-      sync: {
-        force: true,
-      },
     }),
     UsersModule,
     FavouriteModule,

@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './users.model';
+import { Public } from '../decorators/public.decorator';
 
 @ApiTags('Users')
 @Controller({
@@ -19,6 +20,7 @@ export class UsersController {
     return this.userService.create(userDto);
   }
 
+  @Public()
   @ApiOperation({ summary: 'All users' })
   @ApiResponse({ status: 200, type: [User] })
   @Get()
