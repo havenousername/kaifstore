@@ -5,12 +5,15 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { AuthModule } from '../auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+import { Role } from '../roles/roles.model';
+import { RolesModule } from '../roles/roles.module';
 
 @Module({
   controllers: [UsersController],
   providers: [UsersService],
   imports: [
-    SequelizeModule.forFeature([User]),
+    SequelizeModule.forFeature([User, Role]),
+    RolesModule,
     forwardRef(() => AuthModule),
     JwtModule.register({
       secret: process.env.PRIVATE_KEY || 'PRIVATE_KEY',

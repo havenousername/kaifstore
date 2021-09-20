@@ -4,6 +4,9 @@ import { UsersModule } from '../users/users.module';
 import { User } from '../users/users.model';
 import { ConfigModule } from '@nestjs/config';
 import { FavouriteModule } from '../favourite/favourite.module';
+import { AuthModule } from '../auth/auth.module';
+import { RolesModule } from '../roles/roles.module';
+import { Role } from '../roles/roles.model';
 
 @Module({
   imports: [
@@ -17,11 +20,15 @@ import { FavouriteModule } from '../favourite/favourite.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [User],
+      models: [User, Role],
       autoLoadModels: true,
+      // synchronize: true,
+      // sync: { force: true },
     }),
     UsersModule,
     FavouriteModule,
+    AuthModule,
+    RolesModule,
   ],
   controllers: [],
 })

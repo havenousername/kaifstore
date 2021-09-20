@@ -17,6 +17,7 @@ module.exports = {
           lastName: faker.name.lastName(),
           gender: Math.random() < 0.5 ? 'male' : 'female',
           birthDate: faker.date.past(),
+          roleId: ((Math.random() * 2) >> 0) + 1,
         };
       });
 

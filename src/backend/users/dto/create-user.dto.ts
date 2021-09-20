@@ -37,4 +37,10 @@ export class CreateUserDto {
     description: 'Date of birth',
   })
   readonly birthDate: Date;
+
+  @ApiProperty({
+    example: 'Admin',
+    description: 'Role of user',
+  })
+  readonly role: string;
 }
