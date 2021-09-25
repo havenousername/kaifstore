@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import CreateRoleDto from './dto/create-role.dto';
@@ -6,6 +14,7 @@ import { Role } from './roles.model';
 import { Roles } from '../decorators/role-auth.decorator';
 import JwtRolesGuard from '../auth/guards/roles-auth.guard';
 import { SUPER_USER_ROLE } from '../app/contstants';
+import { ValidationPipe } from '../pipes/validation.pipe';
 
 @Controller({
   path: 'roles',
@@ -17,6 +26,7 @@ export class RolesController {
   @ApiOperation({ summary: 'Role creation' })
   @ApiResponse({ status: 200, type: Role })
   @Roles(SUPER_USER_ROLE.name)
+  @UsePipes(ValidationPipe)
   @UseGuards(JwtRolesGuard)
   @Post()
   create(@Body() roleDto: CreateRoleDto) {
