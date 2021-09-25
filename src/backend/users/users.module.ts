@@ -13,7 +13,7 @@ import { RolesModule } from '../roles/roles.module';
   providers: [UsersService],
   imports: [
     SequelizeModule.forFeature([User, Role]),
-    RolesModule,
+    forwardRef(() => RolesModule),
     forwardRef(() => AuthModule),
     JwtModule.register({
       secret: process.env.PRIVATE_KEY || 'PRIVATE_KEY',
