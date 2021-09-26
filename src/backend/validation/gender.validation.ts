@@ -10,7 +10,6 @@ import { Gender } from '../users/interfaces/gender';
 @ValidatorConstraint({ name: 'isValidGender', async: false })
 export class IsValidGenderConstraint implements ValidatorConstraintInterface {
   validate(text: string): Promise<boolean> | boolean {
-    console.log('validate gender');
     return Object.values(Gender)
       .map((i) => i.toString())
       .includes(text);

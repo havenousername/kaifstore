@@ -25,6 +25,6 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
     forwardRef(() => UsersModule),
     PassportModule,
   ],
-  exports: [AuthService],
+  exports: [AuthService, JwtStrategy],
 })
 export class AuthModule {}
