@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -65,10 +66,7 @@ export class UsersController {
   @UseGuards(JwtRolesGuard)
   @UsePipes(ValidationPipe)
   @Put('/admin/:id')
-  updateUserByAdmin(
-    @Param('id') id: number,
-    @Body() updateUserDto: CreateUserDto,
-  ) {
+  update(@Param('id') id: number, @Body() updateUserDto: CreateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
 
@@ -77,7 +75,24 @@ export class UsersController {
   @UseGuards(JwtParamAuthGuard)
   @UsePipes(ValidationPipe)
   @Put(':id')
-  updateUser(@Param('id') id: number, @Body() updateUserDto: CreateUserDto) {
+  selfUpdate(@Param('id') id: number, @Body() updateUserDto: CreateUserDto) {
     return this.userService.update(id, updateUserDto);
+  }
+
+  @ApiOperation({ summary: 'Delete user by admin' })
+  @ApiResponse({ status: 200, type: 'number' })
+  @Roles(SUPER_USER_ROLE.name)
+  @UseGuards(JwtRolesGuard)
+  @Delete('/admin/:id')
+  delete(@Param('id') id: number) {
+    return this.userService.delete(id);
+  }
+
+  @ApiOperation({ summary: 'User self-delete' })
+  @ApiResponse({ status: 200, type: 'number' })
+  @UseGuards(JwtParamAuthGuard)
+  @Delete(':id')
+  selfDelete(@Param('id') id: number) {
+    return this.userService.delete(id);
   }
 }

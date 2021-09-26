@@ -29,7 +29,7 @@ export class UsersService {
     const user = await this.userRepository.findByPk(dto.userId);
     const role = await this.rolesService.getRoleByName(dto.name);
 
-    if (user.role) {
+    if (user && user.role) {
       await user.$remove('role', user.role);
     }
 
@@ -49,6 +49,11 @@ export class UsersService {
       { where: { id } },
     );
     return await this.getUserById(id);
+  }
+
+  async delete(id: number) {
+    console.log(id, 'id');
+    return await this.userRepository.destroy({ where: { id } });
   }
 
   async getAll() {
