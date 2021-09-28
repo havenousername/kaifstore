@@ -21,7 +21,7 @@
   "include": [
     "next-env.d.ts",
     "next.config.js",
-    "pages/**/*.ts",
+    "/**/*.ts",
     "pages/**/*.tsx"
   ],
   "exclude": [
