@@ -22,6 +22,8 @@
     "next-env.d.ts",
     "next.config.js",
     "/**/*.ts",
+    "/**/*.d.ts",
+    "i18n.ts",
     "pages/**/*.tsx"
   ],
   "exclude": [

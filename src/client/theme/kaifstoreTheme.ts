@@ -27,6 +27,51 @@ const kaifstoreTheme: ThemeOptions = {
       main: kaifStoreColors.roseDark,
     },
   },
+  typography: {
+    allVariants: {
+      letterSpacing: 'normal',
+    },
+    fontFamily: ['Coolvetica', 'sans-serif'].join(','),
+    h1: {
+      fontWeight: 'bold',
+      fontSize: '2.5rem',
+      lineHeight: 1.2,
+      color: kaifStoreColors.white,
+      letterSpacing: '0.2rem',
+    },
+    h2: {
+      fontWeight: 'bold',
+      fontSize: '2.25rem',
+      lineHeight: 1.3,
+      color: kaifStoreColors.white,
+    },
+    h3: {
+      fontWeight: 'normal',
+      fontSize: '1.875rem',
+      lineHeight: 1.5,
+      color: kaifStoreColors.white,
+    },
+    h4: {
+      fontWeight: 'normal',
+      fontSize: '1.5rem',
+      lineHeight: 1.5,
+    },
+    h5: {
+      fontWeight: 'normal',
+      fontSize: '1rem',
+      lineHeight: 1.5,
+    },
+    h6: {
+      fontWeight: 'normal',
+      fontSize: '0.874rem',
+      lineHeight: 1.5,
+    },
+    subtitle1: {
+      fontWeight: 'normal',
+      fontSize: '0.5rem',
+      lineHeight: 1.5,
+    },
+  },
   components: {
     MuiCssBaseline: {
       styleOverrides: {

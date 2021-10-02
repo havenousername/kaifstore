@@ -2,6 +2,7 @@ import Typography from '@mui/material/Typography';
 import { Box, Container } from '@mui/material';
 import { makeStyles } from '@material-ui/styles';
 import background from '../assets/background-login.png';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -17,17 +18,22 @@ const useStyles = makeStyles(() => ({
   },
   container: {
     display: 'flex',
-    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
   },
 }));
 
 const Login = () => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <>
       <div className={classes.root}>
         <Container className={classes.container} maxWidth="lg">
+          <Typography variant={'h1'} component={'h1'} marginBottom={'3.5rem'}>
+            {t('KaifStore')}
+          </Typography>
           <Box
             sx={{
               display: 'flex',
@@ -42,7 +48,9 @@ const Login = () => {
               width: 540,
             }}
           >
-            <Typography>Login</Typography>
+            <Typography variant={'h4'} component={'h2'} fontWeight={'bold'}>
+              {t('Login')}
+            </Typography>
           </Box>
         </Container>
       </div>
