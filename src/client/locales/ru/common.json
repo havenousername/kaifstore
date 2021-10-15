@@ -1,4 +1,10 @@
 {
-  "Login": "Войти",
+  "LoginPage": {
+    "LoginInfo": "Войдите чтобы получить полный доступ ко всем функциям приложения",
+    "EmailPlaceholder": "Введите ваш емайл",
+    "Login": "Войти",
+    "PasswordPlaceholder": "Введите ваш пароль",
+    "Enter": "Войти"
+  },
   "KaifStore": "KaifStore"
 }

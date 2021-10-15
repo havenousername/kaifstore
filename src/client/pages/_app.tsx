@@ -6,8 +6,9 @@ import Head from 'next/head';
 import '../styles/app.css';
 import '../i18n';
 
+export const theme = createTheme(kaifstoreTheme);
+
 const App = ({ Component, pageProps }: AppProps) => {
-  const theme = createTheme(kaifstoreTheme);
   return (
     <>
       <Head>

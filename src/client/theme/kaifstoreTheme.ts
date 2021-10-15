@@ -62,7 +62,7 @@ const kaifstoreTheme: ThemeOptions = {
       lineHeight: 1.5,
     },
     h6: {
-      fontWeight: 'normal',
+      fontWeight: 'bold',
       fontSize: '0.874rem',
       lineHeight: 1.5,
     },
@@ -77,6 +77,17 @@ const kaifstoreTheme: ThemeOptions = {
       styleOverrides: {
         body: {
           height: '100vh',
+          color: kaifStoreColors.white,
+        },
+      },
+    },
+    // Name of the component
+    MuiButton: {
+      styleOverrides: {
+        // Name of the slot
+        root: {
+          // Some CSS
+          fontSize: '1rem',
           color: kaifStoreColors.white,
         },
       },

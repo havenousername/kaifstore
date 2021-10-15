@@ -4,6 +4,7 @@ const kaifStoreColors = {
   grayBackground: '#2B3137',
   whiteAlmost: 'rgba(255,255,255, 0.05)',
   whiteGray: 'rgba(255,255,255, 0.6)',
+  whiteTransparent: 'rgba(255,255,255, 0.5)',
   gray: '#525D68',
   blackAlmost: 'rgba(5, 6, 6, 0.8)',
   greenDark: '#007D3A',

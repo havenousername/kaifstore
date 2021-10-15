@@ -24,7 +24,8 @@
     "/**/*.ts",
     "/**/*.d.ts",
     "i18n.ts",
-    "pages/**/*.tsx"
+    "pages/**/*.tsx",
+    "components"
   ],
   "exclude": [
     "node_modules"
