@@ -1,38 +1,18 @@
+import React, { useCallback, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { Box, Container } from '@mui/material';
-import { makeStyles } from '@material-ui/styles';
-import background from '../assets/background-login.png';
 import { useTranslation } from 'react-i18next';
 import kaifStoreColors from '../theme/kaifstoreColors';
 import AppInput from '../components/app-input';
-import { useCallback, useState } from 'react';
 import AppIcon from '../components/app-icon';
-import DontShowEyeIcon from '../assets/icons/dont-show-eye.svg';
-import ShowEyeIcon from '../assets/icons/show-eye.svg';
-import EmailIcon from '../assets/icons/at.svg';
-import { Button } from '@material-ui/core';
-
-const useStyles = makeStyles(() => ({
-  root: {
-    background: 'url(' + background.src + ')',
-    backgroundPosition: 'center top',
-    backgroundSize: 'cover',
-    backgroundRepeat: 'no-repeat',
-    height: '100%',
-    backgroundColor: '#000102',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  container: {
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column',
-  },
-}));
+import AppCheckbox from '../components/app-checkbox';
+import background from '../assets/background-login.png';
+import { ReactComponent as DontShowEyeIcon } from '../assets/icons/dont-show-eye.svg';
+import { ReactComponent as ShowEyeIcon } from '../assets/icons/show-eye.svg';
+import { ReactComponent as EmailIcon } from '../assets/icons/at.svg';
+import AppBaseButton from '../components/app-base-button';
 
 const Login = () => {
-  const classes = useStyles();
   const { t } = useTranslation();
 
   const [email, setEmail] = useState('');
@@ -43,14 +23,14 @@ const Login = () => {
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setEmail(event.target.value);
     },
-    [email],
+    [],
   );
 
   const onPasswordChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setPassword(event.target.value);
     },
-    [password],
+    [],
   );
 
   const onPasswordShowChange = useCallback(() => {
@@ -59,8 +39,27 @@ const Login = () => {
 
   return (
     <>
-      <div className={classes.root}>
-        <Container className={classes.container} maxWidth="lg">
+      <Box
+        sx={{
+          background: 'url(' + background.src + ')',
+          backgroundPosition: 'center top',
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+          height: '100%',
+          backgroundColor: '#000102',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Container
+          maxWidth="lg"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'column',
+          }}
+        >
           <Typography variant={'h1'} component={'h1'} marginBottom={'3.5rem'}>
             {t('KaifStore')}
           </Typography>
@@ -75,9 +74,10 @@ const Login = () => {
               borderRadius: '47px',
               boxShadow: 1,
               fontWeight: 'bold',
-              height: 540,
-              width: 540,
-              p: 10,
+              height: 500,
+              width: 500,
+              px: 10,
+              py: 8,
             }}
           >
             <Typography
@@ -85,7 +85,7 @@ const Login = () => {
               component={'h2'}
               fontWeight={'bold'}
               textAlign={'left'}
-              marginBottom={'1.5rem'}
+              marginBottom={'1rem'}
             >
               {t('LoginPage.Login')}
             </Typography>
@@ -93,52 +93,87 @@ const Login = () => {
               variant={'h6'}
               component={'h6'}
               color={kaifStoreColors.whiteTransparent}
+              maxWidth={'38ch'}
+              marginBottom={'1rem'}
             >
               {t('LoginPage.LoginInfo')}
             </Typography>
-            <AppInput
-              inputProps={{
-                value: email,
-                onChange: onEmailChange,
-                startAdornment: (
-                  <AppIcon width={20} height={20} htmlColor={'white'}>
-                    <EmailIcon />
-                  </AppIcon>
-                ),
-                placeholder: t('LoginPage.EmailPlaceholder'),
-                sx: {
-                  marginBottom: '2rem',
-                  marginTop: '2rem',
-                },
+            <Box
+              sx={{
+                maxWidth: '18.75rem',
+                width: '100%',
               }}
-            />
-            <AppInput
-              inputProps={{
-                value: password,
-                onChange: onPasswordChange,
-                type: showPassword ? 'text' : 'password',
-                startAdornment: (
-                  <AppIcon
-                    width={20}
-                    height={20}
-                    htmlColor={'white'}
-                    onClick={onPasswordShowChange}
-                    sx={{
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {showPassword ? <DontShowEyeIcon /> : <ShowEyeIcon />}
-                  </AppIcon>
-                ),
-                placeholder: t('LoginPage.PasswordPlaceholder'),
+            >
+              <AppInput
+                sx={{
+                  my: 2,
+                }}
+                inputProps={{
+                  value: email,
+                  onChange: onEmailChange,
+                  startAdornment: (
+                    <AppIcon width={20} height={20} htmlColor={'white'}>
+                      <EmailIcon />
+                    </AppIcon>
+                  ),
+                  placeholder: t('LoginPage.EmailPlaceholder'),
+                }}
+              />
+              <AppInput
+                sx={{
+                  my: 2,
+                }}
+                inputProps={{
+                  value: password,
+                  onChange: onPasswordChange,
+                  type: showPassword ? 'text' : 'password',
+                  startAdornment: (
+                    <AppIcon
+                      width={20}
+                      height={20}
+                      htmlColor={'white'}
+                      onClick={onPasswordShowChange}
+                      sx={{
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {showPassword ? <DontShowEyeIcon /> : <ShowEyeIcon />}
+                    </AppIcon>
+                  ),
+                  placeholder: t('LoginPage.PasswordPlaceholder'),
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
               }}
-            />
-            <Button variant={'contained'} color={'primary'} type={'button'}>
-              {t('LoginPage.Enter')}
-            </Button>
+            >
+              <AppCheckbox
+                labelProps={{
+                  label: t('LoginPage.RememberMe'),
+                }}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                width: '100%',
+                marginTop: '1.5rem',
+              }}
+            >
+              <AppBaseButton
+                variant={'contained'}
+                color={'primary'}
+                type={'button'}
+              >
+                {t('LoginPage.Enter')}
+              </AppBaseButton>
+            </Box>
           </Box>
         </Container>
-      </div>
+      </Box>
     </>
   );
 };
