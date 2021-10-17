@@ -15,6 +15,9 @@ export class AuthService {
 
   async validateUser(email: string, password: string): Promise<null | User> {
     const user = await this.usersService.getUserByEmail(email);
+    if (!user) {
+      return null;
+    }
     let passwordsEqual = await bcrypt.compare(password, user.password);
     // TODO: Delete later, after changing user seeds
     if (!passwordsEqual) {

@@ -7,17 +7,25 @@ import AppInput from '../components/app-input';
 import AppIcon from '../components/app-icon';
 import AppCheckbox from '../components/app-checkbox';
 import background from '../assets/background-login.png';
+import AppBaseButton from '../components/app-base-button';
 import { ReactComponent as DontShowEyeIcon } from '../assets/icons/dont-show-eye.svg';
 import { ReactComponent as ShowEyeIcon } from '../assets/icons/show-eye.svg';
 import { ReactComponent as EmailIcon } from '../assets/icons/at.svg';
-import AppBaseButton from '../components/app-base-button';
+import { useRouter } from 'next/router';
+import useLogin from '../hooks/use-login';
 
 const Login = () => {
   const { t } = useTranslation();
+  const router = useRouter();
+
+  const goToPrivateRoute = async () => {
+    await router.push('/settings');
+  };
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [doLogin] = useLogin(goToPrivateRoute);
 
   const onEmailChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +44,10 @@ const Login = () => {
   const onPasswordShowChange = useCallback(() => {
     setShowPassword(!showPassword);
   }, [showPassword]);
+
+  const onLoginTry = useCallback(async () => {
+    await doLogin(email, password);
+  }, [password, email, doLogin]);
 
   return (
     <>
@@ -168,6 +180,7 @@ const Login = () => {
                 variant={'contained'}
                 color={'primary'}
                 type={'button'}
+                onClick={onLoginTry}
               >
                 {t('LoginPage.Enter')}
               </AppBaseButton>
