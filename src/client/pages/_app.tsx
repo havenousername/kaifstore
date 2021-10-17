@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 const App = ({ Component, pageProps }: AppProps) => {
   const theme = createTheme(kaifstoreTheme);
   const { t } = useTranslation();
+
   return (
     <>
       <Head>

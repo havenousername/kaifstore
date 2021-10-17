@@ -3,6 +3,9 @@ import { ThemeOptions } from '@mui/material';
 
 const kaifstoreTheme: ThemeOptions = {
   palette: {
+    background: {
+      default: kaifStoreColors.blackGrayBackground,
+    },
     primary: {
       light: kaifStoreColors.violetLight,
       main: kaifStoreColors.violetDark,

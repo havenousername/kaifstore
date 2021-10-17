@@ -1,9 +1,11 @@
-import { Controller, Get, Req, Res } from '@nestjs/common';
+import { Controller, Get, Req, Res, UseFilters } from '@nestjs/common';
 import { ViewService } from './view.service';
 import { Request, Response } from 'express';
 import { parse } from 'url';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from '../decorators/public.decorator';
+import { ViewAuthFilter } from '../filters/view-auth.filter';
+import { PRIVATE_VIEW_REDIRECT_ROUTE } from '../app/contstants';
 
 @ApiTags('Pages')
 @Controller('/')
@@ -28,8 +30,16 @@ export class ViewController {
   @Public()
   @ApiOperation({ summary: 'Login page' })
   @ApiResponse({ status: 200 })
-  @Get('/login')
+  @Get(PRIVATE_VIEW_REDIRECT_ROUTE)
   public async showLogin(@Req() req: Request, @Res() res: Response) {
+    await this.handler(req, res);
+  }
+
+  @ApiOperation({ summary: 'Settings page' })
+  @ApiResponse({ status: 200 })
+  @Get('/settings')
+  @UseFilters(new ViewAuthFilter())
+  public async showSettings(@Req() req: Request, @Res() res: Response) {
     await this.handler(req, res);
   }
 

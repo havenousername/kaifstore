@@ -18,6 +18,7 @@ const StandardInput = styled(InputBase, {
     paddingBottom: '0.7rem',
     display: 'flex',
     alignItems: 'center',
+    maxHeight: '3rem',
   },
   '& .MuiSvgIcon-root': {},
   '& .MuiInputBase-input': {
