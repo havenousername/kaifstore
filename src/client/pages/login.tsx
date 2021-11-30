@@ -186,6 +186,10 @@ const Login = () => {
               </AppBaseButton>
             </Box>
           </Box>
+          <Box>
+            <Typography />
+            <Typography />
+          </Box>
         </Container>
       </Box>
     </>

@@ -5,7 +5,9 @@
     "Login": "Войти",
     "PasswordPlaceholder": "Введите ваш пароль",
     "Enter": "Войти",
-    "RememberMe": "Запомнить меня"
+    "RememberMe": "Запомнить меня",
+    "DontHaveAccount": "Не имеете аккаунта",
+    "Register":  ""
   },
   "KaifStore": "KaifStore"
 }
