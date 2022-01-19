@@ -31,6 +31,9 @@ module.exports = {
       image: {
         type: Sequelize.STRING,
       },
+      availableUntil: {
+        type: Sequelize.DATE,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

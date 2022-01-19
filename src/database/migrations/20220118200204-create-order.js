@@ -17,9 +17,8 @@ module.exports = {
       deliverAt: {
         type: Sequelize.DATE,
       },
-      hasPromocode: {
-        type: Sequelize.BOOLEAN,
-        default: false,
+      promocode: {
+        type: Sequelize.STRING,
       },
       bagId: {
         type: Sequelize.INTEGER,

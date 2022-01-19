@@ -15,9 +15,17 @@ module.exports = {
         unique: false,
         allowNull: false,
       },
+      uuid: {
+        type: Sequelize.UUID,
+        unique: true,
+        allowNull: false,
+      },
       description: {
         type: Sequelize.STRING(2000),
         unique: false,
+      },
+      code: {
+        type: Sequelize.STRING(5),
       },
       createdAt: {
         allowNull: false,

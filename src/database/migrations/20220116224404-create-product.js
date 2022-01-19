@@ -32,6 +32,13 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
+      characteristics: {
+        type: Sequelize.ARRAY(Sequelize.STRING),
+      },
+      costPrice: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       quantity: {
         type: Sequelize.INTEGER,
         defaultValue: 1,
@@ -48,11 +55,11 @@ module.exports = {
       },
       // foreign key
       groupId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         allowNull: false,
         references: {
           model: 'product_groups',
-          key: 'id',
+          key: 'uuid',
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
@@ -68,10 +75,7 @@ module.exports = {
       },
       // additional info
       code: {
-        type: Sequelize.SMALLINT,
-      },
-      parentUuid: {
-        type: Sequelize.UUID,
+        type: Sequelize.STRING(5),
       },
       description: {
         type: Sequelize.TEXT,
