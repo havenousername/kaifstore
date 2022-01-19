@@ -2,8 +2,8 @@ import { forwardRef, Module } from '@nestjs/common';
 import { RolesController } from './roles.controller';
 import { RolesService } from './roles.service';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { Role } from './roles.model';
-import { User } from '../users/users.model';
+import { Role } from '../model/roles.model';
+import { User } from '../model/users.model';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
 

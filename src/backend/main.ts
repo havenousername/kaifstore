@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ServerModule } from './server.module';
 import { VersioningType } from '@nestjs/common';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const PORT = process.env.PORT || '5000';
@@ -10,6 +11,7 @@ async function bootstrap() {
   app.enableVersioning({
     type: VersioningType.URI,
   });
+  app.use(cookieParser());
 
   const config = new DocumentBuilder()
     .setTitle('Kaifstore')
@@ -24,4 +26,7 @@ async function bootstrap() {
   await app.listen(PORT, () => console.log(`Server started at port: ${PORT}`));
 }
 
-bootstrap();
+bootstrap().catch((ex: any) => {
+  console.error(ex.stack);
+  process.exit(1);
+});

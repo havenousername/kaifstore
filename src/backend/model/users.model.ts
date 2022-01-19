@@ -5,10 +5,14 @@ import {
   Model,
   Table,
   ForeignKey,
+  Unique,
+  AllowNull,
 } from 'sequelize-typescript';
-import { Gender } from './interfaces/gender';
 import { ApiProperty } from '@nestjs/swagger';
-import { Role } from '../roles/roles.model';
+import { Role } from './roles.model';
+import { Gender } from 'src/interfaces/gender.enum';
+import { Address } from './addresses.model';
+import { Bag } from './bag.model';
 
 interface UserCreationAttributes {
   email: string;
@@ -106,10 +110,24 @@ export class User extends Model<User, UserCreationAttributes> {
     example: '1',
     description: 'User role id',
   })
+  @AllowNull(false)
   @ForeignKey(() => Role)
   @Column
   roleId: number;
 
   @BelongsTo(() => Role)
   role: Role;
+
+  @ApiProperty({
+    example: 1,
+    description: 'Address id',
+  })
+  @ForeignKey(() => Address)
+  @Column
+  @Unique
+  addressId: number;
+
+  @BelongsTo(() => Address)
+  @Column
+  address: Address;
 }

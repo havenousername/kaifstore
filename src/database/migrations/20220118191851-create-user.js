@@ -1,5 +1,8 @@
 'use strict';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+// const genders = require('../../interfaces/gender.enum');
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.createTable('users', {
@@ -31,15 +34,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      photo: {
+        type: Sequelize.STRING,
+      },
       birthDate: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      createdAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      updatedAt: {
         type: Sequelize.DATE,
         allowNull: false,
       },
@@ -51,6 +49,24 @@ module.exports = {
         },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
+        allowNull: false,
+      },
+      addressId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'addresses',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
       },
     });
   },
