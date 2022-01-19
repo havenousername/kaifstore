@@ -18,10 +18,6 @@ class MyDocument extends Document {
                 background-color: ${kaifstoreTheme.palette.background.paper};
               }
 
-              body div {
-                height: 100%;
-              }
-              ,
               *,
               *:after,
               *:before {

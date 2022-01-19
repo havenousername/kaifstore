@@ -43,6 +43,14 @@ export class ViewController {
     await this.handler(req, res);
   }
 
+  @ApiOperation({ summary: 'Home page' })
+  @ApiResponse({ status: 200 })
+  @Get('/')
+  @UseFilters(new ViewAuthFilter())
+  public async showHome(@Req() req: Request, @Res() res: Response) {
+    await this.handler(req, res);
+  }
+
   @Public()
   @ApiOperation({ summary: 'NextJS bundles' })
   @ApiResponse({ status: 200 })
