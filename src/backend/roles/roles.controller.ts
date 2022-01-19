@@ -10,7 +10,7 @@ import {
 import { RolesService } from './roles.service';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import CreateRoleDto from './dto/create-role.dto';
-import { Role } from './roles.model';
+import { Role } from '../model/roles.model';
 import { Roles } from '../decorators/role-auth.decorator';
 import JwtRolesGuard from '../auth/guards/roles-auth.guard';
 import { SUPER_USER_ROLE } from '../app/contstants';

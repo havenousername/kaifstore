@@ -5,7 +5,7 @@ import {
   ValidatorConstraintInterface,
   ValidatorOptions,
 } from 'class-validator';
-import { Gender } from '../users/interfaces/gender';
+import { Gender } from '../../interfaces/gender.enum';
 
 @ValidatorConstraint({ name: 'isValidGender', async: false })
 export class IsValidGenderConstraint implements ValidatorConstraintInterface {

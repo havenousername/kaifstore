@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from '../users/users.module';
-import { User } from '../users/users.model';
+import { User } from '../model/users.model';
 import { ConfigModule } from '@nestjs/config';
 import { FavouriteModule } from '../favourite/favourite.module';
 import { AuthModule } from '../auth/auth.module';
 import { RolesModule } from '../roles/roles.module';
-import { Role } from '../roles/roles.model';
+import { Role } from '../model/roles.model';
 
 @Module({
   imports: [

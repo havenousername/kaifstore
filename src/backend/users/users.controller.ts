@@ -12,7 +12,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from './users.model';
+import { User } from '../model/users.model';
 import { ValidationPipe } from '../pipes/validation.pipe';
 import { Roles } from '../decorators/role-auth.decorator';
 import { SUPER_USER_ROLE } from '../app/contstants';
