@@ -6,6 +6,7 @@ import {
   Table,
   ForeignKey,
   Unique,
+  AllowNull,
 } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from './roles.model';
@@ -109,6 +110,7 @@ export class User extends Model<User, UserCreationAttributes> {
     example: '1',
     description: 'User role id',
   })
+  @AllowNull(false)
   @ForeignKey(() => Role)
   @Column
   roleId: number;
@@ -128,16 +130,4 @@ export class User extends Model<User, UserCreationAttributes> {
   @BelongsTo(() => Address)
   @Column
   address: Address;
-
-  @ApiProperty({
-    example: 1,
-    description: 'Bad id',
-  })
-  @ForeignKey(() => Bag)
-  @Column
-  bagId: number;
-
-  @BelongsTo(() => Bag)
-  @Column
-  bag: Bag;
 }

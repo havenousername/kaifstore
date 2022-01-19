@@ -33,12 +33,11 @@ export class Order extends Model<Order> {
   deliverAt?: Date;
 
   @ApiProperty({
-    example: false,
-    description: 'Has promocode',
+    example: 'IEVA',
+    description: 'Promocode',
   })
-  @AllowNull(false)
-  @Column({ type: DataType.BOOLEAN })
-  hasPromocode: boolean;
+  @Column({ type: DataType.STRING })
+  promocode: string;
 
   @ApiProperty({
     example: 'Ordered',

@@ -4,6 +4,7 @@ import {
   DataType,
   ForeignKey,
   HasMany,
+  HasOne,
   Model,
   Table,
 } from 'sequelize-typescript';
@@ -61,7 +62,7 @@ export class Product extends Model<Product> {
   allowToSell: boolean;
 
   @ApiProperty({
-    example: '456 000',
+    example: 456,
     description: 'Price',
   })
   @Column({
@@ -69,6 +70,26 @@ export class Product extends Model<Product> {
     allowNull: false,
   })
   price: number;
+
+  @ApiProperty({
+    example: 100,
+    description: 'Cost price',
+  })
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  costPrice: number;
+
+  @ApiProperty({
+    examples: ['Black', 'White'],
+    description: 'Characteristics',
+    required: false,
+  })
+  @Column({
+    type: DataType.ARRAY(DataType.STRING),
+  })
+  characteristics?: string[];
 
   @ApiProperty({
     example: 1,
@@ -115,9 +136,9 @@ export class Product extends Model<Product> {
     example: 34,
     description: 'Group id',
   })
-  @ForeignKey(() => ProductGroup)
-  @Column({ type: DataType.INTEGER, allowNull: false })
-  groupId: number;
+  @HasOne(() => ProductGroup, 'uuid')
+  @Column({ type: DataType.UUID, allowNull: false })
+  groupId: string;
 
   @BelongsTo(() => ProductGroup)
   group: ProductGroup;
@@ -135,20 +156,12 @@ export class Product extends Model<Product> {
   alcohol?: AlcoholProduct;
 
   @ApiProperty({
-    example: 199,
+    example: '199',
     description: 'Code',
     required: false,
   })
-  @Column({ type: DataType.SMALLINT, allowNull: true })
-  code?: number;
-
-  @ApiProperty({
-    example: '123e4567-e89b-12d3-a456-426614174000',
-    description: 'Parent UUID',
-    required: false,
-  })
-  @Column({ type: DataType.UUID, allowNull: true })
-  parentUuid?: string;
+  @Column({ type: DataType.STRING(5), allowNull: true })
+  code?: string;
 
   @ApiProperty({
     example: 'Tutus Mac Barren Absolute Choice is a very nice product',
