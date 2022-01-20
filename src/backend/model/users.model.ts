@@ -10,7 +10,7 @@ import {
 } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from './roles.model';
-import { Gender } from 'src/interfaces/gender.enum';
+import { Gender } from 'src/backend/interfaces/gender.enum';
 import { Address } from './addresses.model';
 
 interface UserCreationAttributes {
@@ -122,11 +122,10 @@ export class User extends Model<User, UserCreationAttributes> {
     description: 'Address id',
   })
   @ForeignKey(() => Address)
-  @Column
   @Unique
+  @Column
   addressId: number;
 
   @BelongsTo(() => Address)
-  @Column
   address: Address;
 }
