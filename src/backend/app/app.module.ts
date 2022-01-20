@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { SequelizeModule } from '@nestjs/sequelize';
+import { SequelizeModule, SequelizeModuleOptions } from '@nestjs/sequelize';
 import { UsersModule } from '../users/users.module';
 import { User } from '../model/users.model';
 import { ConfigModule } from '@nestjs/config';
@@ -9,12 +9,8 @@ import { RolesModule } from '../roles/roles.module';
 import { Role } from '../model/roles.model';
 import { Address } from '../model/addresses.model';
 
-@Module({
-  imports: [
-    ConfigModule.forRoot({
-      envFilePath: `.${process.env.NODE_ENV}.env`,
-    }),
-    SequelizeModule.forRoot({
+const sequelizeOptions: SequelizeModuleOptions = process.env.DATABASE_URL
+  ? {
       dialect: 'postgres',
       host: process.env.DB_HOST,
       port: +process.env.DB_PORT,
@@ -25,7 +21,22 @@ import { Address } from '../model/addresses.model';
       autoLoadModels: true,
       // synchronize: true,
       // sync: { force: true },
+    }
+  : {
+      dialect: 'postgres',
+      protocol: 'postgres',
+      host: process.env.DATABASE_URL,
+      dialectOptions: {
+        ssl: true,
+      },
+    };
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: `.${process.env.NODE_ENV}.env`,
     }),
+    SequelizeModule.forRoot(sequelizeOptions),
     UsersModule,
     FavouriteModule,
     AuthModule,
