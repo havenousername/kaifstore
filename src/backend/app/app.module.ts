@@ -29,6 +29,8 @@ const sequelizeOptions: SequelizeModuleOptions = process.env.DATABASE_URL
       username: process.env.DATABASE_URL.split('//')[1].split(':')[0],
       password: process.env.DATABASE_URL.split(':')[2].split('@')[0],
       database: process.env.DATABASE_URL.split('/')[3],
+      models: [User, Role, Address],
+      autoLoadModels: true,
       dialectOptions: {
         ssl: {
           rejectUnauthorized: false,
