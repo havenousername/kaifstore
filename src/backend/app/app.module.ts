@@ -9,7 +9,8 @@ import { RolesModule } from '../roles/roles.module';
 import { Role } from '../model/roles.model';
 import { Address } from '../model/addresses.model';
 
-const sequelizeOptions: SequelizeModuleOptions = process.env.DATABASE_URL
+console.log(process.env);
+const sequelizeOptions: SequelizeModuleOptions = !process.env.DATABASE_URL
   ? {
       dialect: 'postgres',
       host: process.env.DB_HOST,
