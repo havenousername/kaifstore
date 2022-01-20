@@ -8,7 +8,7 @@ import {
   PrimaryKey,
 } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
-import { Stage, stages } from '../../interfaces/stage.enum';
+import { Stage, stages } from '../interfaces/stage.enum';
 import { Bag } from './bag.model';
 import { User } from './users.model';
 

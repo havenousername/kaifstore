@@ -7,6 +7,7 @@ import { FavouriteModule } from '../favourite/favourite.module';
 import { AuthModule } from '../auth/auth.module';
 import { RolesModule } from '../roles/roles.module';
 import { Role } from '../model/roles.model';
+import { Address } from '../model/addresses.model';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { Role } from '../model/roles.model';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [User, Role],
+      models: [User, Role, Address],
       autoLoadModels: true,
       // synchronize: true,
       // sync: { force: true },

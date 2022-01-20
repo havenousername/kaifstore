@@ -12,8 +12,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   ProductMeasure,
   productMeasures,
-} from '../../interfaces/product-measure.enum';
-import { ProductType, productTypes } from '../../interfaces/product-type.enum';
+} from '../interfaces/product-measure.enum';
+import { ProductType, productTypes } from '../interfaces/product-type.enum';
 import { ProductGroup } from './product-groups.model';
 import { AlcoholProduct } from './alcohol-products.model';
 import { ProductDiscount } from './product-discounts.model';
