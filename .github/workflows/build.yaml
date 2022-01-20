@@ -1,9 +1,9 @@
 name: pre-build
 on:
   push:
-    branches: [ main ]
+    branches: [ main, 4-ci-cd ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, 4-ci-cd ]
 jobs:
   build:
     name: build
