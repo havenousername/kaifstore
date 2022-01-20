@@ -12,7 +12,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Role } from './roles.model';
 import { Gender } from 'src/interfaces/gender.enum';
 import { Address } from './addresses.model';
-import { Bag } from './bag.model';
 
 interface UserCreationAttributes {
   email: string;
