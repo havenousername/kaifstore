@@ -71,7 +71,8 @@
     "sequelize-typescript": "^2.1.0",
     "swagger-ui-express": "^4.1.6",
     "swr": "^1.0.1",
-    "url-loader": "^4.1.1"
+    "url-loader": "^4.1.1",
+    "@svgr/webpack": "^5.5.0"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.14.5",
