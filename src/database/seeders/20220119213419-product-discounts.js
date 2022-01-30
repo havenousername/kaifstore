@@ -4,7 +4,7 @@ module.exports = {
   up: async (queryInterface) => {
     const data = [
       {
-        discountId: 2,
+        discountId: 1,
         productId: 1,
         createdAt: new Date(),
         updatedAt: new Date(),

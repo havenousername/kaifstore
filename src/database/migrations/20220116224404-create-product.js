@@ -67,7 +67,7 @@ module.exports = {
       alcoholId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'alcohol-products',
+          model: 'alcohol_products',
           key: 'id',
         },
         onUpdate: 'CASCADE',
