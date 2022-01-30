@@ -1,7 +1,8 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
+import { Product } from './products.model';
 
-@Table({ tableName: 'product-groups' })
+@Table({ tableName: 'product_groups' })
 export class ProductGroup extends Model<ProductGroup> {
   @ApiProperty({ example: 1, description: 'Unique identifier' })
   @Column({
@@ -42,6 +43,9 @@ export class ProductGroup extends Model<ProductGroup> {
     example: 'Groceries group can only contain apples, bananas etc.',
     description: 'Description of description',
   })
-  @Column({ type: DataType.ENUM })
+  @Column({ type: DataType.TEXT })
   description: string;
+
+  @HasMany(() => Product)
+  products: Product[];
 }

@@ -44,7 +44,7 @@ export class Order extends Model<Order> {
     description: 'Stage',
   })
   @AllowNull(false)
-  @Column({ type: DataType.ENUM(...stages) })
+  @Column({ type: DataType.ENUM, values: stages })
   stage: Stage;
 
   @ApiProperty({

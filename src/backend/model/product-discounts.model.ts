@@ -9,7 +9,7 @@ import {
 import { Product } from './products.model';
 import { Discount } from './discounts.model';
 
-@Table({ tableName: 'product-discounts' })
+@Table({ tableName: 'product_discounts' })
 export class ProductDiscount extends Model<ProductDiscount> {
   @BelongsTo(() => Product)
   product: Product;

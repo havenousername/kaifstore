@@ -1,8 +1,19 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 
+interface AddressCreateAttributes {
+  country: string;
+  city: string;
+  street: string;
+  streetNumber: number;
+  postNumber: string;
+  apartmentFloor?: number;
+  apartmentRing?: string;
+  remarks?: string;
+}
+
 @Table({ tableName: 'addresses' })
-export class Address extends Model<Address> {
+export class Address extends Model<Address, AddressCreateAttributes> {
   @ApiProperty({ example: 1, description: 'Unique identifier' })
   @Column({
     type: DataType.INTEGER,

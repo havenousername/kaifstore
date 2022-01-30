@@ -2,9 +2,9 @@ import {
   BelongsTo,
   Column,
   DataType,
+  Default,
   ForeignKey,
   HasMany,
-  HasOne,
   Model,
   Table,
 } from 'sequelize-typescript';
@@ -13,13 +13,32 @@ import {
   ProductMeasure,
   productMeasures,
 } from '../interfaces/product-measure.enum';
-import { ProductType, productTypes } from '../interfaces/product-type.enum';
+import { ProductType } from '../interfaces/product-type.enum';
 import { ProductGroup } from './product-groups.model';
 import { AlcoholProduct } from './alcohol-products.model';
 import { ProductDiscount } from './product-discounts.model';
 
+interface ProductCreationAttributes {
+  name: string;
+  price: number;
+  costPrice: number;
+  groupId: string;
+  uuid?: string;
+  allowToSell?: boolean;
+  characteristics?: string[];
+  quantity?: number;
+  barcodes?: string[];
+  measureName?: ProductMeasure;
+  productType?: ProductType;
+  alcoholId?: number;
+  code?: string;
+  description?: string;
+  article?: string;
+  tax?: string;
+}
+
 @Table({ tableName: 'products' })
-export class Product extends Model<Product> {
+export class Product extends Model<Product, ProductCreationAttributes> {
   @ApiProperty({ example: 1, description: 'Unique identifier' })
   @Column({
     type: DataType.INTEGER,
@@ -55,6 +74,7 @@ export class Product extends Model<Product> {
     example: false,
     description: 'Is allowed to sell',
   })
+  @Default(true)
   @Column({
     type: DataType.BOOLEAN,
     allowNull: false,
@@ -95,6 +115,7 @@ export class Product extends Model<Product> {
     example: 1,
     description: 'Quantity',
   })
+  @Default(1)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
@@ -109,7 +130,7 @@ export class Product extends Model<Product> {
   @Column({
     type: DataType.ARRAY(DataType.STRING),
   })
-  barcodes: string[];
+  barcodes?: string[];
 
   // enums
   @ApiProperty({
@@ -117,8 +138,10 @@ export class Product extends Model<Product> {
     description: 'Product Measure',
     required: false,
   })
+  @Default(ProductMeasure.PIECE)
   @Column({
-    type: DataType.ENUM(...productMeasures),
+    type: DataType.ENUM,
+    values: productMeasures,
   })
   measureName: ProductMeasure;
 
@@ -127,8 +150,9 @@ export class Product extends Model<Product> {
     description: 'Product Type',
     required: false,
   })
+  @Default(ProductType.NORMAL)
   @Column({
-    type: DataType.ENUM(...productTypes),
+    type: DataType.NUMBER,
   })
   productType: ProductType;
 
@@ -136,11 +160,11 @@ export class Product extends Model<Product> {
     example: 34,
     description: 'Group id',
   })
-  @HasOne(() => ProductGroup, 'uuid')
+  @ForeignKey(() => ProductGroup)
   @Column({ type: DataType.UUID, allowNull: false })
   groupId: string;
 
-  @BelongsTo(() => ProductGroup)
+  @BelongsTo(() => ProductGroup, 'uuid')
   group: ProductGroup;
 
   @ApiProperty({
@@ -172,8 +196,8 @@ export class Product extends Model<Product> {
   description?: string;
 
   @ApiProperty({
-    example: 'Tutus Mac Barren Absolute Choice is a very nice product',
-    description: 'Description of description',
+    example: 233,
+    description: 'Article',
     required: false,
   })
   @Column({ type: DataType.INTEGER, allowNull: true })
@@ -184,6 +208,7 @@ export class Product extends Model<Product> {
     description: 'VAT tax',
     required: false,
   })
+  @Default('NO_VAT')
   @Column({ type: DataType.STRING(20), allowNull: false })
   tax: string;
 
