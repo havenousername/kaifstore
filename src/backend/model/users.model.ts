@@ -20,6 +20,8 @@ interface UserCreationAttributes {
   lastName: string;
   gender: Gender;
   birthDate: Date;
+  addressId: number;
+  roleId?: number;
 }
 
 @Table({ tableName: 'users' })

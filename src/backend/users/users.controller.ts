@@ -19,6 +19,7 @@ import { SUPER_USER_ROLE } from '../app/contstants';
 import JwtRolesGuard from '../auth/guards/roles-auth.guard';
 import AddRoleDto from './dto/add-role.dto';
 import { JwtParamAuthGuard } from '../auth/guards/jwt-param-auth.guard';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('Users')
 @Controller({
@@ -66,7 +67,7 @@ export class UsersController {
   @UseGuards(JwtRolesGuard)
   @UsePipes(ValidationPipe)
   @Put('/admin/:id')
-  update(@Param('id') id: number, @Body() updateUserDto: CreateUserDto) {
+  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
 
@@ -75,7 +76,7 @@ export class UsersController {
   @UseGuards(JwtParamAuthGuard)
   @UsePipes(ValidationPipe)
   @Put(':id')
-  selfUpdate(@Param('id') id: number, @Body() updateUserDto: CreateUserDto) {
+  selfUpdate(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
 
