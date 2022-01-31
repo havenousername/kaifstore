@@ -130,7 +130,7 @@ export class Product extends Model<Product, ProductCreationAttributes> {
   @Column({
     type: DataType.ARRAY(DataType.STRING),
   })
-  barcodes?: string[];
+  barCodes?: string[];
 
   // enums
   @ApiProperty({
@@ -160,11 +160,11 @@ export class Product extends Model<Product, ProductCreationAttributes> {
     example: 34,
     description: 'Group id',
   })
-  @ForeignKey(() => ProductGroup)
   @Column({ type: DataType.UUID, allowNull: false })
+  @ForeignKey(() => ProductGroup)
   groupId: string;
 
-  @BelongsTo(() => ProductGroup, 'uuid')
+  @BelongsTo(() => ProductGroup, { targetKey: 'uuid', foreignKey: 'groupId' })
   group: ProductGroup;
 
   @ApiProperty({
@@ -201,7 +201,7 @@ export class Product extends Model<Product, ProductCreationAttributes> {
     required: false,
   })
   @Column({ type: DataType.INTEGER, allowNull: true })
-  article?: number;
+  articleNumber?: number;
 
   @ApiProperty({
     example: 'NO_VAT',
@@ -213,5 +213,5 @@ export class Product extends Model<Product, ProductCreationAttributes> {
   tax: string;
 
   @HasMany(() => ProductDiscount)
-  products: ProductDiscount[];
+  discounts: ProductDiscount[];
 }

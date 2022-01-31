@@ -25,5 +25,5 @@ export class ProductDiscount extends Model<ProductDiscount> {
   @ForeignKey(() => Discount)
   @PrimaryKey
   @Column
-  userId: number;
+  discountId: number;
 }

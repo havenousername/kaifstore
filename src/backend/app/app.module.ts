@@ -15,6 +15,7 @@ import { AddressesModule } from '../addresses/addresses.module';
 import { ProductDiscount } from '../model/product-discounts.model';
 import { Discount } from '../model/discounts.model';
 import { AlcoholProduct } from '../model/alcohol-products.model';
+import { ProductsModule } from '../products/products.module';
 
 const models = [
   User,
@@ -70,6 +71,7 @@ const sequelizeOptions: SequelizeModuleOptions = !process.env.DATABASE_URL
     RolesModule,
     ProductGroupsModule,
     AddressesModule,
+    ProductsModule,
   ],
   controllers: [],
 })
