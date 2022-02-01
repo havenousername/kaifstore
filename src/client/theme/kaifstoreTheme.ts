@@ -12,9 +12,13 @@ const kaifstoreTheme: ThemeOptions = {
       dark: kaifStoreColors.violetDark,
       contrastText: kaifStoreColors.white,
     },
+    text: {
+      secondary: kaifStoreColors.grayText,
+    },
     grey: {
       50: kaifStoreColors.whiteAlmost,
       100: kaifStoreColors.whiteGray,
+      300: kaifStoreColors.grayText,
       500: kaifStoreColors.gray,
       700: kaifStoreColors.grayBackground,
       800: kaifStoreColors.blackAlmost,
@@ -55,7 +59,7 @@ const kaifstoreTheme: ThemeOptions = {
       color: kaifStoreColors.white,
     },
     h4: {
-      fontWeight: 'normal',
+      fontWeight: 'bolder',
       fontSize: '1.5rem',
       lineHeight: 1.5,
     },
@@ -92,6 +96,21 @@ const kaifstoreTheme: ThemeOptions = {
           // Some CSS
           fontSize: '1rem',
           color: kaifStoreColors.white,
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: '1.2rem',
+          color: kaifStoreColors.white,
+        },
+      },
+    },
+    MuiCardMedia: {
+      styleOverrides: {
+        root: {
+          borderRadius: '1rem',
         },
       },
     },

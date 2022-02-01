@@ -13,7 +13,8 @@ export class ProductsController {
 
   @Public()
   @Get('/')
-  getAll() {
+  async getAll() {
+    console.log((await this.productService.getAll())[0].discounts[0].product);
     return this.productService.getAll();
   }
 }

@@ -9,5 +9,8 @@
     "DontHaveAccount": "Не имеете аккаунта",
     "Register":  ""
   },
-  "KaifStore": "KaifStore"
+  "KaifStore": "KaifStore",
+  "IndexPage": {
+    "Hot": "Горячие новинки"
+  }
 }

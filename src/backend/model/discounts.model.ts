@@ -1,6 +1,13 @@
-import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsToMany,
+  Column,
+  DataType,
+  Model,
+  Table,
+} from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 import { ProductDiscount } from './product-discounts.model';
+import { Product } from './products.model';
 
 export interface DiscountCreationAttribute {
   amount: number;
@@ -49,6 +56,6 @@ export class Discount extends Model<Discount, DiscountCreationAttribute> {
   })
   image: string;
 
-  @HasMany(() => ProductDiscount)
+  @BelongsToMany(() => Product, () => ProductDiscount)
   discounts: ProductDiscount[];
 }

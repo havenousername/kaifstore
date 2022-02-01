@@ -1,10 +1,10 @@
 import {
   BelongsTo,
+  BelongsToMany,
   Column,
   DataType,
   Default,
   ForeignKey,
-  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
@@ -17,6 +17,7 @@ import { ProductType } from '../interfaces/product-type.enum';
 import { ProductGroup } from './product-groups.model';
 import { AlcoholProduct } from './alcohol-products.model';
 import { ProductDiscount } from './product-discounts.model';
+import { Discount } from './discounts.model';
 
 interface ProductCreationAttributes {
   name: string;
@@ -212,6 +213,6 @@ export class Product extends Model<Product, ProductCreationAttributes> {
   @Column({ type: DataType.STRING(20), allowNull: false })
   tax: string;
 
-  @HasMany(() => ProductDiscount)
+  @BelongsToMany(() => Discount, () => ProductDiscount)
   discounts: ProductDiscount[];
 }
