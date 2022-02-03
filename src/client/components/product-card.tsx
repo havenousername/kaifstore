@@ -1,17 +1,26 @@
 import { Product } from '../../backend/model/products.model';
-import { Card, CardContent, CardMedia } from '@mui/material';
-import hookah from '../assets/hookah.jpg';
+import { Card, CardContent, CardMedia, styled } from '@mui/material';
 import { Box, Typography } from '@material-ui/core';
 import { useCallback, useEffect, useState } from 'react';
 import kaifStoreColors from '../theme/kaifstoreColors';
 
+const TypographyLineEllipsis = styled(Typography)({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  display: '-webkit-box',
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: 'vertical',
+});
+
 const ProductCard = ({ product }: { product: Product }) => {
   const [discountPercent] = useState(
-    product.discounts
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      .map((i) => i.amount as number)
-      .reduce((a, b) => a + b),
+    product.discounts.length === 0
+      ? 0
+      : product.discounts
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          .map((i) => i.amount as number)
+          .reduce((a, b) => a + b),
   );
   const [discountPrice, setDiscountPrice] = useState(product.price);
 
@@ -24,25 +33,36 @@ const ProductCard = ({ product }: { product: Product }) => {
     calculatePrice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <Card
       sx={{
         maxWidth: 345,
-        padding: '1.8rem',
+        padding: '1.8rem 1.8rem 0',
         backgroundColor: 'grey.700',
         marginBottom: '30px',
+        height: 450,
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
       <CardMedia
         component={'img'}
-        height={300}
-        image={hookah.src}
+        height={270}
+        image={product.images[0]}
         alt={product.name}
       />
-      <CardContent>
-        <Typography gutterBottom variant={'h6'} component={'h5'}>
+      <CardContent
+        sx={{
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+        }}
+      >
+        <TypographyLineEllipsis gutterBottom variant={'h6'}>
           {product.name}
-        </Typography>
+        </TypographyLineEllipsis>
         <Box
           sx={{
             display: 'flex',

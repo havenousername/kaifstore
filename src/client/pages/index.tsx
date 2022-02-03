@@ -32,7 +32,7 @@ const Index = (props: { products: Product[]; baseUrl: string }) => {
         padding: '4rem 8rem',
       }}
     >
-      <Typography variant={'h4'} component={'h4'} paddingX={'2rem'}>
+      <Typography variant={'h5'} component={'h4'} paddingX={'2rem'}>
         {t('IndexPage.Hot')}
       </Typography>
       <Box
