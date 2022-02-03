@@ -17,6 +17,9 @@ import { Discount } from '../model/discounts.model';
 import { AlcoholProduct } from '../model/alcohol-products.model';
 import { ProductsModule } from '../products/products.module';
 import { DiscountsModule } from '../discounts/discounts.module';
+import { FilesModule } from '../files/files.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import * as path from 'path';
 
 const models = [
   User,
@@ -74,6 +77,10 @@ const sequelizeOptions: SequelizeModuleOptions = !process.env.DATABASE_URL
     AddressesModule,
     ProductsModule,
     DiscountsModule,
+    FilesModule,
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, '..', 'static'),
+    }),
   ],
   controllers: [],
 })
