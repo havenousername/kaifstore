@@ -46,6 +46,10 @@ module.exports = {
       barCodes: {
         type: Sequelize.ARRAY(Sequelize.STRING),
       },
+      images: {
+        type: Sequelize.ARRAY(Sequelize.STRING),
+        allowNull: false,
+      },
       // enums
       measureName: {
         type: Sequelize.STRING,

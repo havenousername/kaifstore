@@ -12,6 +12,7 @@ module.exports = {
         quantity: 14,
         barCodes: ['4601004043084'],
         measureName: 'шт',
+        images: ['products/0e3e1144-c69f-4d6c-a034-317c028ee4b9.jpg'],
         productType: 0,
         groupId: '8bc0c9c5-2359-11ec-836d-7c8ae156c759',
         code: '00145',
