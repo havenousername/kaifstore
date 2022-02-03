@@ -24,7 +24,7 @@ interface ProductCreationAttributes {
   price: number;
   costPrice: number;
   groupId: string;
-  uuid?: string;
+  uuid: string;
   allowToSell?: boolean;
   characteristics?: string[];
   quantity?: number;
@@ -34,8 +34,9 @@ interface ProductCreationAttributes {
   alcoholId?: number;
   code?: string;
   description?: string;
-  article?: string;
+  articleNumber?: number;
   tax?: string;
+  images?: string[];
 }
 
 @Table({ tableName: 'products' })
@@ -111,6 +112,11 @@ export class Product extends Model<Product, ProductCreationAttributes> {
     type: DataType.ARRAY(DataType.STRING),
   })
   characteristics?: string[];
+
+  @Column({
+    type: DataType.ARRAY(DataType.STRING),
+  })
+  images: string[];
 
   @ApiProperty({
     example: 1,

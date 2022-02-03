@@ -95,7 +95,7 @@ export class CreateProductDto {
     required: false,
   })
   @IsNumber({}, { message: 'Should be number' })
-  readonly article?: number;
+  readonly articleNumber?: number;
 
   @ApiProperty({
     example: 'NO_VAT',

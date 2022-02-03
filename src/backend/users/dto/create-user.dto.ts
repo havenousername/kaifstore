@@ -63,4 +63,10 @@ export class CreateUserDto {
   })
   @IsObject({ message: 'Address is not an object' })
   readonly address: AddAddressDto;
+
+  @ApiProperty({
+    example: 1,
+    description: 'Role id',
+  })
+  roleId?: number;
 }

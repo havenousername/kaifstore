@@ -21,7 +21,7 @@ interface UserCreationAttributes {
   gender: Gender;
   birthDate: Date;
   addressId: number;
-  roleId?: number;
+  roleId: number;
 }
 
 @Table({ tableName: 'users' })

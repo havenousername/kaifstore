@@ -9,6 +9,7 @@ import * as bcrypt from 'bcryptjs';
 import { AddressesService } from '../addresses/addresses.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import omit from 'lodash/omit';
+import { Role } from '../model/roles.model';
 
 @Injectable()
 export class UsersService {
@@ -18,19 +19,23 @@ export class UsersService {
     private addressService: AddressesService,
   ) {}
 
-  async create(dto: CreateUserDto) {
-    const address = await this.addressService.create(dto.address);
-    const user = await this.userRepository.create({
-      ...dto,
-      addressId: address.id,
-    });
+  private async getDefaultRole(): Promise<Role> {
     let role = await this.rolesService.getRoleByName(DEFAULT_ROLE.name);
     if (!role) {
       role = await this.rolesService.create(DEFAULT_ROLE);
     }
-    await user.$set('role', role.id);
-    user.role = role;
-    return user;
+
+    return role;
+  }
+
+  async create(dto: CreateUserDto) {
+    const address = await this.addressService.create(dto.address);
+
+    return await this.userRepository.create({
+      ...dto,
+      addressId: address.id,
+      roleId: dto.roleId ?? (await this.getDefaultRole()).id,
+    });
   }
 
   async replaceRole(dto: AddRoleDto) {
