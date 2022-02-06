@@ -19,6 +19,7 @@ import { ProductsModule } from '../products/products.module';
 import { DiscountsModule } from '../discounts/discounts.module';
 import { FilesModule } from '../files/files.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { PaginateModule } from 'nestjs-sequelize-paginate';
 import * as path from 'path';
 
 const models = [
@@ -81,6 +82,7 @@ const sequelizeOptions: SequelizeModuleOptions = !process.env.DATABASE_URL
     ServeStaticModule.forRoot({
       rootPath: path.resolve(__dirname, '..', 'static'),
     }),
+    PaginateModule.forRoot(),
   ],
   controllers: [],
 })

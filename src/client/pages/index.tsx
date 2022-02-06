@@ -14,17 +14,16 @@ export async function getServerSideProps(context) {
   const productsData = await productsRes.json();
   return {
     props: {
-      products: productsData,
+      products: productsData.items,
       baseUrl,
+      meta: productsData.meta,
     },
   };
 }
 
 const Index = (props: { products: Product[]; baseUrl: string }) => {
   const { t } = useTranslation();
-  const [mockProducts] = useState<Product[]>(
-    Array(20).fill(props.products).flat(),
-  );
+  const [products] = useState<Product[]>(props.products);
 
   return (
     <Box
@@ -43,7 +42,7 @@ const Index = (props: { products: Product[]; baseUrl: string }) => {
           marginTop: '2rem',
         }}
       >
-        {mockProducts.map((product, key) => {
+        {products.map((product, key) => {
           return <ProductCard key={key} product={product} />;
         })}
       </Box>

@@ -14,13 +14,13 @@ const TypographyLineEllipsis = styled(Typography)({
 
 const ProductCard = ({ product }: { product: Product }) => {
   const [discountPercent] = useState(
-    product.discounts.length === 0
-      ? 0
-      : product.discounts
+    product.discounts && product.discounts.length > 1
+      ? product.discounts
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           .map((i) => i.amount as number)
-          .reduce((a, b) => a + b),
+          .reduce((a, b) => a + b)
+      : 0,
   );
   const [discountPrice, setDiscountPrice] = useState(product.price);
 
