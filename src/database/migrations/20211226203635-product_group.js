@@ -20,6 +20,17 @@ module.exports = {
         unique: true,
         allowNull: false,
       },
+      // foreign key
+      groupId: {
+        type: Sequelize.UUID,
+        allowNull: true,
+        references: {
+          model: 'product_groups',
+          key: 'uuid',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
       description: {
         type: Sequelize.STRING(2000),
         unique: false,
