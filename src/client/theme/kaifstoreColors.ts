@@ -1,6 +1,7 @@
 const kaifStoreColors = {
   violetLight: '#DB00FF',
   violetDark: '#890073',
+  violetDarkOpaque: 'rgba(137, 0, 115, 0.7)',
   grayBackground: '#2B3137',
   blackGrayBackground: '#24292E',
   whiteAlmost: 'rgba(255,255,255, 0.05)',

@@ -12,5 +12,16 @@
   "KaifStore": "KaifStore",
   "IndexPage": {
     "Hot": "Горячие новинки"
+  },
+  "Pages": {
+    "Index": "Главная",
+    "Catalog": "Каталог",
+    "About": "О проекте",
+    "News": "Новости",
+    "Documents": "Документы",
+    "Contacts": "Контакты"
+  },
+  "Navbar": {
+    "Pages": "Страницы"
   }
 }

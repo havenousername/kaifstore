@@ -1,10 +1,12 @@
 import kaifStoreColors from './kaifstoreColors';
 import { ThemeOptions } from '@mui/material';
+import { SimplePaletteColorOptions } from '@mui/material/styles/createPalette';
 
 const kaifstoreTheme: ThemeOptions = {
   palette: {
     background: {
       default: kaifStoreColors.blackGrayBackground,
+      paper: kaifStoreColors.violetDarkOpaque,
     },
     primary: {
       light: kaifStoreColors.violetLight,
@@ -13,6 +15,7 @@ const kaifstoreTheme: ThemeOptions = {
       contrastText: kaifStoreColors.white,
     },
     text: {
+      primary: kaifStoreColors.white,
       secondary: kaifStoreColors.grayText,
     },
     grey: {
@@ -78,6 +81,9 @@ const kaifstoreTheme: ThemeOptions = {
       fontSize: '0.5rem',
       lineHeight: 1.5,
     },
+    caption: {
+      color: kaifStoreColors.white,
+    },
   },
   components: {
     MuiCssBaseline: {
@@ -85,6 +91,10 @@ const kaifstoreTheme: ThemeOptions = {
         body: {
           height: '100vh',
           color: kaifStoreColors.white,
+        },
+        a: {
+          color: kaifStoreColors.white,
+          textDecoration: 'none',
         },
       },
     },
@@ -112,6 +122,53 @@ const kaifstoreTheme: ThemeOptions = {
         root: {
           borderRadius: '1rem',
         },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundColor: kaifStoreColors.blackGrayBackground,
+        },
+      },
+    },
+    MuiList: {
+      styleOverrides: {
+        root: {},
+      },
+    },
+  },
+};
+
+kaifstoreTheme.components.MuiDivider = {
+  styleOverrides: {
+    root: {
+      borderColor: kaifstoreTheme.palette.grey[500],
+    },
+  },
+};
+
+kaifstoreTheme.components.MuiTypography = {
+  styleOverrides: {
+    root: {
+      color: kaifstoreTheme.palette.text.primary,
+    },
+  },
+};
+
+kaifstoreTheme.components.MuiMenuItem = {
+  styleOverrides: {
+    root: {
+      color: kaifstoreTheme.palette.text.primary,
+      padding: '12px 27px',
+      borderRadius: 10,
+      transition: 'all 0.2s ease-in',
+      '&:hover': {
+        backgroundColor: kaifstoreTheme.palette.background.paper,
+      },
+      '&[aria-selected="true"]': {
+        backgroundColor: (
+          kaifstoreTheme.palette.primary as SimplePaletteColorOptions
+        ).main,
       },
     },
   },

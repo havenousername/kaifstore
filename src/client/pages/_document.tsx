@@ -15,7 +15,7 @@ class MyDocument extends Document {
               #__next {
                 height: 100%;
                 width: 100%;
-                background-color: ${kaifstoreTheme.palette.background.paper};
+                background-color: ${kaifstoreTheme.palette.background.default};
               }
 
               *,
