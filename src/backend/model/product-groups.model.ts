@@ -1,4 +1,12 @@
-import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  HasMany,
+  Model,
+  Table,
+} from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 import { Product } from './products.model';
 
@@ -45,6 +53,17 @@ export class ProductGroup extends Model<ProductGroup> {
   })
   @Column({ type: DataType.TEXT })
   description: string;
+
+  @ApiProperty({
+    example: '123e4563-e89b-12d3-a456-426614174000',
+    description: 'Group id',
+  })
+  @Column({ type: DataType.UUID, allowNull: true })
+  @ForeignKey(() => ProductGroup)
+  groupId: string | null;
+
+  @BelongsTo(() => ProductGroup, { targetKey: 'uuid', foreignKey: 'groupId' })
+  group?: ProductGroup;
 
   @HasMany(() => Product)
   products: Product[];

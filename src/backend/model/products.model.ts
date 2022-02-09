@@ -164,7 +164,7 @@ export class Product extends Model<Product, ProductCreationAttributes> {
   productType: ProductType;
 
   @ApiProperty({
-    example: 34,
+    example: '123e4567-e89b-12d3-a456-42661417400a',
     description: 'Group id',
   })
   @Column({ type: DataType.UUID, allowNull: false })
