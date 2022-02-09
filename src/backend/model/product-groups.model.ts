@@ -63,8 +63,11 @@ export class ProductGroup extends Model<ProductGroup> {
   groupId: string | null;
 
   @BelongsTo(() => ProductGroup, { targetKey: 'uuid', foreignKey: 'groupId' })
-  group?: ProductGroup;
+  parentGroup: ProductGroup;
 
-  @HasMany(() => Product)
+  @HasMany(() => ProductGroup, { sourceKey: 'uuid' })
+  childrenGroups: ProductGroup[];
+
+  @HasMany(() => Product, { sourceKey: 'uuid' })
   products: Product[];
 }

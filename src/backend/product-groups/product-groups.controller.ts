@@ -22,6 +22,16 @@ export class ProductGroupsController {
     return this.service.getAll(name);
   }
 
+  @ApiOperation({
+    summary: 'All root product groups',
+  })
+  @ApiResponse({ status: 200, type: [ProductGroup] })
+  @Public()
+  @Get('/root')
+  getAllRoot() {
+    return this.service.getAllRoot();
+  }
+
   @ApiOperation({ summary: 'Get product group by id/uuid' })
   @ApiResponse({ status: 200, type: ProductGroup })
   @Public()
