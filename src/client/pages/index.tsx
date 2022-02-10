@@ -39,6 +39,24 @@ const Index: NextPageWithLayout = (props: {
         }}
       >
         <Typography variant={'h5'} component={'h4'} paddingX={'2rem'}>
+          {t('IndexPage.OurProposals')}
+        </Typography>
+        <Box
+          component={'section'}
+          sx={{
+            display: 'flex',
+          }}
+        >
+          <Typography variant={'h2'} component={'h1'} paddingX={'2rem'}>
+            {t('IndexPage.Callout')}
+          </Typography>
+          <Box>
+            <Typography variant={'subtitle1'} component={'p'} paddingX={'2rem'}>
+              {t('IndexPage.CalloutText')}
+            </Typography>
+          </Box>
+        </Box>
+        <Typography variant={'h5'} component={'h4'} paddingX={'2rem'}>
           {t('IndexPage.Hot')}
         </Typography>
         <Box

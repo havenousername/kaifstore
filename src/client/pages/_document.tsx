@@ -1,7 +1,7 @@
 import React from 'react';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 import { ServerStyleSheets } from '@material-ui/core';
-import kaifstoreTheme from '../theme/kaifstoreTheme';
+import palette from '../theme/theme-palette';
 
 class MyDocument extends Document {
   render() {
@@ -15,7 +15,7 @@ class MyDocument extends Document {
               #__next {
                 height: 100%;
                 width: 100%;
-                background-color: ${kaifstoreTheme.palette.background.default};
+                background-color: ${palette.background.default};
               }
 
               *,

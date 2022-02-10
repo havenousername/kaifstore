@@ -1,4 +1,4 @@
-const kaifStoreColors = {
+const kaifstoreColors = {
   violetLight: '#DB00FF',
   violetDark: '#890073',
   violetDarkOpaque: 'rgba(137, 0, 115, 0.7)',
@@ -17,4 +17,4 @@ const kaifStoreColors = {
   white: '#ffffff',
 };
 
-export default kaifStoreColors;
+export default kaifstoreColors;

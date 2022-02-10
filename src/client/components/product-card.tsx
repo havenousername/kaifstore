@@ -1,8 +1,13 @@
 import { Product } from '../../backend/model/products.model';
-import { Card, CardContent, CardMedia, styled } from '@mui/material';
-import { Box, Typography } from '@material-ui/core';
+import {
+  Box,
+  Card,
+  CardContent,
+  CardMedia,
+  styled,
+  Typography,
+} from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
-import kaifStoreColors from '../theme/kaifstoreColors';
 
 const TypographyLineEllipsis = styled(Typography)({
   overflow: 'hidden',
@@ -75,8 +80,8 @@ const ProductCard = ({ product }: { product: Product }) => {
           <Typography
             variant={'h6'}
             component={'span'}
-            style={{
-              color: kaifStoreColors.grayText,
+            sx={{
+              color: 'text.secondary',
               lineHeight: 1.4,
               marginLeft: '1rem',
             }}
