@@ -1,10 +1,12 @@
-import React, { ReactElement, ReactNode, useState } from 'react';
+import React, { ReactElement, ReactNode, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Typography } from '@mui/material';
 import { Product } from '../../backend/model/products.model';
 import ProductCard from '../components/product-card';
 import { NextPageWithLayout } from '../interfaces/pages-layout';
 import AppLayout from '../components/app-layout';
+import AppBaseButton from '../components/app-base-button';
+import { useRouter } from 'next/router';
 
 export async function getServerSideProps(context) {
   const protocol = context.req.headers['x-forwarded-proto'] || 'http';
@@ -30,6 +32,11 @@ const Index: NextPageWithLayout = (props: {
 }) => {
   const { t } = useTranslation();
   const [products] = useState<Product[]>(props.products);
+  const router = useRouter();
+
+  const onNavigateLogin = useCallback(() => {
+    router.push('/login');
+  }, [router]);
 
   return (
     <>
@@ -38,25 +45,49 @@ const Index: NextPageWithLayout = (props: {
           padding: '4rem 8rem',
         }}
       >
-        <Typography variant={'h5'} component={'h4'} paddingX={'2rem'}>
+        <Typography
+          variant={'h4'}
+          component={'h4'}
+          paddingX={'2rem'}
+          fontWeight={600}
+        >
           {t('IndexPage.OurProposals')}
         </Typography>
         <Box
           component={'section'}
           sx={{
             display: 'flex',
+            marginBottom: '4rem',
           }}
         >
-          <Typography variant={'h2'} component={'h1'} paddingX={'2rem'}>
+          <Typography variant={'h1'} component={'h1'} maxWidth={'14ch'}>
             {t('IndexPage.Callout')}
           </Typography>
           <Box>
-            <Typography variant={'subtitle1'} component={'p'} paddingX={'2rem'}>
+            <Typography
+              variant={'subtitle1'}
+              component={'p'}
+              maxWidth={'55ch'}
+              sx={{ marginBottom: '1.5rem' }}
+            >
               {t('IndexPage.CalloutText')}
             </Typography>
+            <AppBaseButton
+              variant={'contained'}
+              color={'primary'}
+              type={'button'}
+              onClick={onNavigateLogin}
+            >
+              {t('LoginPage.Enter')}
+            </AppBaseButton>
           </Box>
         </Box>
-        <Typography variant={'h5'} component={'h4'} paddingX={'2rem'}>
+        <Typography
+          variant={'h4'}
+          component={'h4'}
+          paddingX={'2rem'}
+          fontWeight={600}
+        >
           {t('IndexPage.Hot')}
         </Typography>
         <Box

@@ -65,7 +65,7 @@ const ProductCard = ({ product }: { product: Product }) => {
           justifyContent: 'space-between',
         }}
       >
-        <TypographyLineEllipsis gutterBottom variant={'h6'}>
+        <TypographyLineEllipsis gutterBottom variant={'h5'}>
           {product.name}
         </TypographyLineEllipsis>
         <Box
@@ -74,20 +74,22 @@ const ProductCard = ({ product }: { product: Product }) => {
             alignItems: 'flex-end',
           }}
         >
-          <Typography variant={'h5'} component={'span'}>
+          <Typography variant={'h4'} component={'span'}>
             {discountPrice.toFixed(2)} p.
           </Typography>
-          <Typography
-            variant={'h6'}
-            component={'span'}
-            sx={{
-              color: 'text.secondary',
-              lineHeight: 1.4,
-              marginLeft: '1rem',
-            }}
-          >
-            {product.price.toFixed(2)} p.
-          </Typography>
+          {Math.round(discountPrice) !== product.price && (
+            <Typography
+              variant={'h5'}
+              component={'span'}
+              sx={{
+                color: 'text.secondary',
+                lineHeight: 1.4,
+                marginLeft: '1rem',
+              }}
+            >
+              {product.price.toFixed(2)} p.
+            </Typography>
+          )}
         </Box>
       </CardContent>
     </Card>
