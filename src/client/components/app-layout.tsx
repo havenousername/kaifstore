@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import Navbar from './navbar';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 
 const AppLayout = ({ children }: { children: ReactNode }) => {
   return (

@@ -1,5 +1,4 @@
-import { styled } from '@material-ui/styles';
-import { Button, ButtonProps } from '@mui/material';
+import { Button, ButtonProps, styled } from '@mui/material';
 
 const StyledButton = styled(Button)<ButtonProps>(({}) => ({
   maxWidth: '14.375rem',

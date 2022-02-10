@@ -4,12 +4,12 @@ import {
   ListItemText,
   MenuItem,
   MenuList,
+  Typography,
 } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
-import { Typography } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import { ReactComponent as MainPage } from '../assets/icons/main.svg';
 import { ReactComponent as CatalogPage } from '../assets/icons/catalog.svg';

@@ -1,8 +1,7 @@
-import { FormControlLabel, styled } from '@mui/material';
+import { FormControlLabel, FormControlLabelProps, styled } from '@mui/material';
 import Checkbox, { CheckboxProps } from '@mui/material/Checkbox';
 import React from 'react';
 import checkBox from '../assets/icons/check-mark.svg';
-import { FormControlLabelProps } from '@material-ui/core';
 
 const StandardIcon = styled('span')(({ theme }) => ({
   borderRadius: 3,
