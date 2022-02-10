@@ -58,12 +58,13 @@ const Index: NextPageWithLayout = (props: {
           sx={{
             display: 'flex',
             marginBottom: '4rem',
+            marginTop: '2rem',
           }}
         >
           <Typography variant={'h1'} component={'h1'} maxWidth={'14ch'}>
             {t('IndexPage.Callout')}
           </Typography>
-          <Box>
+          <Box marginTop={'0.5rem'}>
             <Typography
               variant={'subtitle1'}
               component={'p'}

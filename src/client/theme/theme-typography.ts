@@ -50,6 +50,8 @@ const typography = (pallete: PaletteOptions): TypographyOptions => ({
   },
   caption: {
     color: pallete.text.primary,
+    fontSize: '0.9rem',
+    fontWeight: 600,
   },
 });
 

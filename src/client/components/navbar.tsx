@@ -53,7 +53,7 @@ const Navbar = () => {
           variant={'caption'}
           component={'span'}
           gutterBottom
-          style={{ paddingLeft: '1rem' }}
+          paddingLeft={'1rem'}
         >
           {t('Navbar.Pages')}
         </Typography>

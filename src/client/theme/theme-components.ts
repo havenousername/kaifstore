@@ -84,6 +84,13 @@ const components = (theme: Theme): Components => ({
       },
     },
   },
+  MuiListItemText: {
+    styleOverrides: {
+      primary: {
+        fontWeight: 700,
+      },
+    },
+  },
 });
 
 export default components;
