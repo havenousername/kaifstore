@@ -37,7 +37,7 @@ const Navbar = () => {
     <>
       <Paper
         sx={{
-          width: '50%',
+          width: '30%',
           minWidth: '300px',
           position: 'sticky',
           top: '0',
