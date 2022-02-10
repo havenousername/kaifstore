@@ -14,7 +14,7 @@ export async function getServerSideProps(context) {
     ? `${protocol}://${context.req.headers.host}`
     : '';
 
-  const productsRes = await fetch(baseUrl + `/v1/products`);
+  const productsRes = await fetch(baseUrl + `/v1/products/latest`);
   const productsData = await productsRes.json();
   return {
     props: {

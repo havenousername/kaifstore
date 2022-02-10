@@ -27,6 +27,7 @@ import {
   productQueryToArray,
 } from '../utils/product-query';
 import { CustomQueries } from '../interfaces/query';
+import { generatePaginationOptions } from '../utils';
 
 @ApiTags('Products')
 @Controller({
@@ -53,18 +54,32 @@ export class ProductsController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
   ) {
-    const data = await this.productService.getAll(
-      {
-        page,
-        offset: limit,
-        structure: 'segmented',
-        url: req.url,
-        path: req.path,
-        details: 'complete',
-      },
-      query,
-    );
+    const options = generatePaginationOptions({
+      page,
+      limit,
+      path: req.path,
+      url: req.url,
+    });
+    const data = await this.productService.getAll(options, query);
     return res.status(HttpStatus.OK).send(data);
+  }
+
+  @ApiOperation({ summary: 'Get latest products' })
+  @ApiResponse({ status: 200, type: [Product] })
+  @Public()
+  @Get('/latest')
+  async getAllLatest(
+    @Req() req: Request,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+  ) {
+    const options = generatePaginationOptions({
+      page,
+      limit,
+      path: req.path,
+      url: req.url,
+    });
+    return this.productService.getAllLatest(options);
   }
 
   @ApiOperation({ summary: 'Product creation' })

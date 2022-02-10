@@ -36,6 +36,7 @@ export class ProductsService {
     options: PaginateOptions,
     queryOptions?: CustomQueries<ProductQuery>,
   ) {
+    console.log(queryOptions);
     let order: [string, string][] | undefined = undefined;
     const filters: WhereOptions = {};
     if (Array.isArray(queryOptions.desc)) {
@@ -76,6 +77,10 @@ export class ProductsService {
         where: filters,
       },
     );
+  }
+
+  public getAllLatest(options: PaginateOptions) {
+    return this.getAll(options, { desc: ['createdAt'] });
   }
 
   public findAll() {
