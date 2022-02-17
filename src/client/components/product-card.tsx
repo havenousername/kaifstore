@@ -1,13 +1,11 @@
 import { Product } from '../../backend/model/products.model';
-import {
-  Box,
-  Card,
-  CardContent,
-  CardMedia,
-  styled,
-  Typography,
-} from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
+import { Box, Card, CardContent, styled, Typography } from '@mui/material';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import add from 'date-fns/add';
+import { parseISO, compareDesc } from 'date-fns';
+import * as React from 'react';
+import ProductMediaCard from './product-media-card';
+import { useTranslation } from 'react-i18next';
 
 const TypographyLineEllipsis = styled(Typography)({
   overflow: 'hidden',
@@ -39,6 +37,15 @@ const ProductCard = ({ product }: { product: Product }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const { t } = useTranslation();
+
+  const isNew = useMemo(
+    () =>
+      compareDesc(add(parseISO(product.createdAt), { days: 10 }), new Date()) <
+      1,
+    [product.createdAt],
+  );
+
   return (
     <Card
       sx={{
@@ -51,11 +58,12 @@ const ProductCard = ({ product }: { product: Product }) => {
         flexDirection: 'column',
       }}
     >
-      <CardMedia
-        component={'img'}
-        height={270}
+      <ProductMediaCard
+        newText={t('IndexPage.NewIconText')}
         image={product.images[0]}
-        alt={product.name}
+        isNew={isNew}
+        hasDiscount={false}
+        isFavourite={false}
       />
       <CardContent
         sx={{

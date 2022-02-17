@@ -80,7 +80,7 @@ const Login = () => {
               display: 'flex',
               flexDirection: { xs: 'column' },
               alignItems: 'start',
-              bgcolor: 'grey.50',
+              backgroundColor: 'grey.50',
               overflow: 'hidden',
               justifyContent: 'flex-start',
               borderRadius: '47px',
