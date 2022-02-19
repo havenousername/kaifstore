@@ -1,38 +1,52 @@
-import {
-  Divider,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  MenuList,
-  Typography,
-} from '@mui/material';
 import Paper from '@mui/material/Paper';
-import { ReactNode, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import NavbarSection from './navbar-section';
+import useSWR from 'swr';
+import useNavbarLinks from '../hooks/use-navbar-links';
+import { Box, Divider, Typography } from '@mui/material';
+import AppAccordion from './app-accordion';
+import { AccordionPropData } from '../interfaces/accordions';
+import { ProductGroupLimited } from '../../backend/interfaces/product-groups';
+import { ProductGroup } from '../../backend/model/product-groups.model';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { ReactComponent as MainPage } from '../assets/icons/main.svg';
-import { ReactComponent as CatalogPage } from '../assets/icons/catalog.svg';
+
+const fetcher = (url) => fetch(url).then((r) => r.json());
 
 const Navbar = () => {
   const { t } = useTranslation();
-  const router = useRouter();
-  const [navBars] = useState<
-    Array<{ name: string; path: string; current: boolean; icon: ReactNode }>
-  >([
-    {
-      name: t('Pages.Index'),
-      path: '/',
-      current: router.route === '/',
-      icon: <MainPage />,
-    },
-    {
-      name: t('Pages.Catalog'),
-      path: '/catalog',
-      current: router.route === '/catalog',
-      icon: <CatalogPage />,
-    },
-  ]);
+  const { data } = useSWR<ProductGroupLimited[]>(
+    '/v1/product-groups/root?onlyImportant=true',
+    fetcher,
+  );
+  const [groupAccordion, setGroupsAccordion] = useState<AccordionPropData[]>(
+    [],
+  );
+
+  const createGroupData = (groups: ProductGroup[]): AccordionPropData[] => {
+    if (!groups || groups.length === 0) {
+      return [];
+    }
+    return groups.map<AccordionPropData>((group) => ({
+      name: String(group.id),
+      id: String(group.id),
+      summary: (
+        <Link href={`/catalog?groupId=${group.id}`}>
+          <Typography variant={'h6'}>{group.name}</Typography>
+        </Link>
+      ),
+      details: createGroupData(group.childrenGroups),
+    }));
+  };
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      const groupData = createGroupData(data as ProductGroup[]);
+      setGroupsAccordion(groupData);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+  const [navBars] = useNavbarLinks();
   return (
     <>
       <Paper
@@ -48,6 +62,7 @@ const Navbar = () => {
           padding: '0 1rem',
         }}
       >
+        <NavbarSection title={t('Navbar.Pages')} linkItems={navBars} />
         <Divider sx={{ margin: '2rem 0 3rem' }} />
         <Typography
           variant={'caption'}
@@ -55,23 +70,11 @@ const Navbar = () => {
           gutterBottom
           paddingLeft={'1rem'}
         >
-          {t('Navbar.Pages')}
+          {t('Navbar.Categories')}
         </Typography>
-        <MenuList>
-          {navBars.map((navbar, key) => {
-            return (
-              <Link href={navbar.path} key={key}>
-                <MenuItem
-                  aria-selected={navbar.current}
-                  sx={{ margin: '1rem 0' }}
-                >
-                  <ListItemIcon>{navbar.icon}</ListItemIcon>
-                  <ListItemText>{navbar.name}</ListItemText>
-                </MenuItem>
-              </Link>
-            );
-          })}
-        </MenuList>
+        <Box sx={{ overflowY: 'scroll' }}>
+          <AppAccordion data={groupAccordion} />
+        </Box>
       </Paper>
     </>
   );

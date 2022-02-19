@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  DefaultValuePipe,
+  Get,
+  Param,
+  ParseBoolPipe,
+  Query,
+} from '@nestjs/common';
 import { ProductGroupsService } from './product-groups.service';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Public } from '../decorators/public.decorator';
@@ -28,7 +35,13 @@ export class ProductGroupsController {
   @ApiResponse({ status: 200, type: [ProductGroup] })
   @Public()
   @Get('/root')
-  getAllRoot() {
+  getAllRoot(
+    @Query('onlyImportant', new DefaultValuePipe(false), ParseBoolPipe)
+    onlyImportant?: boolean,
+  ) {
+    if (onlyImportant) {
+      return this.service.getAllRootImportant();
+    }
     return this.service.getAllRoot();
   }
 

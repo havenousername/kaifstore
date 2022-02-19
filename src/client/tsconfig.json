@@ -23,7 +23,10 @@
   "include": [
     "components",
     "pages",
-    "images.d.ts"
+    "images.d.ts",
+    "context",
+    "api",
+    "hooks"
   ],
   "exclude": [
     "node_modules"

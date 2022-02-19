@@ -23,6 +23,14 @@ export class ProductGroupsService {
     return this.groupRepository.findAll(options);
   }
 
+  async getAllRootImportant() {
+    return this.groupRepository.findAll({
+      where: { groupId: null },
+      include: { all: true },
+      attributes: ['name', 'id'],
+    });
+  }
+
   async getAllRoot() {
     return this.groupRepository.findAll({
       where: { groupId: null },
