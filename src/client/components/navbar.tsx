@@ -46,7 +46,9 @@ const Navbar = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
-  const [navBars] = useNavbarLinks();
+
+  const [pages] = useNavbarLinks();
+
   return (
     <>
       <Paper
@@ -62,7 +64,7 @@ const Navbar = () => {
           padding: '0 1rem',
         }}
       >
-        <NavbarSection title={t('Navbar.Pages')} linkItems={navBars} />
+        <NavbarSection title={t('Navbar.Pages')} linkItems={pages} />
         <Divider sx={{ margin: '2rem 0 3rem' }} />
         <Typography
           variant={'caption'}

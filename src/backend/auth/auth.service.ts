@@ -30,6 +30,16 @@ export class AuthService {
     return null;
   }
 
+  async getBearerUser(bearerToken: string): Promise<User> {
+    const [bearer, token] = bearerToken.split(' ');
+    if (bearer !== 'Bearer' && !token) {
+      return null;
+    }
+
+    const userEmail = this.jwtService.verify(token).email;
+    return this.usersService.getUserByEmail(userEmail);
+  }
+
   async login(authDto: AuthUserDto) {
     const user = await this.validateUser(authDto.email, authDto.password);
     return this.generateToken(user);
