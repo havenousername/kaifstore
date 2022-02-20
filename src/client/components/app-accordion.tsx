@@ -21,9 +21,12 @@ const Accordion = styled((props: AccordionProps) => (
   },
 }));
 
-const AccordionSummary = styled((props: AccordionSummaryProps) => (
-  <MuiAccordionSummary expandIcon={<ArrowForwardIcon />} {...props} />
-))(
+const AccordionSummary = styled(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ({ showIcon, ...props }: AccordionSummaryProps & { showIcon: boolean }) => (
+    <MuiAccordionSummary expandIcon={<ArrowForwardIcon />} {...props} />
+  ),
+)(
   ({
     theme,
     showIcon,

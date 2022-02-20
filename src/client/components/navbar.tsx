@@ -1,5 +1,5 @@
 import Paper from '@mui/material/Paper';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import NavbarSection from './navbar-section';
 import useSWR from 'swr';
@@ -10,17 +10,25 @@ import { AccordionPropData } from '../interfaces/accordions';
 import { ProductGroupLimited } from '../../backend/interfaces/product-groups';
 import { ProductGroup } from '../../backend/model/product-groups.model';
 import Link from 'next/link';
-
-const fetcher = (url) => fetch(url).then((r) => r.json());
+import standardFetcher from '../api/standard-fetcher';
+import {
+  AuthenticationContext,
+  UserAuthenticated,
+} from '../context/authenticated.context';
+import NavbarHeaderAuthenticated from './navbar-header-authenticated';
+import NavbarHeaderUnauthenticated from './navbar-header-unauthenticated';
 
 const Navbar = () => {
   const { t } = useTranslation();
   const { data } = useSWR<ProductGroupLimited[]>(
     '/v1/product-groups/root?onlyImportant=true',
-    fetcher,
+    standardFetcher,
   );
   const [groupAccordion, setGroupsAccordion] = useState<AccordionPropData[]>(
     [],
+  );
+  const { user, authenticated } = useContext<UserAuthenticated>(
+    AuthenticationContext,
   );
 
   const createGroupData = (groups: ProductGroup[]): AccordionPropData[] => {
@@ -53,8 +61,8 @@ const Navbar = () => {
     <>
       <Paper
         sx={{
-          width: '30%',
-          minWidth: '300px',
+          width: '100%',
+          maxWidth: '20.75rem',
           position: 'sticky',
           top: '0',
           height: '100vh',
@@ -64,6 +72,19 @@ const Navbar = () => {
           padding: '0 1rem',
         }}
       >
+        <Typography variant={'h4'} component={'h3'} padding={'2rem 1rem'}>
+          {t('Kaifstore')}
+        </Typography>
+        <Typography
+          variant={'caption'}
+          component={'span'}
+          gutterBottom
+          paddingLeft={'1rem'}
+        >
+          {t('Navbar.User')}
+        </Typography>
+        {authenticated && user && <NavbarHeaderAuthenticated />}
+        {!authenticated && !user && <NavbarHeaderUnauthenticated />}
         <NavbarSection title={t('Navbar.Pages')} linkItems={pages} />
         <Divider sx={{ margin: '2rem 0 3rem' }} />
         <Typography

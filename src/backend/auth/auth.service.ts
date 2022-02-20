@@ -30,7 +30,10 @@ export class AuthService {
     return null;
   }
 
-  async getBearerUser(bearerToken: string): Promise<User> {
+  async getBearerUser(bearerToken: string | undefined): Promise<User> {
+    if (!bearerToken) {
+      return null;
+    }
     const [bearer, token] = bearerToken.split(' ');
     if (bearer !== 'Bearer' && !token) {
       return null;

@@ -28,3 +28,5 @@ export type FetchParams = {
   query?: [string, any][];
   timeout?: number;
 };
+
+export type FetchResValidations = { isError: boolean; isLoading: boolean };

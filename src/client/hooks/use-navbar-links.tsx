@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LinkItem } from '../interfaces/navbars';
 import { ReactComponent as MainPage } from '/assets/icons/main.svg';
 import { ReactComponent as CatalogPage } from '../assets/icons/catalog.svg';
@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 const useNavbarLinks = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const [navBars] = useState<Array<LinkItem>>([
+  const [navBars, setNavbars] = useState<Array<LinkItem>>([
     {
       name: t('Pages.Index'),
       path: '/',
@@ -22,6 +22,12 @@ const useNavbarLinks = () => {
       icon: <CatalogPage />,
     },
   ]);
+
+  useEffect(() => {
+    setNavbars((prev) =>
+      prev.map((path) => ({ ...path, current: router.route === path.path })),
+    );
+  }, [router.route]);
 
   return [navBars];
 };

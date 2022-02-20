@@ -1,12 +1,11 @@
-import React, { ReactElement, ReactNode, useCallback, useState } from 'react';
+import React, { ReactElement, ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Typography } from '@mui/material';
 import { Product } from '../../backend/model/products.model';
 import ProductCard from '../components/product-card';
 import { NextPageWithLayout } from '../interfaces/pages-layout';
 import AppLayout from '../components/app-layout';
-import AppBaseButton from '../components/app-base-button';
-import { useRouter } from 'next/router';
+import LoginButton from '../components/login-button';
 
 export async function getServerSideProps(context) {
   const protocol = context.req.headers['x-forwarded-proto'] || 'http';
@@ -32,12 +31,6 @@ const Index: NextPageWithLayout = (props: {
 }) => {
   const { t } = useTranslation();
   const [products] = useState<Product[]>(props.products);
-  const router = useRouter();
-
-  const onNavigateLogin = useCallback(() => {
-    router.push('/login');
-  }, [router]);
-
   return (
     <>
       <Box
@@ -73,14 +66,7 @@ const Index: NextPageWithLayout = (props: {
             >
               {t('IndexPage.CalloutText')}
             </Typography>
-            <AppBaseButton
-              variant={'contained'}
-              color={'primary'}
-              type={'button'}
-              onClick={onNavigateLogin}
-            >
-              {t('LoginPage.Enter')}
-            </AppBaseButton>
+            <LoginButton />
           </Box>
         </Box>
         <Typography
