@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { AppPropsWithLayout } from '../interfaces/pages-layout';
 import AppTheme from '../components/app-theme';
 import darkScrollbar from '@mui/material/darkScrollbar';
-import { useEffect } from 'react';
 import useCheckAuthentication from '../hooks/use-check-authentication';
 import { AuthenticationContext } from '../context/authenticated.context';
 
@@ -16,10 +15,6 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   const getComponent = getLayout(<Component {...pageProps} />);
 
   const { user, authenticated, checkAuthentication } = useCheckAuthentication();
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
 
   return (
     <>
