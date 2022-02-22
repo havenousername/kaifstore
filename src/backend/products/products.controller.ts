@@ -18,7 +18,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateProductDto } from './dto/create-product.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Product } from '../model/products.model';
-import { Request, Response } from 'express';
+import { Request, Response, Express } from 'express';
 import { CustomQuery } from '../decorators/custom-query.decorator';
 import { ParseCustomQuery } from '../pipes/custom-query.pipe';
 import {
