@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode, useState } from 'react';
+import React, { ReactElement, ReactNode, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Typography } from '@mui/material';
 import { Product } from '../../backend/model/products.model';
@@ -6,6 +6,7 @@ import ProductCard from '../components/product-card';
 import { NextPageWithLayout } from '../interfaces/pages-layout';
 import AppLayout from '../components/app-layout';
 import LoginButton from '../components/login-button';
+import { AuthenticationContext } from '../context/authenticated.context';
 
 export async function getServerSideProps(context) {
   const protocol = context.req.headers['x-forwarded-proto'] || 'http';
@@ -31,6 +32,7 @@ const Index: NextPageWithLayout = (props: {
 }) => {
   const { t } = useTranslation();
   const [products] = useState<Product[]>(props.products);
+  const { authenticated } = useContext(AuthenticationContext);
   return (
     <>
       <Box
@@ -66,7 +68,7 @@ const Index: NextPageWithLayout = (props: {
             >
               {t('IndexPage.CalloutText')}
             </Typography>
-            <LoginButton />
+            {!authenticated && <LoginButton />}
           </Box>
         </Box>
         <Typography

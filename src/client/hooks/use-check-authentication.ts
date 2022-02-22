@@ -15,7 +15,7 @@ const useCheckAuthentication = (): UserAuthenticated & FetchResValidations => {
 
   return {
     user: error ? undefined : data,
-    authenticated: !!data,
+    authenticated: !!data && !error,
     isError: error,
     isLoading: !error && !data,
     checkAuthentication,
