@@ -16,15 +16,23 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { ValidationPipe } from '../pipes/validation.pipe';
 import { CookieSetBearerResponseInterceptor } from '../interceptors/cookie-set-bearer-response.interceptor';
 import { Request } from 'express';
+import { CheckNilDataInterceptor } from '../interceptors/check-nil-data.interceptor';
 
 @Controller({ path: 'auth', version: '1' })
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Public()
+  @UseInterceptors(CheckNilDataInterceptor)
   @Get('/')
   async getBearerUser(@Req() request: Request) {
     return this.authService.getBearerUser(request.headers.authorization);
+  }
+
+  @Public()
+  @Post('/logout')
+  async onLogout() {
+    return;
   }
 
   @Public()

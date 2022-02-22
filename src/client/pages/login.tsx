@@ -18,7 +18,7 @@ const Login = () => {
   const router = useRouter();
 
   const goToPrivateRoute = async () => {
-    await router.push('/settings');
+    await router.push('/');
   };
 
   const [email, setEmail] = useState('');

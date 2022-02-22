@@ -19,6 +19,12 @@ const primary: PaletteColorOptions = {
   contrastText: kaifstoreColors.white,
 };
 
+const secondary: PaletteColorOptions = {
+  light: kaifstoreColors.grayBackground,
+  main: kaifstoreColors.white,
+  dark: kaifstoreColors.white,
+};
+
 const text: Partial<TypeText> = {
   primary: kaifstoreColors.white,
   secondary: kaifstoreColors.grayText,
@@ -53,6 +59,7 @@ const palette: PaletteOptions = {
   text,
   success,
   error,
+  secondary,
 };
 
 export default palette;

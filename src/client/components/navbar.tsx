@@ -27,9 +27,8 @@ const Navbar = () => {
   const [groupAccordion, setGroupsAccordion] = useState<AccordionPropData[]>(
     [],
   );
-  const { user, authenticated } = useContext<UserAuthenticated>(
-    AuthenticationContext,
-  );
+  const { user, authenticated, checkAuthentication } =
+    useContext<UserAuthenticated>(AuthenticationContext);
 
   const createGroupData = (groups: ProductGroup[]): AccordionPropData[] => {
     if (!groups || groups.length === 0) {
@@ -83,8 +82,14 @@ const Navbar = () => {
         >
           {t('Navbar.User')}
         </Typography>
-        {authenticated && user && <NavbarHeaderAuthenticated />}
-        {!authenticated && !user && <NavbarHeaderUnauthenticated />}
+        {authenticated && user && Object.keys(user).length > 0 ? (
+          <NavbarHeaderAuthenticated
+            user={user}
+            checkAuthentication={() => checkAuthentication()}
+          />
+        ) : (
+          <NavbarHeaderUnauthenticated />
+        )}
         <NavbarSection title={t('Navbar.Pages')} linkItems={pages} />
         <Divider sx={{ margin: '2rem 0 3rem' }} />
         <Typography
