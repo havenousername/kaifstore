@@ -3,6 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ServerModule } from './server.module';
 import { VersioningType } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
+import { cookieToBearerMiddleware } from './middlewares/cookie-to-bearer.middleware';
 
 async function bootstrap() {
   const PORT = process.env.PORT || '5000';
@@ -12,6 +13,7 @@ async function bootstrap() {
     type: VersioningType.URI,
   });
   app.use(cookieParser());
+  app.use(cookieToBearerMiddleware);
 
   const config = new DocumentBuilder()
     .setTitle('Kaifstore')

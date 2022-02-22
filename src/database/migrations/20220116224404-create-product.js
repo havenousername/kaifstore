@@ -46,6 +46,10 @@ module.exports = {
       barCodes: {
         type: Sequelize.ARRAY(Sequelize.STRING),
       },
+      images: {
+        type: Sequelize.ARRAY(Sequelize.STRING),
+        allowNull: false,
+      },
       // enums
       measureName: {
         type: Sequelize.STRING,
@@ -67,7 +71,7 @@ module.exports = {
       alcoholId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'alcohol-products',
+          model: 'alcohol_products',
           key: 'id',
         },
         onUpdate: 'CASCADE',

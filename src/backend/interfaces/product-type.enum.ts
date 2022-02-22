@@ -3,4 +3,4 @@ export enum ProductType {
   TOBACCO_MARKED,
 }
 
-export const productTypes = Object.values(ProductType) as string[];
+export const productTypes = Object.values(ProductType);

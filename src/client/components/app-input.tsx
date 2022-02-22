@@ -1,5 +1,4 @@
-import { InputBase, InputBaseProps } from '@material-ui/core';
-import { styled } from '@mui/material';
+import { InputBase, InputBaseProps, styled } from '@mui/material';
 import { SxProps } from '@mui/system';
 import { Theme } from '@mui/material/styles';
 

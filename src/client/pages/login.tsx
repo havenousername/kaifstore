@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { Box, Container } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import kaifStoreColors from '../theme/kaifstoreColors';
 import AppInput from '../components/app-input';
 import AppIcon from '../components/app-icon';
 import AppCheckbox from '../components/app-checkbox';
@@ -19,7 +18,7 @@ const Login = () => {
   const router = useRouter();
 
   const goToPrivateRoute = async () => {
-    await router.push('/settings');
+    await router.push('/');
   };
 
   const [email, setEmail] = useState('');
@@ -81,7 +80,7 @@ const Login = () => {
               display: 'flex',
               flexDirection: { xs: 'column' },
               alignItems: 'start',
-              bgcolor: 'grey.50',
+              backgroundColor: 'grey.50',
               overflow: 'hidden',
               justifyContent: 'flex-start',
               borderRadius: '47px',
@@ -105,7 +104,7 @@ const Login = () => {
             <Typography
               variant={'h6'}
               component={'h6'}
-              color={kaifStoreColors.whiteTransparent}
+              color={'grey.100'}
               maxWidth={'38ch'}
               marginBottom={'1rem'}
             >

@@ -9,5 +9,29 @@
     "DontHaveAccount": "Не имеете аккаунта",
     "Register":  ""
   },
-  "KaifStore": "KaifStore"
+  "KaifStore": "KaifStore",
+  "IndexPage": {
+    "Hot": "Горячие новинки",
+    "OurProposals": "Наше предложение",
+    "Callout": "Покупай.\nСохраняй.\nКайфуй.",
+    "CalloutText": "Duis et egestas aliquam mi fames urna, porttitor faucibus. Commodo lectus accumsan dolor ac. Sit platea pellentesque tristique eu morbi a sed. Eu auctor neque, diam pellentesque sed at urna, faucibus potenti. ",
+    "NewIconText": "Новинка"
+  },
+  "Pages": {
+    "Index": "Главная",
+    "Catalog": "Каталог",
+    "About": "О проекте",
+    "News": "Новости",
+    "Documents": "Документы",
+    "Contacts": "Контакты"
+  },
+  "Navbar": {
+    "Pages": "Страницы",
+    "Categories": "Категории",
+    "User": "Пользователь",
+    "UnauthText": "Добро пожаловать, гость!",
+    "NoAccount": "нет аккаунта?",
+    "Register":  "Зарегестрируйтесь",
+    "Logout": "Выйти"
+  }
 }

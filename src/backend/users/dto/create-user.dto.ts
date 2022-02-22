@@ -1,7 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsEmail, IsString, Length } from 'class-validator';
+import {
+  IsDateString,
+  IsEmail,
+  IsObject,
+  IsString,
+  Length,
+} from 'class-validator';
 import { IsValidGender } from '../../validation/gender.validation';
 import { Gender } from '../../interfaces/gender.enum';
+import { AddAddressDto } from '../../addresses/dto/add-address.dto';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -49,4 +56,17 @@ export class CreateUserDto {
   })
   @IsDateString({}, { message: 'Birthdate should have iso-string format' })
   readonly birthDate: Date;
+
+  @ApiProperty({
+    example: 'country, city, etc...',
+    description: 'Object of address',
+  })
+  @IsObject({ message: 'Address is not an object' })
+  readonly address: AddAddressDto;
+
+  @ApiProperty({
+    example: 1,
+    description: 'Role id',
+  })
+  roleId?: number;
 }

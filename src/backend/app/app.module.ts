@@ -8,8 +8,32 @@ import { AuthModule } from '../auth/auth.module';
 import { RolesModule } from '../roles/roles.module';
 import { Role } from '../model/roles.model';
 import { Address } from '../model/addresses.model';
+import { ProductGroup } from '../model/product-groups.model';
+import { ProductGroupsModule } from '../product-groups/product-groups.module';
+import { Product } from '../model/products.model';
+import { AddressesModule } from '../addresses/addresses.module';
+import { ProductDiscount } from '../model/product-discounts.model';
+import { Discount } from '../model/discounts.model';
+import { AlcoholProduct } from '../model/alcohol-products.model';
+import { ProductsModule } from '../products/products.module';
+import { DiscountsModule } from '../discounts/discounts.module';
+import { FilesModule } from '../files/files.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { PaginateModule } from 'nestjs-sequelize-paginate';
+import * as path from 'path';
 
-console.log(process.env);
+const models = [
+  User,
+  Role,
+  Address,
+  ProductGroup,
+  Product,
+  Address,
+  Discount,
+  ProductDiscount,
+  AlcoholProduct,
+];
+
 const sequelizeOptions: SequelizeModuleOptions = !process.env.DATABASE_URL
   ? {
       dialect: 'postgres',
@@ -18,7 +42,7 @@ const sequelizeOptions: SequelizeModuleOptions = !process.env.DATABASE_URL
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [User, Role, Address],
+      models: models,
       autoLoadModels: true,
       // synchronize: true,
       // sync: { force: true },
@@ -30,7 +54,7 @@ const sequelizeOptions: SequelizeModuleOptions = !process.env.DATABASE_URL
       username: process.env.DATABASE_URL.split('//')[1].split(':')[0],
       password: process.env.DATABASE_URL.split(':')[2].split('@')[0],
       database: process.env.DATABASE_URL.split('/')[3],
-      models: [User, Role, Address],
+      models: models,
       autoLoadModels: true,
       dialectOptions: {
         ssl: {
@@ -45,10 +69,20 @@ const sequelizeOptions: SequelizeModuleOptions = !process.env.DATABASE_URL
       envFilePath: `.${process.env.NODE_ENV}.env`,
     }),
     SequelizeModule.forRoot(sequelizeOptions),
+    AuthModule,
+    // data modules
     UsersModule,
     FavouriteModule,
-    AuthModule,
     RolesModule,
+    ProductGroupsModule,
+    AddressesModule,
+    ProductsModule,
+    DiscountsModule,
+    FilesModule,
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, '..', 'static'),
+    }),
+    PaginateModule.forRoot(),
   ],
   controllers: [],
 })

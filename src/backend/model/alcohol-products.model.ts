@@ -1,7 +1,7 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 
-@Table({ tableName: 'alcohol-products' })
+@Table({ tableName: 'alcohol_products' })
 export class AlcoholProduct extends Model<AlcoholProduct> {
   @ApiProperty({ example: 1, description: 'Unique identifier' })
   @Column({
@@ -28,7 +28,7 @@ export class AlcoholProduct extends Model<AlcoholProduct> {
     required: false,
   })
   @Column({
-    type: DataType.ARRAY,
+    type: DataType.NUMBER,
   })
   alcoholByValue: number;
 

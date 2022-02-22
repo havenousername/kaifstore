@@ -1,24 +1,35 @@
-import { AppProps } from 'next/app';
-import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
-import kaifstoreTheme from '../theme/kaifstoreTheme';
+import { CssBaseline, GlobalStyles } from '@mui/material';
 import Head from 'next/head';
 import '../styles/app.css';
 import '../i18n';
 import { useTranslation } from 'react-i18next';
+import { AppPropsWithLayout } from '../interfaces/pages-layout';
+import AppTheme from '../components/app-theme';
+import darkScrollbar from '@mui/material/darkScrollbar';
+import useCheckAuthentication from '../hooks/use-check-authentication';
+import { AuthenticationContext } from '../context/authenticated.context';
 
-const App = ({ Component, pageProps }: AppProps) => {
-  const theme = createTheme(kaifstoreTheme);
+const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   const { t } = useTranslation();
+  const getLayout = Component.getLayout ?? ((page) => page);
+  const getComponent = getLayout(<Component {...pageProps} />);
+
+  const { user, authenticated, checkAuthentication } = useCheckAuthentication();
 
   return (
     <>
       <Head>
         <title>{t('KaifStore')}</title>
       </Head>
-      <ThemeProvider theme={theme}>
+      <AppTheme>
+        <GlobalStyles styles={{ ...darkScrollbar() }} />
         <CssBaseline />
-        <Component {...pageProps} />
-      </ThemeProvider>
+        <AuthenticationContext.Provider
+          value={{ user, authenticated, checkAuthentication }}
+        >
+          {getComponent}
+        </AuthenticationContext.Provider>
+      </AppTheme>
     </>
   );
 };
