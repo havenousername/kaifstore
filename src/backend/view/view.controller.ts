@@ -35,6 +35,7 @@ export class ViewController {
     await this.handler(req, res);
   }
 
+  @Public()
   @ApiOperation({ summary: 'Catalog page' })
   @ApiResponse({ status: 200 })
   @Get('/catalog')
