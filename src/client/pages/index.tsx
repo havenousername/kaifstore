@@ -37,7 +37,7 @@ const Index: NextPageWithLayout = (props: {
     <>
       <Box
         sx={{
-          padding: '4rem 8rem',
+          padding: '1rem 8rem 4rem',
         }}
       >
         <Typography
