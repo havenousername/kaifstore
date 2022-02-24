@@ -8,7 +8,7 @@ import { PaginateOptions, PaginateService } from 'nestjs-sequelize-paginate';
 import { ModelCtor } from 'sequelize-typescript';
 import { CustomQueries, OrderBy } from '../interfaces/query';
 import { ProductQuery } from '../utils/product-query';
-import { Op, WhereOptions } from 'sequelize';
+import { FindAndCountOptions, Op, WhereOptions } from 'sequelize';
 import { isString } from '../utils/type-checkers';
 
 @Injectable()
@@ -35,7 +35,7 @@ export class ProductsService {
   public getAll(
     options: PaginateOptions,
     queryOptions?: CustomQueries<ProductQuery>,
-  ) {
+  ): Promise<FindAndCountOptions<Product[]>> {
     let order: [string, string][] | undefined = undefined;
     const filters: WhereOptions = {};
     if (Array.isArray(queryOptions.desc)) {
