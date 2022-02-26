@@ -66,6 +66,13 @@ export class ProductsService {
       };
     }
 
+    if (queryOptions.groupId && isString(queryOptions.groupId)) {
+      const groupId: undefined = queryOptions.groupId as undefined;
+      filters['groupId'] = {
+        [Op.eq]: groupId,
+      };
+    }
+
     return this.paginateService.findAllPaginate(
       {
         ...options,

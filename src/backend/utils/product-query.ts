@@ -1,6 +1,7 @@
-import { isNumber, isUUID } from 'class-validator';
+import { isNumber } from 'class-validator';
 import { CustomQueries, CustomQueryKey } from '../interfaces/query';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { isString } from './type-checkers';
 
 export type ProductQuery = 'priceRange' | 'q' | 'groupId' | 'characteristics';
 
@@ -22,10 +23,10 @@ export const productQueryToArray = (
   if (value.q) {
     query.q = String(value.q);
   }
-  if (isUUID(value.groupId)) {
-    query.groupId = String(value);
+  if (isString(value.groupId)) {
+    query.groupId = value.groupId as unknown as string;
   } else if (isNumber(value.groupId)) {
-    query.groupId = +value;
+    query.groupId = +value.groupId;
   }
 
   if (value.priceRange) {
