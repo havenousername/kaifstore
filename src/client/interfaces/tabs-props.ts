@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ItemProp } from './labeled-prop';
 
 export interface AppTabsProps {
   currentTab: number;
@@ -7,8 +7,6 @@ export interface AppTabsProps {
   ariaLabel?: string;
 }
 
-export type TabItemProp = {
-  label: string;
-  content: string | ReactNode;
+export type TabItemProp = ItemProp<string> & {
   update: boolean;
 };

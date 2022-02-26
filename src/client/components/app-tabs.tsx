@@ -45,8 +45,9 @@ const AppTabs = ({ currentTab, onChange, items, ariaLabel }: AppTabsProps) => {
           onChange={(e, newValue: number) => onChange(newValue)}
           aria-label={ariaLabel}
         >
-          {items.map((item) => (
+          {items.map((item, index) => (
             <Tab
+              key={index}
               sx={{
                 color: 'grey.200',
                 textTransform: 'none',
@@ -71,7 +72,7 @@ const AppTabs = ({ currentTab, onChange, items, ariaLabel }: AppTabsProps) => {
         </Tabs>
       </Box>
       {items.map((item, index) => (
-        <TabPanel value={currentTab} index={index}>
+        <TabPanel value={currentTab} index={index} key={index}>
           {item.content}
         </TabPanel>
       ))}

@@ -7,6 +7,8 @@ import { TabItemProp } from '../interfaces/tabs-props';
 import AppTabs from './app-tabs';
 import PriceFilter from './price-filter';
 import { SearchFiltersState } from '../interfaces/searchbar';
+import OptionSelectFilter from './option-select-filter';
+import { ItemProp } from '../interfaces/labeled-prop';
 
 const CustomFilterButton = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -45,6 +47,18 @@ const SearchbarFilter = () => {
     priceRange: [10, 1000],
   });
 
+  const discountOptions: (ItemProp<number> & { disabled: boolean })[] = [
+    { content: 10, label: 'Bigger than 10%', disabled: false },
+    { content: 30, label: 'Bigger than 30%', disabled: false },
+    { content: 60, label: 'Bigger than 60%', disabled: false },
+  ];
+
+  const ratingOptions: (ItemProp<number> & { disabled: boolean })[] = [
+    { content: 5, label: '5 stars', disabled: false },
+    { content: 4, label: '> 4 stars', disabled: false },
+    { content: 60, label: '> 3 stars', disabled: false },
+  ];
+
   const [maxRange] = useState(1000);
   const [minRange] = useState(10);
 
@@ -68,6 +82,14 @@ const SearchbarFilter = () => {
     setPriceRange(pr);
   };
 
+  const handleDiscount = (discount: number) => {
+    setDiscountAmount(discount);
+  };
+
+  const handleRating = (rating: number) => {
+    setRating(rating);
+  };
+
   const [tabItems] = useState<TabItemProp[]>([
     {
       label: t('Searchbar.FilterUnderPrice'),
@@ -84,12 +106,26 @@ const SearchbarFilter = () => {
     },
     {
       label: t('Searchbar.FilterUnderDiscount'),
-      content: 'Under discount',
+      content: (
+        <OptionSelectFilter
+          options={discountOptions}
+          value={discountAmount}
+          onSelect={handleDiscount}
+          onCancelSelect={() => handleOpenPopper(false)}
+        />
+      ),
       update: false,
     },
     {
       label: t('Searchbar.FilterUnderRating'),
-      content: 'Under Rating',
+      content: (
+        <OptionSelectFilter
+          options={ratingOptions}
+          value={rating}
+          onSelect={handleRating}
+          onCancelSelect={() => handleOpenPopper(false)}
+        />
+      ),
       update: false,
     },
   ]);
@@ -140,7 +176,7 @@ const SearchbarFilter = () => {
         handleOpen={handleOpenPopper}
         ignoreClickElements={[filterRef]}
         sxRoot={{
-          maxWidth: '28rem',
+          width: '28rem',
         }}
       >
         <AppTabs
