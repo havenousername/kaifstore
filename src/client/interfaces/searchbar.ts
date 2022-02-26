@@ -6,4 +6,5 @@ export interface SearchbarProps {
   value: string;
   onChange: (e: SyntheticEvent) => void;
   iconSx?: SxProps;
+  sx?: SxProps;
 }

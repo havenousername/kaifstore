@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { FetchProducts, FetchResValidations } from '../interfaces/fetches';
 
-const useGetProducts = (): FetchResValidations & FetchProducts => {
+const useGetProducts = (
+  routeName: (page: number) => string,
+): FetchResValidations & FetchProducts => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [products, setProducts] = useState({ items: [], meta: null });
   const [error, setErrors] = useState(null);
@@ -9,9 +11,7 @@ const useGetProducts = (): FetchResValidations & FetchProducts => {
   const getPageProducts = async () => {
     if (!products.meta || products.meta.nextPage) {
       try {
-        const pageProducts = await (
-          await fetch(`/v1/products/latest?page=${currentPage}`)
-        ).json();
+        const pageProducts = await (await fetch(routeName(currentPage))).json();
         setProducts({
           items: [...pageProducts.items, ...products.items],
           meta: pageProducts.meta,

@@ -4,6 +4,7 @@ import { SearchbarProps } from '../interfaces/searchbar';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
 import useEffectDebounce from '../hooks/use-effect-debounce';
+import SearchbarFilter from './searchbar-filter';
 
 const HeaderSearchbar = ({ searchBar }: { searchBar: SearchbarProps }) => {
   const { t } = useTranslation();
@@ -35,7 +36,8 @@ const HeaderSearchbar = ({ searchBar }: { searchBar: SearchbarProps }) => {
       >
         {t('Searchbar.Search')}
       </Typography>
-      <AppSearchbar {...searchBar} />
+      <AppSearchbar sx={{ marginBottom: 1.5 }} {...searchBar} />
+      <SearchbarFilter />
     </Box>
   );
 };

@@ -1,15 +1,21 @@
 import { NextPageWithLayout } from '../interfaces/pages-layout';
-import React, { ReactElement, useEffect, useRef } from 'react';
+import React, { ReactElement, useCallback, useEffect, useRef } from 'react';
 import AppLayout from '../components/app-layout';
 import { Box, Typography } from '@mui/material';
 import ProductsCollection from '../components/products-collection';
 import useGetProducts from '../hooks/use-get-products';
 import useDetectBottomScroll from '../hooks/use-detect-bottom-scroll';
+import { useRouter } from 'next/router';
 
 const Catalog: NextPageWithLayout = () => {
-  const { products, getMoreProducts } = useGetProducts();
+  const catalogPath = useCallback(
+    (currentPage: number) => `/v1/products/latest?page=${currentPage}`,
+    [],
+  );
+  const { products, getMoreProducts } = useGetProducts(catalogPath);
   const productsCollectionRef = useRef<HTMLDivElement>();
   const [isBottom] = useDetectBottomScroll(productsCollectionRef);
+  const router = useRouter();
 
   useEffect(() => {
     if (isBottom) {
@@ -17,6 +23,10 @@ const Catalog: NextPageWithLayout = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isBottom]);
+
+  useEffect(() => {
+    console.log(router.query);
+  }, [router.query]);
 
   return (
     <Box

@@ -35,7 +35,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   width: '100%',
   fontWeight: 'bold',
   '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 3),
+    padding: theme.spacing(2, 3),
     transition: theme.transitions.create('width'),
     width: '100%',
     '&::placeholder': {
@@ -49,9 +49,10 @@ const AppSearchbar = ({
   value,
   onChange,
   iconSx,
+  sx,
 }: SearchbarProps) => {
   return (
-    <Search>
+    <Search sx={sx}>
       <SearchIconWrapper sx={iconSx}>
         <SearchIcon />
       </SearchIconWrapper>

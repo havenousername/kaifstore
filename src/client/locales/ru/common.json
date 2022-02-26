@@ -36,6 +36,19 @@
   },
   "Searchbar": {
     "Placeholder": "Введите название товара",
-    "Search": "Поиск"
+    "Search": "Поиск",
+    "Filter": "Фильтры",
+    "FilterUnderPrice": "По цене",
+    "FilterUnderDiscount": "По скидке",
+    "FilterUnderRating": "По рейтингу",
+    "UnderPrice": {
+      "From": "От",
+      "Until": "До"
+    },
+    "Restore": "Восстановить"
+  },
+  "Utils": {
+    "Select": "Выбрать",
+    "Cancel": "Отмена"
   }
 }
