@@ -85,6 +85,14 @@ export class ProductsService {
     );
   }
 
+  public async getMinimalPriceProduct(): Promise<number> {
+    return await this.productRepository.min('price');
+  }
+
+  public async getMaximumPriceProduct(): Promise<number> {
+    return await this.productRepository.max('price');
+  }
+
   public getAllLatest(options: PaginateOptions) {
     return this.getAll(options, { desc: ['createdAt'] });
   }

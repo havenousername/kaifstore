@@ -82,6 +82,22 @@ export class ProductsController {
     return this.productService.getAllLatest(options);
   }
 
+  @ApiOperation({ summary: 'Get lowest price' })
+  @ApiResponse({ status: 200, type: Number })
+  @Public()
+  @Get('/min-price')
+  async getMinimalPrice() {
+    return this.productService.getMinimalPriceProduct();
+  }
+
+  @ApiOperation({ summary: 'Get highest price' })
+  @ApiResponse({ status: 200, type: Number })
+  @Public()
+  @Get('/max-price')
+  async getMaximalPrice() {
+    return this.productService.getMaximumPriceProduct();
+  }
+
   @ApiOperation({ summary: 'Product creation' })
   @ApiResponse({ status: 200, type: Product })
   @Post()
