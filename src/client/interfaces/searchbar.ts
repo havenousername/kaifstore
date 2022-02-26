@@ -8,3 +8,11 @@ export interface SearchbarProps {
   iconSx?: SxProps;
   sx?: SxProps;
 }
+
+export type SearchFiltersState = {
+  priceRange: [number, number];
+  discountAmount: number | null;
+  rating: number | null;
+};
+
+export type FilterTypeProp = 'priceRange' | 'discountAmount' | 'rating';

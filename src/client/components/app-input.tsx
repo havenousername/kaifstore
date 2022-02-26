@@ -40,10 +40,13 @@ const StandardInput = styled(InputBase, {
 type AppInputProps = {
   inputProps: InputBaseProps;
   sx?: SxProps<Theme>;
+  type?: string;
 };
 
 const AppInput = (props: AppInputProps) => {
-  return <StandardInput {...props.inputProps} sx={props.sx} />;
+  return (
+    <StandardInput {...props.inputProps} sx={props.sx} type={props.type} />
+  );
 };
 
 export default AppInput;
