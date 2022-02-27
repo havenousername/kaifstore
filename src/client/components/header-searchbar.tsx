@@ -6,11 +6,13 @@ import { useRouter } from 'next/router';
 import useEffectDebounce from '../hooks/use-effect-debounce';
 import SearchbarFilter from './searchbar-filter';
 import { useEffect, useRef, useState } from 'react';
+import { ParsedUrlQuery } from 'querystring';
 
 const HeaderSearchbar = ({ searchBar }: { searchBar: SearchbarProps }) => {
   const { t } = useTranslation();
   const router = useRouter();
   const querySearch = useRef<string>();
+  const previousQuery = useRef<ParsedUrlQuery>({});
 
   useEffectDebounce(() => {
     if (!router.isReady) return;
@@ -29,11 +31,19 @@ const HeaderSearchbar = ({ searchBar }: { searchBar: SearchbarProps }) => {
 
   const setCurrentQuery = (q: Record<string, string>) => {
     const currentQuery = {};
-    const query = router.asPath
-      .split('?')[1]
-      .split('&')
-      .map((p) => p.split('='))
-      .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
+    console.log(router);
+    const asPath: string = router.asPath.split('?')[1];
+    let query = {};
+    if (asPath) {
+      query = asPath
+        .split('&')
+        .map((p) => p.split('='))
+        .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
+    }
+
+    for (const qPart of Object.entries(previousQuery.current)) {
+      currentQuery[qPart[0]] = qPart[1];
+    }
 
     for (const qPart of Object.entries(query)) {
       currentQuery[qPart[0]] = qPart[1];
@@ -46,6 +56,7 @@ const HeaderSearchbar = ({ searchBar }: { searchBar: SearchbarProps }) => {
       currentQuery['q'] = querySearch.current;
     }
 
+    previousQuery.current = currentQuery;
     router.push({
       pathname: '/catalog',
       query: currentQuery,
@@ -102,7 +113,7 @@ const HeaderSearchbar = ({ searchBar }: { searchBar: SearchbarProps }) => {
       <AppSearchbar
         sx={{ marginBottom: 1.5 }}
         {...searchBar}
-        value={searchBar.value ?? ''}
+        value={searchBar.value}
       />
       <SearchbarFilter
         setCurrentQuery={setCurrentQuery}

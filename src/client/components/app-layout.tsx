@@ -5,7 +5,7 @@ import HeaderSearchbar from './header-searchbar';
 import { useTranslation } from 'react-i18next';
 
 const AppLayout = ({ children }: { children: ReactNode }) => {
-  const [searchValue, setSearchValue] = useState<string>(null);
+  const [searchValue, setSearchValue] = useState<string>('');
   const { t } = useTranslation();
 
   const changeSearchValue = (

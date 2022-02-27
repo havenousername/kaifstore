@@ -170,44 +170,73 @@ const SearchbarFilter = ({
     ]);
   }, [maxRangeData]);
 
+  const [queryPassed, setQueryPassed] = useState({
+    discount: false,
+    priceRange: false,
+    rating: false,
+  });
+
   useEffect(() => {
+    if (queryPriceRange) {
+      setQueryPassed((prevState) => ({ ...prevState, priceRange: true }));
+    }
+    const current = !queryPassed.priceRange
+      ? queryPriceRange ?? priceRange
+      : priceRange;
     setTabItems((prevState) => [
       {
         ...prevState[0],
         content: React.cloneElement(prevState[0].content as ReactElement, {
-          priceRange: queryPriceRange ?? priceRange,
+          priceRange: current,
         }),
-        update: !!(queryPriceRange ?? priceRange),
+        update: !!current,
       },
       ...prevState.slice(1),
     ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [priceRange, queryPriceRange]);
 
   useEffect(() => {
+    if (queryDiscount) {
+      setQueryPassed((prevState) => ({ ...prevState, discount: true }));
+    }
+
+    const current = !queryPassed.discount
+      ? queryDiscount ?? discountAmount
+      : discountAmount;
+
     setTabItems((prevState) => [
       prevState[0],
       {
         ...prevState[1],
         content: React.cloneElement(prevState[1].content as ReactElement, {
-          value: queryDiscount ?? discountAmount,
+          value: current,
         }),
-        update: !!(queryDiscount ?? discountAmount),
+        update: !!current,
       },
       ...prevState.slice(2),
     ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [discountAmount, queryDiscount]);
 
   useEffect(() => {
+    if (queryRating) {
+      setQueryPassed((prevState) => ({ ...prevState, rating: true }));
+    }
+
+    const current = !queryPassed.rating ? queryRating ?? rating : rating;
+
     setTabItems((prevState) => [
       ...prevState.slice(0, 2),
       {
         ...prevState[2],
         content: React.cloneElement(prevState[2].content as ReactElement, {
-          value: queryRating ?? rating,
+          value: current,
         }),
-        update: !!(queryRating ?? rating),
+        update: !!current,
       },
     ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryRating, rating]);
 
   useEffect(() => {
