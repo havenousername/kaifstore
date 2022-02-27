@@ -46,6 +46,11 @@ const AppRadioNoIconGroup: <T>(
           <FormControlLabel
             key={index}
             value={item.content}
+            sx={{
+              '& .MuiFormControlLabel-label': {
+                fontWeight: 700,
+              },
+            }}
             disabled={item.disabled}
             control={<BpRadio />}
             label={item.label}

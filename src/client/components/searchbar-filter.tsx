@@ -1,7 +1,13 @@
 import { Box, styled, Typography } from '@mui/material';
 import { ReactComponent as FilterSearchIcon } from '../assets/icons/filter-search.svg';
 import { useTranslation } from 'react-i18next';
-import React, { MutableRefObject, useRef, useState } from 'react';
+import React, {
+  MutableRefObject,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import DropdownPopper from './dropdown-popper';
 import { TabItemProp } from '../interfaces/tabs-props';
 import AppTabs from './app-tabs';
@@ -9,6 +15,8 @@ import PriceFilter from './price-filter';
 import { SearchFiltersState } from '../interfaces/searchbar';
 import OptionSelectFilter from './option-select-filter';
 import { ItemProp } from '../interfaces/labeled-prop';
+import useSWRImmutable from 'swr/immutable';
+import fetcher from '../api/standard-fetcher';
 
 const CustomFilterButton = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -40,40 +48,51 @@ const CustomFilterButton = styled(Box)(({ theme }) => ({
   },
 }));
 
-const SearchbarFilter = () => {
-  const initialFilters: MutableRefObject<SearchFiltersState> = useRef({
+const SearchbarFilter = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  setCurrentQuery,
+}: {
+  setCurrentQuery: (s: Record<string, string>) => void;
+}) => {
+  const initialFilters: MutableRefObject<
+    Omit<SearchFiltersState, 'priceRange'>
+  > = useRef({
     rating: null,
     discountAmount: null,
-    priceRange: [10, 1000],
   });
+  const { t } = useTranslation();
+  const { data: maxRangeData } = useSWRImmutable<number>(
+    'v1/products/max-price',
+    fetcher,
+  );
+
+  const { data: minRangeData } = useSWRImmutable<number>(
+    'v1/products/min-price',
+    fetcher,
+  );
 
   const discountOptions: (ItemProp<number> & { disabled: boolean })[] = [
-    { content: 10, label: 'Bigger than 10%', disabled: false },
-    { content: 30, label: 'Bigger than 30%', disabled: false },
-    { content: 60, label: 'Bigger than 60%', disabled: false },
+    { content: 10, label: t('Searchbar.UnderDiscount.10%'), disabled: false },
+    { content: 30, label: t('Searchbar.UnderDiscount.20%'), disabled: false },
+    { content: 60, label: t('Searchbar.UnderDiscount.60%'), disabled: false },
   ];
 
   const ratingOptions: (ItemProp<number> & { disabled: boolean })[] = [
-    { content: 5, label: '5 stars', disabled: false },
-    { content: 4, label: '> 4 stars', disabled: false },
-    { content: 60, label: '> 3 stars', disabled: false },
+    { content: 5, label: t('Searchbar.UnderRating.5star'), disabled: false },
+    { content: 4, label: t('Searchbar.UnderRating.4star'), disabled: false },
+    { content: 60, label: t('Searchbar.UnderRating.3star'), disabled: false },
   ];
-
-  const [maxRange] = useState(1000);
-  const [minRange] = useState(10);
 
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { t } = useTranslation();
   const [currentTab, setCurrentTab] = useState(0);
-  const [priceRange, setPriceRange] = useState<[number, number]>(
-    initialFilters.current.priceRange,
-  );
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [priceRange, setPriceRange] = useState<[number, number]>([
+    minRangeData,
+    maxRangeData,
+  ]);
   const [discountAmount, setDiscountAmount] = useState<number | null>(
     initialFilters.current.discountAmount,
   );
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [rating, setRating] = useState<number | null>(
     initialFilters.current.rating,
   );
@@ -90,14 +109,14 @@ const SearchbarFilter = () => {
     setRating(rating);
   };
 
-  const [tabItems] = useState<TabItemProp[]>([
+  const [tabItems, setTabItems] = useState<TabItemProp[]>([
     {
       label: t('Searchbar.FilterUnderPrice'),
       content: (
         <PriceFilter
           priceRange={priceRange}
-          maxRange={maxRange}
-          minRange={minRange}
+          maxRange={maxRangeData}
+          minRange={minRangeData}
           onPriceRangeSelect={handlePriceRange}
           onCancelSelect={() => handleOpenPopper(false)}
         />
@@ -129,6 +148,32 @@ const SearchbarFilter = () => {
       update: false,
     },
   ]);
+
+  useEffect(() => {
+    setTabItems((prevState) => [
+      {
+        ...prevState[0],
+        content: React.cloneElement(prevState[0].content as ReactElement, {
+          maxRange: maxRangeData,
+        }),
+      },
+      ...prevState.slice(1),
+    ]);
+    setPriceRange((prevState) => [prevState[0], maxRangeData]);
+  }, [maxRangeData]);
+
+  useEffect(() => {
+    setTabItems((prevState) => [
+      {
+        ...prevState[0],
+        content: React.cloneElement(prevState[0].content as ReactElement, {
+          minRange: minRangeData,
+        }),
+      },
+      ...prevState.slice(1),
+    ]);
+    setPriceRange((prevState) => [minRangeData, prevState[1]]);
+  }, [minRangeData]);
 
   const [popperModifiers] = useState([
     { name: 'offset', options: { offset: [0, 10] } },

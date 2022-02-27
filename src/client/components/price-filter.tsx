@@ -39,10 +39,10 @@ const PriceFilter = ({
   };
 
   const onSecondInRangeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!validateRangeChange(+e.target.value) || +e.target.value < range[1]) {
+    if (!validateRangeChange(+e.target.value) || +e.target.value < range[0]) {
       return;
     }
-    setRange([+e.target.value, range[1]]);
+    setRange([range[0], +e.target.value]);
   };
 
   const sxAppInputFirst = {

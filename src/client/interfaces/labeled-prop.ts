@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { ReactElement } from 'react';
 
 export type ItemProp<T> = {
   label: string;
-  content: T | ReactNode;
+  content: T | ReactElement;
 };

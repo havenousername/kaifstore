@@ -21,6 +21,13 @@ const HeaderSearchbar = ({ searchBar }: { searchBar: SearchbarProps }) => {
     }
   }, [searchBar.value]);
 
+  const setCurrentQuery = (query: Record<string, string>) => {
+    router.push({
+      pathname: '/catalog',
+      query: { ...router.query, ...query },
+    });
+  };
+
   return (
     <Box
       component={'header'}
@@ -37,7 +44,7 @@ const HeaderSearchbar = ({ searchBar }: { searchBar: SearchbarProps }) => {
         {t('Searchbar.Search')}
       </Typography>
       <AppSearchbar sx={{ marginBottom: 1.5 }} {...searchBar} />
-      <SearchbarFilter />
+      <SearchbarFilter setCurrentQuery={setCurrentQuery} />
     </Box>
   );
 };
