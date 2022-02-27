@@ -49,7 +49,6 @@ const CustomFilterButton = styled(Box)(({ theme }) => ({
 }));
 
 const SearchbarFilter = ({
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setCurrentQuery,
 }: {
   setCurrentQuery: (s: Record<string, string>) => void;
@@ -86,10 +85,7 @@ const SearchbarFilter = ({
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [currentTab, setCurrentTab] = useState(0);
-  const [priceRange, setPriceRange] = useState<[number, number]>([
-    minRangeData,
-    maxRangeData,
-  ]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
   const [discountAmount, setDiscountAmount] = useState<number | null>(
     initialFilters.current.discountAmount,
   );
@@ -99,14 +95,17 @@ const SearchbarFilter = ({
 
   const handlePriceRange = (pr: [number, number]) => {
     setPriceRange(pr);
+    setCurrentQuery({ priceRange: pr.join('-') });
   };
 
   const handleDiscount = (discount: number) => {
     setDiscountAmount(discount);
+    setCurrentQuery({ discount: String(discount) });
   };
 
   const handleRating = (rating: number) => {
     setRating(rating);
+    setCurrentQuery({ rating: String(rating) });
   };
 
   const [tabItems, setTabItems] = useState<TabItemProp[]>([
@@ -150,6 +149,7 @@ const SearchbarFilter = ({
   ]);
 
   useEffect(() => {
+    setPriceRange((prevState) => [prevState[0], maxRangeData]);
     setTabItems((prevState) => [
       {
         ...prevState[0],
@@ -159,10 +159,22 @@ const SearchbarFilter = ({
       },
       ...prevState.slice(1),
     ]);
-    setPriceRange((prevState) => [prevState[0], maxRangeData]);
   }, [maxRangeData]);
 
   useEffect(() => {
+    setTabItems((prevState) => [
+      {
+        ...prevState[0],
+        content: React.cloneElement(prevState[0].content as ReactElement, {
+          priceRange: priceRange,
+        }),
+      },
+      ...prevState.slice(1),
+    ]);
+  }, [priceRange]);
+
+  useEffect(() => {
+    setPriceRange((prevState) => [minRangeData, prevState[1]]);
     setTabItems((prevState) => [
       {
         ...prevState[0],
@@ -172,7 +184,6 @@ const SearchbarFilter = ({
       },
       ...prevState.slice(1),
     ]);
-    setPriceRange((prevState) => [minRangeData, prevState[1]]);
   }, [minRangeData]);
 
   const [popperModifiers] = useState([
