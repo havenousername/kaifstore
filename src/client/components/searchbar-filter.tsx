@@ -50,8 +50,14 @@ const CustomFilterButton = styled(Box)(({ theme }) => ({
 
 const SearchbarFilter = ({
   setCurrentQuery,
+  queryRating,
+  queryDiscount,
+  queryPriceRange,
 }: {
   setCurrentQuery: (s: Record<string, string>) => void;
+  queryRating: number | undefined;
+  queryPriceRange: [number, number] | undefined;
+  queryDiscount: number | undefined;
 }) => {
   const initialFilters: MutableRefObject<
     Omit<SearchFiltersState, 'priceRange'>
@@ -72,14 +78,14 @@ const SearchbarFilter = ({
 
   const discountOptions: (ItemProp<number> & { disabled: boolean })[] = [
     { content: 10, label: t('Searchbar.UnderDiscount.10%'), disabled: false },
-    { content: 30, label: t('Searchbar.UnderDiscount.20%'), disabled: false },
+    { content: 20, label: t('Searchbar.UnderDiscount.20%'), disabled: false },
     { content: 60, label: t('Searchbar.UnderDiscount.60%'), disabled: false },
   ];
 
   const ratingOptions: (ItemProp<number> & { disabled: boolean })[] = [
     { content: 5, label: t('Searchbar.UnderRating.5star'), disabled: false },
     { content: 4, label: t('Searchbar.UnderRating.4star'), disabled: false },
-    { content: 60, label: t('Searchbar.UnderRating.3star'), disabled: false },
+    { content: 3, label: t('Searchbar.UnderRating.3star'), disabled: false },
   ];
 
   const [open, setOpen] = useState(false);
@@ -96,16 +102,19 @@ const SearchbarFilter = ({
   const handlePriceRange = (pr: [number, number]) => {
     setPriceRange(pr);
     setCurrentQuery({ priceRange: pr.join('-') });
+    setOpen(false);
   };
 
   const handleDiscount = (discount: number) => {
     setDiscountAmount(discount);
     setCurrentQuery({ discount: String(discount) });
+    setOpen(false);
   };
 
   const handleRating = (rating: number) => {
     setRating(rating);
     setCurrentQuery({ rating: String(rating) });
+    setOpen(false);
   };
 
   const [tabItems, setTabItems] = useState<TabItemProp[]>([
@@ -128,7 +137,7 @@ const SearchbarFilter = ({
         <OptionSelectFilter
           options={discountOptions}
           value={discountAmount}
-          onSelect={handleDiscount}
+          onSelect={(v) => handleDiscount(v)}
           onCancelSelect={() => handleOpenPopper(false)}
         />
       ),
@@ -140,7 +149,7 @@ const SearchbarFilter = ({
         <OptionSelectFilter
           options={ratingOptions}
           value={rating}
-          onSelect={handleRating}
+          onSelect={(v) => handleRating(v)}
           onCancelSelect={() => handleOpenPopper(false)}
         />
       ),
@@ -166,12 +175,40 @@ const SearchbarFilter = ({
       {
         ...prevState[0],
         content: React.cloneElement(prevState[0].content as ReactElement, {
-          priceRange: priceRange,
+          priceRange: queryPriceRange ?? priceRange,
         }),
+        update: !!(queryPriceRange ?? priceRange),
       },
       ...prevState.slice(1),
     ]);
-  }, [priceRange]);
+  }, [priceRange, queryPriceRange]);
+
+  useEffect(() => {
+    setTabItems((prevState) => [
+      prevState[0],
+      {
+        ...prevState[1],
+        content: React.cloneElement(prevState[1].content as ReactElement, {
+          value: queryDiscount ?? discountAmount,
+        }),
+        update: !!(queryDiscount ?? discountAmount),
+      },
+      ...prevState.slice(2),
+    ]);
+  }, [discountAmount, queryDiscount]);
+
+  useEffect(() => {
+    setTabItems((prevState) => [
+      ...prevState.slice(0, 2),
+      {
+        ...prevState[2],
+        content: React.cloneElement(prevState[2].content as ReactElement, {
+          value: queryRating ?? rating,
+        }),
+        update: !!(queryRating ?? rating),
+      },
+    ]);
+  }, [queryRating, rating]);
 
   useEffect(() => {
     setPriceRange((prevState) => [minRangeData, prevState[1]]);

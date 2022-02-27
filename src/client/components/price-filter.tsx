@@ -114,7 +114,7 @@ const PriceFilter = ({
         </Box>
       </Box>
       <FilterTabFooter
-        onSelect={onPriceRangeSelect}
+        onSelect={() => onPriceRangeSelect(range)}
         onCancel={onCancelSelect}
         selectText={t('Utils.Select')}
         cancelText={t('Utils.Cancel')}

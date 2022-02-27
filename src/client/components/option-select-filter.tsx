@@ -9,11 +9,11 @@ import FilterTabFooter from './filter-tab-footer';
 const OptionSelectFilter: FunctionComponent<{
   value: number;
   options: (ItemProp<number> & { disabled: boolean })[];
-  onSelect: (discount: number) => void;
+  onSelect: (v: number) => void;
   onCancelSelect: () => void;
 }> = ({ options, value, onSelect, onCancelSelect }) => {
-  const [changeableValue, setChangeableValue] = useState<number>(value);
   const [initialValue] = useState<number>(value);
+  const [changeableValue, setChangeableValue] = useState<number>(value);
   const { t } = useTranslation();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>, v: string) => {
@@ -34,7 +34,7 @@ const OptionSelectFilter: FunctionComponent<{
         handleChange={handleChange}
       />
       <FilterTabFooter
-        onSelect={onSelect}
+        onSelect={() => onSelect(changeableValue)}
         onCancel={onCancelSelect}
         selectText={t('Utils.Select')}
         cancelText={t('Utils.Cancel')}
