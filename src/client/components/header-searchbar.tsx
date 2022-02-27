@@ -68,11 +68,11 @@ const HeaderSearchbar = ({ searchBar }: { searchBar: SearchbarProps }) => {
   useEffect(() => {
     if (router.isReady && !queryParsed) {
       if (!isNaN(+router.query['rating'])) {
-        setQueryRating(+router.query['rating']);
+        setQueryRating(+decodeURI(router.query['rating'] as string));
       }
 
       if (!isNaN(+router.query['discount'])) {
-        setQueryDiscount(+router.query['discount']);
+        setQueryDiscount(+decodeURI(router.query['discount'] as string));
       }
 
       if (
@@ -82,13 +82,16 @@ const HeaderSearchbar = ({ searchBar }: { searchBar: SearchbarProps }) => {
         const parsedRange = router.query['priceRange'].split('-');
         if (!isNaN(+parsedRange[0]) && !isNaN(+parsedRange[1])) {
           setQueryPriceRange(
-            parsedRange.slice(0, 2).map((i) => +i) as [number, number],
+            parsedRange.slice(0, 2).map((i) => +decodeURI(i)) as [
+              number,
+              number,
+            ],
           );
         }
       }
 
       if (router.query['q']) {
-        searchBar.onChange(String(router.query['q']));
+        searchBar.onChange(decodeURI(String(router.query['q'])));
       }
       setQueryParsed(true);
     }

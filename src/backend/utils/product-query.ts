@@ -21,16 +21,16 @@ export const productQueryToArray = (
   value: Record<CustomQueryKey<ProductQuery>, any>,
 ): CustomQueries<ProductQuery> => {
   if (value.q) {
-    query.q = String(value.q);
+    query.q = String(decodeURI(value.q));
   }
   if (isString(value.groupId)) {
     query.groupId = value.groupId as unknown as string;
   } else if (isNumber(value.groupId)) {
-    query.groupId = +value.groupId;
+    query.groupId = +decodeURI(value.groupId);
   }
 
   if (value.priceRange) {
-    query.priceRange = value.priceRange.split('-').map((i) => +i);
+    query.priceRange = value.priceRange.split('-').map((i) => +decodeURI(i));
     if (!isNumber(query.priceRange[0])) {
       throw new HttpException(
         'Price range values should be a numbers',
