@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { Box, Container } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -12,12 +12,15 @@ import { ReactComponent as ShowEyeIcon } from '../assets/icons/show-eye.svg';
 import { ReactComponent as EmailIcon } from '../assets/icons/at.svg';
 import { useRouter } from 'next/router';
 import useLogin from '../hooks/use-login';
+import { AuthenticationContext } from '../context/authenticated.context';
 
 const Login = () => {
   const { t } = useTranslation();
   const router = useRouter();
+  const { checkAuthentication } = useContext(AuthenticationContext);
 
   const goToPrivateRoute = async () => {
+    await checkAuthentication();
     await router.push('/');
   };
 
