@@ -10,6 +10,7 @@ import { CustomQueries, OrderBy } from '../interfaces/query';
 import { ProductQuery } from '../utils/product-query';
 import { FindAndCountOptions, Op, WhereOptions } from 'sequelize';
 import { isString } from '../utils/type-checkers';
+import { ProductGroupsService } from '../product-groups/product-groups.service';
 
 @Injectable()
 export class ProductsService {
@@ -17,6 +18,7 @@ export class ProductsService {
     @InjectModel(Product) private productRepository: typeof Product,
     private fileService: FilesService,
     private paginateService: PaginateService,
+    private productGroupService: ProductGroupsService,
   ) {}
 
   private handleQueryOrder(
@@ -32,7 +34,7 @@ export class ProductsService {
     return order;
   }
 
-  public getAll(
+  public async getAll(
     options: PaginateOptions,
     queryOptions?: CustomQueries<ProductQuery>,
   ): Promise<FindAndCountOptions<Product[]>> {
@@ -68,8 +70,11 @@ export class ProductsService {
 
     if (queryOptions.groupId && isString(queryOptions.groupId)) {
       const groupId: undefined = queryOptions.groupId as undefined;
+      const groups =
+        await this.productGroupService.getGroupNestedGroupWithProduct(groupId);
+      groups.push(groupId);
       filters['groupId'] = {
-        [Op.eq]: groupId,
+        [Op.or]: groups,
       };
     }
 

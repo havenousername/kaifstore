@@ -5,5 +5,6 @@ export type AccordionPropData = {
   summary: string | ReactNode;
   details: string | ReactNode | AccordionPropData[];
   ariaControls?: string;
+  selected: boolean;
   id?: string;
 };

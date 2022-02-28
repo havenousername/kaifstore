@@ -37,7 +37,9 @@ const Catalog: NextPageWithLayout = () => {
       >
         {'Catalog'}
       </Typography>
-      <ProductsCollection products={products} ref={productsCollectionRef} />
+      {products && (
+        <ProductsCollection products={products} ref={productsCollectionRef} />
+      )}
     </Box>
   );
 };
