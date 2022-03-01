@@ -90,6 +90,13 @@ export class ProductsService {
     );
   }
 
+  public getById(id: number) {
+    return this.productRepository.findOne({
+      include: { all: true },
+      where: { id },
+    });
+  }
+
   public async getMinimalPriceProduct(): Promise<number> {
     return await this.productRepository.min('price');
   }

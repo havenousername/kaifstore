@@ -1,21 +1,36 @@
 import { Product } from '../../backend/model/products.model';
-import { Box, Card, CardContent, styled, Typography } from '@mui/material';
+import {
+  Box,
+  Card,
+  CardContent,
+  styled,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import add from 'date-fns/add';
 import { parseISO, compareDesc } from 'date-fns';
-import * as React from 'react';
+import { MouseEvent } from 'react';
 import ProductMediaCard from './product-media-card';
 import { useTranslation } from 'react-i18next';
+import { lighten } from '@mui/system/colorManipulator';
 
-const TypographyLineEllipsis = styled(Typography)({
+const TypographyLineEllipsis = styled(Typography)(() => ({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   display: '-webkit-box',
   WebkitLineClamp: 2,
   WebkitBoxOrient: 'vertical',
-});
+  cursor: 'pointer',
+}));
 
-const ProductCard = ({ product }: { product: Product }) => {
+const ProductCard = ({
+  product,
+  onCardTitleClick,
+}: {
+  product: Product;
+  onCardTitleClick?: (e: MouseEvent, product: Product) => void;
+}) => {
   const [discountPercent] = useState(
     product.discounts && product.discounts.length > 1
       ? product.discounts
@@ -46,6 +61,8 @@ const ProductCard = ({ product }: { product: Product }) => {
     [product.createdAt],
   );
 
+  const theme = useTheme();
+
   return (
     <Card
       sx={{
@@ -56,6 +73,10 @@ const ProductCard = ({ product }: { product: Product }) => {
         height: 450,
         display: 'flex',
         flexDirection: 'column',
+        transition: 'all 0.2s ease-in',
+        '&:hover': {
+          backgroundColor: lighten(theme.palette.grey[700], 0.05),
+        },
       }}
     >
       <ProductMediaCard
@@ -73,7 +94,11 @@ const ProductCard = ({ product }: { product: Product }) => {
           justifyContent: 'space-between',
         }}
       >
-        <TypographyLineEllipsis gutterBottom variant={'h5'}>
+        <TypographyLineEllipsis
+          gutterBottom
+          variant={'h5'}
+          onClick={(e) => onCardTitleClick(e, product)}
+        >
           {product.name}
         </TypographyLineEllipsis>
         <Box

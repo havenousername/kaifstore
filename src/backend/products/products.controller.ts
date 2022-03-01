@@ -4,6 +4,7 @@ import {
   DefaultValuePipe,
   Get,
   HttpStatus,
+  Param,
   ParseIntPipe,
   Post,
   Query,
@@ -96,6 +97,14 @@ export class ProductsController {
   @Get('/max-price')
   async getMaximalPrice() {
     return this.productService.getMaximumPriceProduct();
+  }
+
+  @ApiOperation({ summary: 'Get product by id' })
+  @ApiResponse({ type: Product, status: 200 })
+  @Public()
+  @Get(':id')
+  async getById(@Param('id') id: number) {
+    return this.productService.getById(id);
   }
 
   @ApiOperation({ summary: 'Product creation' })

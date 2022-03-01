@@ -44,6 +44,15 @@ export class ViewController {
     await this.handler(req, res);
   }
 
+  @Public()
+  @ApiOperation({ summary: 'Catalog details page' })
+  @ApiResponse({ status: 200 })
+  @Get('/catalog/:id')
+  @UseFilters(new ViewAuthFilter())
+  public async showCatalogDetails(@Req() req: Request, @Res() res: Response) {
+    await this.handler(req, res);
+  }
+
   @ApiOperation({ summary: 'Settings page' })
   @ApiResponse({ status: 200 })
   @Get('/settings')
