@@ -13,9 +13,14 @@ const HeaderSearchbar = ({ searchBar }: { searchBar: SearchbarProps }) => {
   const router = useRouter();
   const querySearch = useRef<string>();
   const previousQuery = useRef<ParsedUrlQuery>({});
+  const [firstSearch, setFirstSearch] = useState<boolean>(true);
 
   useEffectDebounce(() => {
     if (!router.isReady) return;
+    if (firstSearch) {
+      setFirstSearch(false);
+      return;
+    }
     router.push({
       pathname: '/catalog',
       query: { ...router.query, q: encodeURI(searchBar.value) },
@@ -31,7 +36,6 @@ const HeaderSearchbar = ({ searchBar }: { searchBar: SearchbarProps }) => {
 
   const setCurrentQuery = (q: Record<string, string>) => {
     const currentQuery = {};
-    console.log(router);
     const asPath: string = router.asPath.split('?')[1];
     let query = {};
     if (asPath) {
