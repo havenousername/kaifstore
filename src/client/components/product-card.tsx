@@ -15,6 +15,7 @@ import ProductMediaCard from './product-media-card';
 import { useTranslation } from 'react-i18next';
 import { lighten } from '@mui/system/colorManipulator';
 import useCalculateDiscount from '../hooks/use-calculate-discount';
+import useGetHttpUrl from '../hooks/use-get-http-url';
 
 const TypographyLineEllipsis = styled(Typography)(() => ({
   overflow: 'hidden',
@@ -43,6 +44,7 @@ const ProductCard = ({
   );
 
   const theme = useTheme();
+  const getHttpUrl = useGetHttpUrl();
 
   return (
     <Card
@@ -62,7 +64,7 @@ const ProductCard = ({
     >
       <ProductMediaCard
         newText={t('IndexPage.NewIconText')}
-        image={product.images[0]}
+        image={getHttpUrl(product.images[0])}
         isNew={isNew}
         hasDiscount={false}
         isFavourite={false}

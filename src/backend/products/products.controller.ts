@@ -83,6 +83,15 @@ export class ProductsController {
     return this.productService.getAllLatest(options);
   }
 
+  @ApiOperation({ summary: 'Get latest products' })
+  @ApiResponse({ status: 200, type: [Product] })
+  @Public()
+  @Get('/ids/:ids')
+  async getByIds(@Param('ids') ids: string) {
+    console.log(ids);
+    return this.productService.getByIds(JSON.parse(ids));
+  }
+
   @ApiOperation({ summary: 'Get lowest price' })
   @ApiResponse({ status: 200, type: Number })
   @Public()

@@ -21,6 +21,8 @@ const AppCarousel = ({
   showNextButton = true,
   prevButton,
   showPrevButton = true,
+  prevButtonPosition,
+  nextButtonPosition,
 }: {
   items: (string | ReactNode)[];
   sx?: CSSProperties;
@@ -33,6 +35,8 @@ const AppCarousel = ({
   }>;
   showNextButton?: boolean;
   showPrevButton?: boolean;
+  prevButtonPosition?: [string, string];
+  nextButtonPosition?: [string, string];
 }) => {
   const carouselContext = useContext(CarouselContext);
   const [currentSlide, setCurrentSlide] = useState(
@@ -103,9 +107,17 @@ const AppCarousel = ({
           ))}
         </Slider>
         {showPrevButton &&
-          (prevButton ?? changeSlideButton(['left', '1.4rem'], onPrevClick))}
+          (prevButton ??
+            changeSlideButton(
+              prevButtonPosition ?? ['left', '1.4rem'],
+              onPrevClick,
+            ))}
         {showNextButton &&
-          (nextButton ?? changeSlideButton(['right', '1.4rem'], onNextClick))}
+          (nextButton ??
+            changeSlideButton(
+              nextButtonPosition ?? ['right', '1.4rem'],
+              onNextClick,
+            ))}
       </Box>
       {typeof items[0] === 'string' && (
         <AppCarouselDotGroup

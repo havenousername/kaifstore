@@ -1,17 +1,10 @@
 import AppCarousel from './app-carousel';
 import { CarouselProvider } from 'pure-react-carousel';
-import React, { useCallback } from 'react';
+import React from 'react';
+import useGetHttpUrl from '../hooks/use-get-http-url';
 
 const ProductDetailsImages = ({ images }: { images: string[] }) => {
-  const hasHttp = useCallback(
-    (str: string) => str.includes('http') || str.includes('https'),
-    [],
-  );
-  const getUrl = useCallback(
-    (str: string) =>
-      hasHttp(str) ? str : `${process.env.NEXT_PUBLIC_ROOT_URL}/${str}`,
-    [hasHttp],
-  );
+  const getHttpUrl = useGetHttpUrl();
   return (
     <CarouselProvider
       visibleSlides={1}
@@ -21,7 +14,7 @@ const ProductDetailsImages = ({ images }: { images: string[] }) => {
       infinite={true}
     >
       <AppCarousel
-        items={images.map((image) => getUrl(image))}
+        items={images.map((image) => getHttpUrl(image))}
         sx={{ maxHeight: '400px' }}
       />
     </CarouselProvider>

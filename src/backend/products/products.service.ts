@@ -98,6 +98,13 @@ export class ProductsService {
     });
   }
 
+  public getByIds(ids: number[]) {
+    return this.productRepository.findAll({
+      include: { all: true },
+      where: { id: ids },
+    });
+  }
+
   public async getMinimalPriceProduct(): Promise<number> {
     return await this.productRepository.min('price');
   }
