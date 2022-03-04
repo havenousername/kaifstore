@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import useSWRImmutable from 'swr/immutable';
 import fetcher from '../../api/root-fetcher';
+import { Product } from '../../../backend/model/products.model';
+import ProductDetailsImages from '../../components/product-details-images';
 
 export function getStaticProps(context) {
   return {
@@ -28,16 +30,22 @@ const CatalogSlug: NextPageWithLayout = (props: {
   children?: ReactNode;
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data: product } = useSWRImmutable<number>(
+  const { data: product } = useSWRImmutable<Product>(
     `v1/products/${props.productId}`,
     fetcher,
   );
   const router = useRouter();
   const { t } = useTranslation();
+
+  if (!product) {
+    return <></>;
+  }
   return (
     <Box px={8}>
       <BackButton goBack={router.back} text={t('Utils.GoBack')} />
-      Hello
+      <Box maxWidth={'500px'}>
+        <ProductDetailsImages images={product.images} />
+      </Box>
     </Box>
   );
 };
