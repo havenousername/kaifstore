@@ -62,9 +62,9 @@ const AppRange = ({
   displayLabel = 'off',
   sx,
 }: {
-  range: [number, number];
+  range: [number, number] | number;
   minDistance: number;
-  changeRange: (s: [number, number]) => void;
+  changeRange: (s: [number, number] | number) => void;
   min?: number;
   max?: number;
   step?: number;
@@ -78,6 +78,7 @@ const AppRange = ({
     activeThumb: number,
   ) => {
     if (!Array.isArray(newValue)) {
+      changeRange(newValue);
       return;
     }
 

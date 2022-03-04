@@ -86,6 +86,7 @@ export class ProductsService {
       {
         order: order,
         where: filters,
+        include: { all: true },
       },
     );
   }

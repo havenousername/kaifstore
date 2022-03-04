@@ -22,15 +22,16 @@ const ProductsCollection = forwardRef(
           marginTop: '2rem',
         }}
       >
-        {products.map((product, key) => {
-          return (
-            <ProductCard
-              key={key}
-              product={product}
-              onCardTitleClick={onProductClick}
-            />
-          );
-        })}
+        {products &&
+          products.map((product, key) => {
+            return (
+              <ProductCard
+                key={key}
+                product={product}
+                onCardTitleClick={onProductClick}
+              />
+            );
+          })}
       </Box>
     );
   },

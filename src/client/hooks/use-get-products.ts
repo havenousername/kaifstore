@@ -3,6 +3,7 @@ import { FetchProducts, FetchResValidations } from '../interfaces/fetches';
 import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import { isEqual } from 'lodash';
+import { ProductGroup } from '../../backend/model/product-groups.model';
 
 const useGetProducts = (
   routeName: (page: number, query: string) => string,
@@ -12,14 +13,24 @@ const useGetProducts = (
   const [error, setErrors] = useState(null);
   const router = useRouter();
   const [currentQuery, setCurrentQuery] = useState<ParsedUrlQuery>();
+  const [productsGroup, setProductsGroup] = useState<ProductGroup>();
 
   useEffect(() => {
     if (router.query && !isEqual(currentQuery, router.query)) {
       setCurrentQuery(router.query);
       getProducts(window.location.search.replace('?', ''));
+      const url = new URLSearchParams(window.location.search);
+      if (url.has('groupId')) {
+        getGroup(url.get('groupId'));
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query]);
+
+  const getGroup = async (id: string) => {
+    const group = await (await fetch(`/v1/product-groups/${id}`)).json();
+    setProductsGroup(group);
+  };
 
   const getPageProducts = async () => {
     if (!products.meta || products.meta.nextPage) {
@@ -60,6 +71,7 @@ const useGetProducts = (
 
   return {
     products: error || !products ? [] : products.items,
+    group: productsGroup,
     isError: error,
     isLoading: !error && !products,
     getMoreProducts: getPageProducts,

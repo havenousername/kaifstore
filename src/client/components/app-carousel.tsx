@@ -22,7 +22,7 @@ const AppCarousel = ({
   prevButton,
   showPrevButton = true,
 }: {
-  items: string[];
+  items: (string | ReactNode)[];
   sx?: CSSProperties;
   beforeContentComponent?: ReactNode;
   nextButton?: FunctionComponent<{
@@ -107,14 +107,16 @@ const AppCarousel = ({
         {showNextButton &&
           (nextButton ?? changeSlideButton(['right', '1.4rem'], onNextClick))}
       </Box>
-      <AppCarouselDotGroup
-        onClick={(slide) =>
-          carouselContext.setStoreState({ currentSlide: slide })
-        }
-        current={currentSlide}
-        images={items}
-        slides={items.length}
-      />
+      {typeof items[0] === 'string' && (
+        <AppCarouselDotGroup
+          onClick={(slide) =>
+            carouselContext.setStoreState({ currentSlide: slide })
+          }
+          current={currentSlide}
+          images={items as string[]}
+          slides={items.length}
+        />
+      )}
     </Box>
   );
 };

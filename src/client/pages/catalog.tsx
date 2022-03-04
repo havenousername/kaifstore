@@ -5,6 +5,7 @@ import { Box, Typography } from '@mui/material';
 import ProductsCollection from '../components/products-collection';
 import useGetProducts from '../hooks/use-get-products';
 import useDetectBottomScroll from '../hooks/use-detect-bottom-scroll';
+import { useTranslation } from 'react-i18next';
 
 const Catalog: NextPageWithLayout = () => {
   const catalogPath = useCallback(
@@ -12,9 +13,10 @@ const Catalog: NextPageWithLayout = () => {
       `/v1/products?page=${currentPage}&desc=createdAt&${query}`,
     [],
   );
-  const { products, getMoreProducts } = useGetProducts(catalogPath);
+  const { products, getMoreProducts, group } = useGetProducts(catalogPath);
   const productsCollectionRef = useRef<HTMLDivElement>();
   const [isBottom] = useDetectBottomScroll(productsCollectionRef);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (isBottom) {
@@ -35,7 +37,7 @@ const Catalog: NextPageWithLayout = () => {
         padding={(theme) => theme.spacing(2, 3)}
         fontWeight={600}
       >
-        {'Catalog'}
+        {t('Catalog.Catalog')} / {group && group.name}
       </Typography>
       {products && (
         <ProductsCollection products={products} ref={productsCollectionRef} />

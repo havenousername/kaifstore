@@ -100,7 +100,7 @@ const Navbar = () => {
       setGroupsAccordion(groupData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, [data, router]);
 
   const [pages] = useNavbarLinks();
 

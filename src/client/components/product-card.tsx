@@ -7,13 +7,14 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import add from 'date-fns/add';
 import { parseISO, compareDesc } from 'date-fns';
 import { MouseEvent } from 'react';
 import ProductMediaCard from './product-media-card';
 import { useTranslation } from 'react-i18next';
 import { lighten } from '@mui/system/colorManipulator';
+import useCalculateDiscount from '../hooks/use-calculate-discount';
 
 const TypographyLineEllipsis = styled(Typography)(() => ({
   overflow: 'hidden',
@@ -31,27 +32,7 @@ const ProductCard = ({
   product: Product;
   onCardTitleClick?: (e: MouseEvent, product: Product) => void;
 }) => {
-  const [discountPercent] = useState(
-    product.discounts && product.discounts.length > 1
-      ? product.discounts
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          .map((i) => i.amount as number)
-          .reduce((a, b) => a + b)
-      : 0,
-  );
-  const [discountPrice, setDiscountPrice] = useState(product.price);
-
-  const calculatePrice = useCallback(() => {
-    const newPrice = product.price - (product.price * discountPercent) / 100;
-    setDiscountPrice(newPrice);
-  }, [discountPercent, product.price]);
-
-  useEffect(() => {
-    calculatePrice();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  const discountPrice = useCalculateDiscount(product);
   const { t } = useTranslation();
 
   const isNew = useMemo(

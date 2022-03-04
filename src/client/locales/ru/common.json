@@ -17,6 +17,9 @@
     "CalloutText": "Duis et egestas aliquam mi fames urna, porttitor faucibus. Commodo lectus accumsan dolor ac. Sit platea pellentesque tristique eu morbi a sed. Eu auctor neque, diam pellentesque sed at urna, faucibus potenti. ",
     "NewIconText": "Новинка"
   },
+  "Catalog": {
+    "Catalog": "Каталог"
+  },
   "Pages": {
     "Index": "Главная",
     "Catalog": "Каталог",
@@ -56,6 +59,12 @@
       "4star": "> 4 звезд",
       "3star": "> 3 звезд"
     }
+  },
+  "ProductDetails": {
+    "Tags": "тэги",
+    "Quantity": "Количество",
+    "Left": "Осталось",
+    "Price": "Цена"
   },
   "Utils": {
     "Select": "Выбрать",
