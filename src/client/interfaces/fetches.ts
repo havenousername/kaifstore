@@ -1,3 +1,6 @@
+import { Product } from '../../backend/model/products.model';
+import { ProductGroup } from '../../backend/model/product-groups.model';
+
 export enum RequestType {
   POST = 'POST',
   GET = 'GET',
@@ -30,3 +33,9 @@ export type FetchParams = {
 };
 
 export type FetchResValidations = { isError: boolean; isLoading: boolean };
+
+export type FetchProducts = {
+  products: Product[];
+  group?: ProductGroup;
+  getMoreProducts: () => void;
+};

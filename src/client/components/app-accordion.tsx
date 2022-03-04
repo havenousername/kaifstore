@@ -32,11 +32,31 @@ const AccordionSummary = styled(
     showIcon,
   }: AccordionSummaryProps & { theme?: Theme } & { showIcon: boolean }) => ({
     flexDirection: 'row-reverse',
+    cursor: 'default !important',
+    '&[aria-selected="false"] .MuiTypography-root': {
+      color: theme.palette.grey[200],
+    },
+    '&[aria-selected="true"] .MuiTypography-root': {
+      color: theme.palette.common.white,
+      position: 'relative',
+      '&:after': {
+        content: `''`,
+        position: 'absolute',
+        right: '-20px',
+        top: '30%',
+        width: 10,
+        height: 10,
+        borderRadius: 3,
+        backgroundColor: theme.palette.background.paper,
+      },
+    },
     '& .MuiAccordionSummary-expandIconWrapper': {
       transform: 'rotate(0deg) scale(0.3)',
+      cursor: 'pointer',
       display: showIcon ? 'block' : 'none',
     },
     '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+      cursor: 'pointer',
       transform: 'rotate(90deg) scale(0.3)',
     },
     '& .MuiAccordionSummary-content': {
@@ -69,19 +89,24 @@ const AppAccordion = ({
 }: {
   data: AccordionPropData[];
   expanded?: string | boolean;
-  onChange?: () => void;
+  onChange?: (data: AccordionPropData) => void;
 }) => {
   const [expandedTab, setExpanded] = useState(expanded ?? false);
 
   const handleChange =
     (panel: string, data: AccordionPropData) =>
     (event: React.SyntheticEvent, newExpanded: boolean) => {
-      console.log(data);
       if (Array.isArray(data.details) && data.details.length === 0) {
+        if (onChange) {
+          onChange(data);
+        }
         return;
       }
-      if (onChange) {
-        onChange();
+      if (
+        onChange &&
+        (event.target as EventTarget & { id: string }).id === data.id
+      ) {
+        onChange(data);
       } else {
         setExpanded(newExpanded ? panel : false);
       }
@@ -102,6 +127,7 @@ const AppAccordion = ({
           onChange={handleChange(accordion.name, accordion)}
         >
           <AccordionSummary
+            aria-selected={accordion.selected}
             aria-controls={
               accordion.ariaControls ?? accordion.name + 'controls'
             }

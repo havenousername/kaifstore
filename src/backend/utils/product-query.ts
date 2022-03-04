@@ -1,6 +1,7 @@
-import { isNumber, isUUID } from 'class-validator';
+import { isNumber } from 'class-validator';
 import { CustomQueries, CustomQueryKey } from '../interfaces/query';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { isString } from './type-checkers';
 
 export type ProductQuery = 'priceRange' | 'q' | 'groupId' | 'characteristics';
 
@@ -20,16 +21,16 @@ export const productQueryToArray = (
   value: Record<CustomQueryKey<ProductQuery>, any>,
 ): CustomQueries<ProductQuery> => {
   if (value.q) {
-    query.q = String(value.q);
+    query.q = String(decodeURI(value.q));
   }
-  if (isUUID(value.groupId)) {
-    query.groupId = String(value);
+  if (isString(value.groupId)) {
+    query.groupId = value.groupId as unknown as string;
   } else if (isNumber(value.groupId)) {
-    query.groupId = +value;
+    query.groupId = +decodeURI(value.groupId);
   }
 
   if (value.priceRange) {
-    query.priceRange = value.priceRange.split('-').map((i) => +i);
+    query.priceRange = value.priceRange.split('-').map((i) => +decodeURI(i));
     if (!isNumber(query.priceRange[0])) {
       throw new HttpException(
         'Price range values should be a numbers',

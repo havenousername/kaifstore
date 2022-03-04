@@ -1,5 +1,5 @@
 import Paper from '@mui/material/Paper';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import NavbarSection from './navbar-section';
 import useSWR from 'swr';
@@ -9,7 +9,6 @@ import AppAccordion from './app-accordion';
 import { AccordionPropData } from '../interfaces/accordions';
 import { ProductGroupLimited } from '../../backend/interfaces/product-groups';
 import { ProductGroup } from '../../backend/model/product-groups.model';
-import Link from 'next/link';
 import standardFetcher from '../api/standard-fetcher';
 import {
   AuthenticationContext,
@@ -17,6 +16,7 @@ import {
 } from '../context/authenticated.context';
 import NavbarHeaderAuthenticated from './navbar-header-authenticated';
 import NavbarHeaderUnauthenticated from './navbar-header-unauthenticated';
+import { useRouter } from 'next/router';
 
 const Navbar = () => {
   const { t } = useTranslation();
@@ -27,20 +27,68 @@ const Navbar = () => {
   const [groupAccordion, setGroupsAccordion] = useState<AccordionPropData[]>(
     [],
   );
+  const router = useRouter();
   const { user, authenticated, checkAuthentication } =
     useContext<UserAuthenticated>(AuthenticationContext);
+
+  const mapGroupAccordion = useCallback(
+    (
+      data: AccordionPropData[],
+      func: (data: AccordionPropData) => AccordionPropData,
+    ) => {
+      if (data.length === 0 || !data) {
+        return [];
+      }
+
+      return data.map((d) => {
+        if (typeof d.details === 'string' || !Array.isArray(d.details)) {
+          return func(d);
+        }
+
+        return { ...func(d), details: mapGroupAccordion(d.details, func) };
+      });
+    },
+    [],
+  );
+
+  const onGroupRoute = useCallback(
+    (data: AccordionPropData | ProductGroup) => {
+      setGroupsAccordion((prevState) =>
+        mapGroupAccordion(prevState, (group) => {
+          group.selected = (data as ProductGroup).uuid
+            ? group.id === (data as ProductGroup).uuid
+            : group.id === data.id;
+          return group;
+        }),
+      );
+      router.push(`/catalog?groupId=${(data as ProductGroup).uuid ?? data.id}`);
+    },
+    [mapGroupAccordion, router],
+  );
 
   const createGroupData = (groups: ProductGroup[]): AccordionPropData[] => {
     if (!groups || groups.length === 0) {
       return [];
     }
     return groups.map<AccordionPropData>((group) => ({
-      name: String(group.id),
-      id: String(group.id),
+      name: String(group.name),
+      id: String(group.uuid),
+      selected:
+        String(group.uuid) ===
+        decodeURI((router.query.groupId as string) ?? ''),
       summary: (
-        <Link href={`/catalog?groupId=${group.id}`}>
-          <Typography variant={'h6'}>{group.name}</Typography>
-        </Link>
+        <Typography
+          onClick={() => {
+            onGroupRoute(group);
+          }}
+          sx={{
+            cursor: 'pointer',
+          }}
+          variant={'h6'}
+          id={group.uuid}
+        >
+          {group.name}
+        </Typography>
       ),
       details: createGroupData(group.childrenGroups),
     }));
@@ -52,7 +100,7 @@ const Navbar = () => {
       setGroupsAccordion(groupData);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, [data, router]);
 
   const [pages] = useNavbarLinks();
 
@@ -101,7 +149,10 @@ const Navbar = () => {
           {t('Navbar.Categories')}
         </Typography>
         <Box sx={{ overflowY: 'scroll' }}>
-          <AppAccordion data={groupAccordion} />
+          <AppAccordion
+            data={groupAccordion}
+            onChange={(data) => onGroupRoute(data)}
+          />
         </Box>
       </Paper>
     </>

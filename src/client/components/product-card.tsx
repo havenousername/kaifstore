@@ -1,42 +1,39 @@
 import { Product } from '../../backend/model/products.model';
-import { Box, Card, CardContent, styled, Typography } from '@mui/material';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  Box,
+  Card,
+  CardContent,
+  styled,
+  Typography,
+  useTheme,
+} from '@mui/material';
+import { useMemo } from 'react';
 import add from 'date-fns/add';
 import { parseISO, compareDesc } from 'date-fns';
-import * as React from 'react';
+import { MouseEvent } from 'react';
 import ProductMediaCard from './product-media-card';
 import { useTranslation } from 'react-i18next';
+import { lighten } from '@mui/system/colorManipulator';
+import useCalculateDiscount from '../hooks/use-calculate-discount';
+import useGetHttpUrl from '../hooks/use-get-http-url';
 
-const TypographyLineEllipsis = styled(Typography)({
+const TypographyLineEllipsis = styled(Typography)(() => ({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   display: '-webkit-box',
   WebkitLineClamp: 2,
   WebkitBoxOrient: 'vertical',
-});
+  cursor: 'pointer',
+}));
 
-const ProductCard = ({ product }: { product: Product }) => {
-  const [discountPercent] = useState(
-    product.discounts && product.discounts.length > 1
-      ? product.discounts
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          .map((i) => i.amount as number)
-          .reduce((a, b) => a + b)
-      : 0,
-  );
-  const [discountPrice, setDiscountPrice] = useState(product.price);
-
-  const calculatePrice = useCallback(() => {
-    const newPrice = product.price - (product.price * discountPercent) / 100;
-    setDiscountPrice(newPrice);
-  }, [discountPercent, product.price]);
-
-  useEffect(() => {
-    calculatePrice();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+const ProductCard = ({
+  product,
+  onCardTitleClick,
+}: {
+  product: Product;
+  onCardTitleClick?: (e: MouseEvent, product: Product) => void;
+}) => {
+  const discountPrice = useCalculateDiscount(product);
   const { t } = useTranslation();
 
   const isNew = useMemo(
@@ -45,6 +42,9 @@ const ProductCard = ({ product }: { product: Product }) => {
       1,
     [product.createdAt],
   );
+
+  const theme = useTheme();
+  const getHttpUrl = useGetHttpUrl();
 
   return (
     <Card
@@ -56,11 +56,15 @@ const ProductCard = ({ product }: { product: Product }) => {
         height: 450,
         display: 'flex',
         flexDirection: 'column',
+        transition: 'all 0.2s ease-in',
+        '&:hover': {
+          backgroundColor: lighten(theme.palette.grey[700], 0.05),
+        },
       }}
     >
       <ProductMediaCard
         newText={t('IndexPage.NewIconText')}
-        image={product.images[0]}
+        image={getHttpUrl(product.images[0])}
         isNew={isNew}
         hasDiscount={false}
         isFavourite={false}
@@ -73,7 +77,11 @@ const ProductCard = ({ product }: { product: Product }) => {
           justifyContent: 'space-between',
         }}
       >
-        <TypographyLineEllipsis gutterBottom variant={'h5'}>
+        <TypographyLineEllipsis
+          gutterBottom
+          variant={'h5'}
+          onClick={(e) => onCardTitleClick(e, product)}
+        >
           {product.name}
         </TypographyLineEllipsis>
         <Box

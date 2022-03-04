@@ -17,6 +17,9 @@
     "CalloutText": "Duis et egestas aliquam mi fames urna, porttitor faucibus. Commodo lectus accumsan dolor ac. Sit platea pellentesque tristique eu morbi a sed. Eu auctor neque, diam pellentesque sed at urna, faucibus potenti. ",
     "NewIconText": "Новинка"
   },
+  "Catalog": {
+    "Catalog": "Каталог"
+  },
   "Pages": {
     "Index": "Главная",
     "Catalog": "Каталог",
@@ -33,5 +36,43 @@
     "NoAccount": "нет аккаунта?",
     "Register":  "Зарегестрируйтесь",
     "Logout": "Выйти"
+  },
+  "Searchbar": {
+    "Placeholder": "Введите название товара",
+    "Search": "Поиск",
+    "Filter": "Фильтры",
+    "FilterUnderPrice": "По цене",
+    "FilterUnderDiscount": "По скидке",
+    "FilterUnderRating": "По рейтингу",
+    "UnderPrice": {
+      "From": "От",
+      "Until": "До"
+    },
+    "Restore": "Восстановить",
+    "UnderDiscount": {
+      "10%": "Больше 10%",
+      "20%": "Больше 20%",
+      "60%": "Больше 60%"
+    },
+    "UnderRating": {
+      "5star": "5 звезд",
+      "4star": "> 4 звезд",
+      "3star": "> 3 звезд"
+    }
+  },
+  "ProductDetails": {
+    "Tags": "тэги",
+    "Quantity": "Количество",
+    "Left": "Осталось",
+    "NotAvailable": "Нет в наличии",
+    "Price": "Цена",
+    "AddToBin": "Добавить в корзину",
+    "LastVisited": "Недавно просмотренные",
+    "NoViews": "Вы еще не посетили не один другой продукт на данный момент"
+  },
+  "Utils": {
+    "Select": "Выбрать",
+    "Cancel": "Отмена",
+    "GoBack": "Назад"
   }
 }

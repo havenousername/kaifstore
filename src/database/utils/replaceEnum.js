@@ -1,8 +1,5 @@
 'use strict';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { QueryInterface } from 'sequelize/types/lib/query-interface';
-
 /**
  * Since PostgreSQL still does not support remove values from an ENUM,
  * the workaround is to create a new ENUM with the new values and use it

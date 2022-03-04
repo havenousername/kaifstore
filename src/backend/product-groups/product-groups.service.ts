@@ -27,7 +27,7 @@ export class ProductGroupsService {
     return this.groupRepository.findAll({
       where: { groupId: null },
       include: { all: true },
-      attributes: ['name', 'id'],
+      attributes: ['name', 'id', 'uuid'],
     });
   }
 
@@ -38,10 +38,25 @@ export class ProductGroupsService {
     });
   }
 
-  async getByUuid(uuid: string) {
+  async getByUuid(uuid: string): Promise<ProductGroup> {
     return this.groupRepository.findOne({
       where: { uuid },
       include: { all: true },
     });
+  }
+
+  private findAllNestedGroups(group: ProductGroup): ProductGroup[] {
+    if (!group.childrenGroups) {
+      return [group];
+    }
+
+    return [group].concat(
+      group.childrenGroups.map((g) => this.findAllNestedGroups(g)).flat(),
+    );
+  }
+
+  public async getGroupNestedGroupWithProduct(uuid: string): Promise<string[]> {
+    const group = await this.getByUuid(uuid);
+    return this.findAllNestedGroups(group).map((i) => i.uuid);
   }
 }

@@ -4,6 +4,7 @@ import {
   DefaultValuePipe,
   Get,
   HttpStatus,
+  Param,
   ParseIntPipe,
   Post,
   Query,
@@ -80,6 +81,39 @@ export class ProductsController {
       url: req.url,
     });
     return this.productService.getAllLatest(options);
+  }
+
+  @ApiOperation({ summary: 'Get latest products' })
+  @ApiResponse({ status: 200, type: [Product] })
+  @Public()
+  @Get('/ids/:ids')
+  async getByIds(@Param('ids') ids: string) {
+    console.log(ids);
+    return this.productService.getByIds(JSON.parse(ids));
+  }
+
+  @ApiOperation({ summary: 'Get lowest price' })
+  @ApiResponse({ status: 200, type: Number })
+  @Public()
+  @Get('/min-price')
+  async getMinimalPrice() {
+    return this.productService.getMinimalPriceProduct();
+  }
+
+  @ApiOperation({ summary: 'Get highest price' })
+  @ApiResponse({ status: 200, type: Number })
+  @Public()
+  @Get('/max-price')
+  async getMaximalPrice() {
+    return this.productService.getMaximumPriceProduct();
+  }
+
+  @ApiOperation({ summary: 'Get product by id' })
+  @ApiResponse({ type: Product, status: 200 })
+  @Public()
+  @Get(':id')
+  async getById(@Param('id') id: number) {
+    return this.productService.getById(id);
   }
 
   @ApiOperation({ summary: 'Product creation' })

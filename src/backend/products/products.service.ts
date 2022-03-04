@@ -8,8 +8,9 @@ import { PaginateOptions, PaginateService } from 'nestjs-sequelize-paginate';
 import { ModelCtor } from 'sequelize-typescript';
 import { CustomQueries, OrderBy } from '../interfaces/query';
 import { ProductQuery } from '../utils/product-query';
-import { Op, WhereOptions } from 'sequelize';
+import { FindAndCountOptions, Op, WhereOptions } from 'sequelize';
 import { isString } from '../utils/type-checkers';
+import { ProductGroupsService } from '../product-groups/product-groups.service';
 
 @Injectable()
 export class ProductsService {
@@ -17,6 +18,7 @@ export class ProductsService {
     @InjectModel(Product) private productRepository: typeof Product,
     private fileService: FilesService,
     private paginateService: PaginateService,
+    private productGroupService: ProductGroupsService,
   ) {}
 
   private handleQueryOrder(
@@ -32,10 +34,10 @@ export class ProductsService {
     return order;
   }
 
-  public getAll(
+  public async getAll(
     options: PaginateOptions,
     queryOptions?: CustomQueries<ProductQuery>,
-  ) {
+  ): Promise<FindAndCountOptions<Product[]>> {
     let order: [string, string][] | undefined = undefined;
     const filters: WhereOptions = {};
     if (Array.isArray(queryOptions.desc)) {
@@ -66,6 +68,16 @@ export class ProductsService {
       };
     }
 
+    if (queryOptions.groupId && isString(queryOptions.groupId)) {
+      const groupId: undefined = queryOptions.groupId as undefined;
+      const groups =
+        await this.productGroupService.getGroupNestedGroupWithProduct(groupId);
+      groups.push(groupId);
+      filters['groupId'] = {
+        [Op.or]: groups,
+      };
+    }
+
     return this.paginateService.findAllPaginate(
       {
         ...options,
@@ -74,8 +86,31 @@ export class ProductsService {
       {
         order: order,
         where: filters,
+        include: { all: true },
       },
     );
+  }
+
+  public getById(id: number) {
+    return this.productRepository.findOne({
+      include: { all: true },
+      where: { id },
+    });
+  }
+
+  public getByIds(ids: number[]) {
+    return this.productRepository.findAll({
+      include: { all: true },
+      where: { id: ids },
+    });
+  }
+
+  public async getMinimalPriceProduct(): Promise<number> {
+    return await this.productRepository.min('price');
+  }
+
+  public async getMaximumPriceProduct(): Promise<number> {
+    return await this.productRepository.max('price');
   }
 
   public getAllLatest(options: PaginateOptions) {

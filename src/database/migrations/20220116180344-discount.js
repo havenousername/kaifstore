@@ -1,6 +1,4 @@
 'use strict';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// import { QueryInterface } from 'sequelize/types/lib/query-interface';
 
 module.exports = {
   /**

@@ -2,11 +2,11 @@ import React, { ReactElement, ReactNode, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Typography } from '@mui/material';
 import { Product } from '../../backend/model/products.model';
-import ProductCard from '../components/product-card';
 import { NextPageWithLayout } from '../interfaces/pages-layout';
 import AppLayout from '../components/app-layout';
 import LoginButton from '../components/login-button';
 import { AuthenticationContext } from '../context/authenticated.context';
+import ProductsCollection from '../components/products-collection';
 
 export async function getServerSideProps(context) {
   const protocol = context.req.headers['x-forwarded-proto'] || 'http';
@@ -37,7 +37,7 @@ const Index: NextPageWithLayout = (props: {
     <>
       <Box
         sx={{
-          padding: '4rem 8rem',
+          padding: '1rem 8rem 4rem',
         }}
       >
         <Typography
@@ -79,18 +79,7 @@ const Index: NextPageWithLayout = (props: {
         >
           {t('IndexPage.Hot')}
         </Typography>
-        <Box
-          sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'space-between',
-            marginTop: '2rem',
-          }}
-        >
-          {products.map((product, key) => {
-            return <ProductCard key={key} product={product} />;
-          })}
-        </Box>
+        <ProductsCollection products={products} />
       </Box>
     </>
   );

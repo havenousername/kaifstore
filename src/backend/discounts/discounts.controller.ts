@@ -19,7 +19,7 @@ export class DiscountsController {
   @ApiOperation({ summary: 'Get discount by id' })
   @ApiResponse({ type: Discount, status: 200 })
   @Get(':id')
-  getById(@Param(':id') id: number) {
+  getById(@Param('id') id: number) {
     return this.discountsService.getById(id);
   }
 }
