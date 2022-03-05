@@ -1,12 +1,14 @@
 import React, { FunctionComponent, ReactNode } from 'react';
 import Typography from '@mui/material/Typography';
 import { Box, Container } from '@mui/material';
+import { SxProps } from '@mui/system';
 
 const BoxedContainer: FunctionComponent<{
   background: string;
   title: string;
   children: ReactNode;
-}> = ({ title, background, children }) => {
+  sxBox?: SxProps;
+}> = ({ title, background, children, sxBox }) => {
   return (
     <Box
       sx={{
@@ -44,10 +46,12 @@ const BoxedContainer: FunctionComponent<{
             borderRadius: '47px',
             boxShadow: 1,
             fontWeight: 'bold',
-            height: 500,
+            minHeight: 500,
+            height: '100%',
             width: 500,
             px: 10,
             py: 8,
+            ...sxBox,
           }}
         >
           {children}

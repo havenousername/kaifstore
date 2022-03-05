@@ -9,6 +9,15 @@
     "DontHaveAccount": "Не имеете аккаунта",
     "Register":  ""
   },
+  "Placeholder": {
+    "Password": "Пароль",
+    "Email": "Емайл",
+    "FirstName": "Имя",
+    "FamilyName": "Фaмилия",
+    "ConfirmPassword": "Потвердите пароль",
+    "Gender": "Пол",
+    "DateOfBirth": "Дата рождения"
+  },
   "KaifStore": "KaifStore",
   "IndexPage": {
     "Hot": "Горячие новинки",
@@ -76,7 +85,7 @@
     "Name": "Имя",
     "FamilyName": "Фамилия",
     "Password": "Пароль",
-    "ConfirmPassoword": "Потвердить пароль",
+    "ConfirmPassword": "Потвердить пароль",
     "Gender": "Пол",
     "DateOfBirth": "Дата рождения",
     "AgreeText": "Я согласен с условиями\nи что мне больше 18 лет",
@@ -86,5 +95,13 @@
     "Select": "Выбрать",
     "Cancel": "Отмена",
     "GoBack": "Назад"
+  },
+  "Validation": {
+    "Required": "Поле \"{{field}}\" является обязательным",
+    "MinLength": "Поле \"{{field}}\" не может быть короче {{length}} символов",
+    "MaxLength": "Поле \"{{field}}\" не может быть длиннее {{length}} символов",
+    "Password": "Пароль должен иметь в себе один символ, одну заглавную и одну строчную букву",
+    "ConfirmPassword": "Пароли не совпадают",
+    "AgreeCondition": "Для регистрации вы должны потвердить что вы старше 18"
   }
 }

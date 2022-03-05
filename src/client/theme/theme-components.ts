@@ -50,7 +50,17 @@ const components = (theme: Theme): Components => ({
   },
   MuiList: {
     styleOverrides: {
-      root: {},
+      root: {
+        borderRadius: 20,
+      },
+    },
+  },
+  MuiPopover: {
+    styleOverrides: {
+      paper: {
+        borderRadius: 20,
+        padding: '15px',
+      },
     },
   },
   MuiDivider: {
