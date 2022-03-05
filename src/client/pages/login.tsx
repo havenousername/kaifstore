@@ -69,7 +69,7 @@ const Login = () => {
               minWidth={'450px'}
               justifyContent={'space-between'}
             >
-              <span>{t('LoginPage.HaveAccount')}</span>
+              <span>{t('LoginPage.DontHaveAccount')}</span>
               <Link color={'secondary'} fontWeight={'600'} href={'/register'}>
                 {t('LoginPage.Register')}
               </Link>
