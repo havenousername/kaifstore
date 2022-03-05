@@ -2,7 +2,7 @@ import { User } from '../../backend/model/users.model';
 
 export type RegisterUser = Pick<
   User,
-  'firstName' | 'lastName' | 'password' | 'birthDate'
+  'firstName' | 'lastName' | 'password' | 'birthDate' | 'email'
 > & { confirmPassword: string; gender: string; agree: boolean };
 
 export type RegisterDataFull<T> = {

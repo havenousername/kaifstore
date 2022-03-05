@@ -5,6 +5,7 @@ import { subYears } from 'date-fns';
 const useRegisterSchema = (t: TFunction) => {
   return yup
     .object({
+      email: yup.string().email(() => t('Validation.Email')),
       firstName: yup
         .string()
         .required(() => t('Validation.Required', { field: t('Register.Name') }))
@@ -60,10 +61,17 @@ const useRegisterSchema = (t: TFunction) => {
         .required(
           t('Validation.Required', { field: t('Register.ConfirmPassword') }),
         )
-        .oneOf([yup.ref('password'), null], t('Validation.ConfirmPassword')),
+        .when('password', {
+          is: (val) => val && val.length > 0,
+          then: yup
+            .string()
+            .oneOf([yup.ref('password')], t('Register.ConfirmPassword')),
+        }),
       birthDate: yup
         .date()
-        .required()
+        .required(() =>
+          t('Validation.Required', { field: t('Register.DateOfBirth') }),
+        )
         .max(subYears(new Date(), 18), t('Validation.DateOfBirth')),
       agree: yup.boolean().test(
         'validCheckbox',

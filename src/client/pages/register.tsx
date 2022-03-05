@@ -1,11 +1,12 @@
 import React, {
   FunctionComponent,
   useCallback,
+  useContext,
   useEffect,
   useState,
 } from 'react';
 import background from '../assets/background-register.png';
-import { Box, FormGroup, Typography } from '@mui/material';
+import { Box, FormControl, Typography } from '@mui/material';
 import BoxedContainer from '../components/boxed-container';
 import { useTranslation } from 'react-i18next';
 import AppIcon from '../components/common/app-icon';
@@ -22,15 +23,21 @@ import FormDatePicker from '../components/input/validation/form-date-picker';
 import FormCheckbox from '../components/input/validation/form-checkbox';
 import useRegisterSchema from '../hooks/use-register-schema';
 import { subYears } from 'date-fns';
+import useRegister from '../hooks/use-register';
+import { AuthenticationContext } from '../context/authenticated.context';
+import { useRouter } from 'next/router';
 
 const Register: FunctionComponent = () => {
   const { t, i18n } = useTranslation();
   const schema = useRegisterSchema(t);
+  const router = useRouter();
+  const { checkAuthentication } = useContext(AuthenticationContext);
 
   const { handleSubmit, control } = useForm<RegisterUser>({
     mode: 'onChange',
     resolver: yupResolver(schema),
     defaultValues: {
+      email: '',
       firstName: '',
       lastName: '',
       password: '',
@@ -52,8 +59,14 @@ const Register: FunctionComponent = () => {
     },
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const onSubmit = (data) => console.log('successfully submitted');
+  const goToPrivateRoute = async () => {
+    await checkAuthentication();
+    await router.push('/');
+  };
+
+  const [register] = useRegister(goToPrivateRoute);
+
+  const onSubmit = (data: RegisterUser) => register(data);
 
   useEffect(() => {
     console.log(subYears(new Date(), 18));
@@ -84,7 +97,18 @@ const Register: FunctionComponent = () => {
       >
         {t('Register.CreateAccountReason')}
       </Typography>
-      <FormGroup onSubmit={handleSubmit(() => console.log('submit'))}>
+      <FormControl component={'form'} onSubmit={handleSubmit(onSubmit)}>
+        <FormInput<RegisterUser>
+          name={'email'}
+          control={control}
+          inputProps={{
+            placeholder: t('Placeholder.Email'),
+            sx: {
+              fontSize: '0.8rem',
+            },
+          }}
+          helperProps={helperProps}
+        />
         <Box display={'flex'} justifyContent={'space-between'}>
           <FormInput<RegisterUser>
             name={'firstName'}
@@ -209,18 +233,11 @@ const Register: FunctionComponent = () => {
           />
         </Box>
         <Box display={'flex'} justifyContent={'center'} marginTop={'2rem'}>
-          <AppBaseButton
-            variant={'contained'}
-            type={'button'}
-            onClick={handleSubmit(
-              () => console.log('submit'),
-              () => console.log('invalid'),
-            )}
-          >
+          <AppBaseButton variant={'contained'} type={'submit'}>
             {t('Register.Register')}
           </AppBaseButton>
         </Box>
-      </FormGroup>
+      </FormControl>
     </BoxedContainer>
   );
 };

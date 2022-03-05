@@ -33,7 +33,11 @@ const FormInput: <TFieldValues>(
             }}
           />
           {error && (
-            <FormHelperText error={!!error} {...helperProps}>
+            <FormHelperText
+              error={!!error}
+              {...helperProps}
+              sx={{ ...helperProps.sx, height: '3.1rem' }}
+            >
               {error.message}
             </FormHelperText>
           )}
