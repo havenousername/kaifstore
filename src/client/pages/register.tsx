@@ -4,7 +4,6 @@ import { Box, FormGroup, Typography } from '@mui/material';
 import BoxedContainer from '../components/boxed-container';
 import { useTranslation } from 'react-i18next';
 import AppIcon from '../components/common/app-icon';
-import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import FormInput from '../components/input/validation/form-input';
@@ -16,78 +15,11 @@ import FormSelect from '../components/input/validation/form-select';
 import { Gender } from '../interfaces/gender';
 import FormDatePicker from '../components/input/validation/form-date-picker';
 import FormCheckbox from '../components/input/validation/form-checkbox';
+import useRegisterSchema from '../hooks/use-register-schema';
 
 const Register: FunctionComponent = () => {
   const { t, i18n } = useTranslation();
-
-  const schema = yup
-    .object({
-      firstName: yup
-        .string()
-        .required(() => t('Validation.Required', { field: t('Register.Name') }))
-        .min(2, () =>
-          t('Validation.MinLength', { length: 2, field: t('Register.Name') }),
-        ),
-      lastName: yup
-        .string()
-        .required(() =>
-          t('Validation.Required', { field: t('Register.FamilyName') }),
-        ),
-      password: yup
-        .string()
-        .required(() =>
-          t('Validation.Required', { field: t('Register.Password') }),
-        )
-        .min(8, () =>
-          t('Validation.MinLength', {
-            length: 8,
-            field: t('Register.Password'),
-          }),
-        )
-        .max(16, () =>
-          t('Validation.MaxLength', {
-            length: 16,
-            field: t('Register.Password'),
-          }),
-        )
-        .test(
-          'validPassword',
-          () => t('Validation.Password'),
-          (value) => {
-            const hasUpperCase = /[A-Z]/.test(value);
-            const hasLowerCase = /[a-z]/.test(value);
-            const hasNumber = /[0-9]/.test(value);
-            const hasSymbol = /[!@#%&]/.test(value);
-            let validConditions = 0;
-            const numberOfMustBeValidConditions = 3;
-            const conditions = [
-              hasLowerCase,
-              hasUpperCase,
-              hasNumber,
-              hasSymbol,
-            ];
-            conditions.forEach((condition) =>
-              condition ? validConditions++ : null,
-            );
-            return validConditions >= numberOfMustBeValidConditions;
-          },
-        ),
-      confirmPassword: yup
-        .string()
-        .required(
-          t('Validation.Required', { field: t('Register.ConfirmPassword') }),
-        )
-        .oneOf([yup.ref('password'), null], t('Validation.ConfirmPassword')),
-      birthDate: yup.date().required(),
-      agree: yup.boolean().test(
-        'validCheckbox',
-        () => t('Validation.AgreeCondition'),
-        (value) => {
-          return value;
-        },
-      ),
-    })
-    .required();
+  const schema = useRegisterSchema(t);
 
   const { handleSubmit, control } = useForm<RegisterUser>({
     mode: 'onChange',
@@ -106,6 +38,13 @@ const Register: FunctionComponent = () => {
   const onPasswordShowChange = useCallback(() => {
     setShowPassword(!showPassword);
   }, [showPassword]);
+
+  const helperProps = {
+    sx: {
+      fontSize: '0.75rem',
+      lineHeight: '1.2',
+    },
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onSubmit = (data) => console.log('successfully submitted');
@@ -149,12 +88,7 @@ const Register: FunctionComponent = () => {
             sx={{
               flexBasis: '48%',
             }}
-            helperProps={{
-              sx: {
-                fontSize: '0.75rem',
-                lineHeight: '1.2',
-              },
-            }}
+            helperProps={helperProps}
           />
           <FormInput<RegisterUser>
             name={'lastName'}
@@ -168,12 +102,7 @@ const Register: FunctionComponent = () => {
             sx={{
               flexBasis: '48%',
             }}
-            helperProps={{
-              sx: {
-                fontSize: '0.75rem',
-                lineHeight: '1.2',
-              },
-            }}
+            helperProps={helperProps}
           />
         </Box>
         <Box display={'flex'} justifyContent={'space-between'}>
@@ -203,12 +132,7 @@ const Register: FunctionComponent = () => {
             sx={{
               flexBasis: '48%',
             }}
-            helperProps={{
-              sx: {
-                fontSize: '0.75rem',
-                lineHeight: '1.2',
-              },
-            }}
+            helperProps={helperProps}
           />
           <FormInput<RegisterUser>
             name={'confirmPassword'}
@@ -233,12 +157,7 @@ const Register: FunctionComponent = () => {
               ),
               placeholder: t('Placeholder.ConfirmPassword'),
             }}
-            helperProps={{
-              sx: {
-                fontSize: '0.75rem',
-                lineHeight: '1.2',
-              },
-            }}
+            helperProps={helperProps}
           />
         </Box>
         <Box display={'flex'} justifyContent={'space-between'}>
@@ -254,6 +173,7 @@ const Register: FunctionComponent = () => {
             sx={{
               flexBasis: '48%',
             }}
+            helperProps={helperProps}
           />
           <FormDatePicker
             name={'birthDate'}
@@ -264,6 +184,7 @@ const Register: FunctionComponent = () => {
             sx={{
               flexBasis: '48%',
             }}
+            helperProps={helperProps}
           />
         </Box>
         <Box>
