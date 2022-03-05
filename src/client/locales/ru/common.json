@@ -7,7 +7,8 @@
     "Enter": "Войти",
     "RememberMe": "Запомнить меня",
     "DontHaveAccount": "Не имеете аккаунта",
-    "Register":  ""
+    "NoAccount": "Не имеете еще аккаунта?",
+    "Register": "Зарегистрироваться"
   },
   "Placeholder": {
     "Password": "Пароль",
@@ -89,7 +90,9 @@
     "Gender": "Пол",
     "DateOfBirth": "Дата рождения",
     "AgreeText": "Я согласен с условиями\nи что мне больше 18 лет",
-    "Register": "Зарегестрироваться"
+    "Register": "Зарегестрироваться",
+    "HaveAccount": "Уже имеете аккаунт?",
+    "Login": "Войти"
   },
   "Utils": {
     "Select": "Выбрать",

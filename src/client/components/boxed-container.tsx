@@ -8,7 +8,8 @@ const BoxedContainer: FunctionComponent<{
   title: string;
   children: ReactNode;
   sxBox?: SxProps;
-}> = ({ title, background, children, sxBox }) => {
+  footer?: ReactNode;
+}> = ({ title, background, children, sxBox, footer }) => {
   return (
     <Box
       sx={{
@@ -56,6 +57,11 @@ const BoxedContainer: FunctionComponent<{
         >
           {children}
         </Box>
+        {footer && (
+          <Box width={'100%'} display={'flex'} justifyContent={'center'}>
+            {footer}
+          </Box>
+        )}
       </Container>
     </Box>
   );

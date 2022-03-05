@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react';
 import Typography from '@mui/material/Typography';
-import { Box } from '@mui/material';
+import { Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import AppInput from '../components/input/app-input';
 import AppIcon from '../components/common/app-icon';
@@ -54,7 +54,29 @@ const Login = () => {
 
   return (
     <>
-      <BoxedContainer background={background.src} title={t('KaifStore')}>
+      <BoxedContainer
+        background={background.src}
+        title={t('KaifStore')}
+        footer={
+          <>
+            <Typography
+              variant={'h5'}
+              component={'h6'}
+              color={'grey.100'}
+              maxWidth={'38ch'}
+              marginTop={'5rem'}
+              display={'flex'}
+              minWidth={'450px'}
+              justifyContent={'space-between'}
+            >
+              <span>{t('LoginPage.HaveAccount')}</span>
+              <Link color={'secondary'} fontWeight={'600'} href={'/register'}>
+                {t('LoginPage.Register')}
+              </Link>
+            </Typography>
+          </>
+        }
+      >
         <Typography
           variant={'h4'}
           component={'h2'}

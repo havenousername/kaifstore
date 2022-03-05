@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import background from '../assets/background-register.png';
-import { Box, FormControl, Typography } from '@mui/material';
+import { Box, FormControl, Link, Typography } from '@mui/material';
 import BoxedContainer from '../components/boxed-container';
 import { useTranslation } from 'react-i18next';
 import AppIcon from '../components/common/app-icon';
@@ -76,7 +76,32 @@ const Register: FunctionComponent = () => {
     <BoxedContainer
       background={background.src}
       title={t('KaifStore')}
-      sxBox={{ width: '100%', maxWidth: 650 }}
+      sxBox={{
+        width: '100%',
+        maxWidth: 650,
+        maxHeight: 600,
+        height: '100%',
+        overflowY: 'scroll',
+      }}
+      footer={
+        <>
+          <Typography
+            variant={'h5'}
+            component={'h6'}
+            color={'grey.100'}
+            maxWidth={'38ch'}
+            marginTop={'5rem'}
+            display={'flex'}
+            minWidth={'280px'}
+            justifyContent={'space-between'}
+          >
+            <span>{t('Register.HaveAccount')}</span>
+            <Link color={'secondary'} fontWeight={'600'} href={'/login'}>
+              {t('Register.Login')}
+            </Link>
+          </Typography>
+        </>
+      }
     >
       <Typography
         variant={'h4'}
