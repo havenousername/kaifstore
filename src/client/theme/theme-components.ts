@@ -1,6 +1,8 @@
 import { Components } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { SimplePaletteColorOptions } from '@mui/material/styles/createPalette';
+// eslint-disable-next-line
+import type {} from '@mui/lab/themeAugmentation';
 
 const components = (theme: Theme): Components => ({
   MuiCssBaseline: {
@@ -60,6 +62,15 @@ const components = (theme: Theme): Components => ({
       paper: {
         borderRadius: 20,
         padding: '15px',
+      },
+    },
+  },
+  MuiCalendarPicker: {
+    styleOverrides: {
+      root: {
+        borderRadius: 14,
+        backgroundColor: theme.palette.grey[800],
+        border: `2px solid ${theme.palette.grey[500]}`,
       },
     },
   },
