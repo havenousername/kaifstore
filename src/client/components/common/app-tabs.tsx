@@ -1,5 +1,5 @@
 import { Box, Tab, Tabs } from '@mui/material';
-import { AppTabsProps } from '../interfaces/tabs-props';
+import { AppTabsProps } from '../../interfaces/tabs-props';
 import { ReactNode } from 'react';
 
 function a11yProps(index: number) {

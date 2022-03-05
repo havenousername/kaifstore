@@ -1,18 +1,19 @@
 import React, { useCallback, useContext, useState } from 'react';
 import Typography from '@mui/material/Typography';
-import { Box, Container } from '@mui/material';
+import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import AppInput from '../components/app-input';
-import AppIcon from '../components/app-icon';
-import AppCheckbox from '../components/app-checkbox';
+import AppInput from '../components/input/app-input';
+import AppIcon from '../components/common/app-icon';
+import AppCheckbox from '../components/input/app-checkbox';
 import background from '../assets/background-login.png';
-import AppBaseButton from '../components/app-base-button';
+import AppBaseButton from '../components/common/app-base-button';
 import { ReactComponent as DontShowEyeIcon } from '../assets/icons/dont-show-eye.svg';
 import { ReactComponent as ShowEyeIcon } from '../assets/icons/show-eye.svg';
 import { ReactComponent as EmailIcon } from '../assets/icons/at.svg';
 import { useRouter } from 'next/router';
 import useLogin from '../hooks/use-login';
 import { AuthenticationContext } from '../context/authenticated.context';
+import BoxedContainer from '../components/boxed-container';
 
 const Login = () => {
   const { t } = useTranslation();
@@ -53,147 +54,100 @@ const Login = () => {
 
   return (
     <>
-      <Box
-        sx={{
-          background: 'url(' + background.src + ')',
-          backgroundPosition: 'center top',
-          backgroundSize: 'cover',
-          backgroundRepeat: 'no-repeat',
-          height: '100%',
-          backgroundColor: '#000102',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Container
-          maxWidth="lg"
+      <BoxedContainer background={background.src} title={t('KaifStore')}>
+        <Typography
+          variant={'h4'}
+          component={'h2'}
+          fontWeight={'bold'}
+          textAlign={'left'}
+          marginBottom={'1rem'}
+        >
+          {t('LoginPage.Login')}
+        </Typography>
+        <Typography
+          variant={'h6'}
+          component={'h6'}
+          color={'grey.100'}
+          maxWidth={'38ch'}
+          marginBottom={'1rem'}
+        >
+          {t('LoginPage.LoginInfo')}
+        </Typography>
+        <Box
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            flexDirection: 'column',
-            justifyContent: 'center',
+            maxWidth: '18.75rem',
+            width: '100%',
           }}
         >
-          <Typography variant={'h1'} component={'h1'} marginBottom={'3.5rem'}>
-            {t('KaifStore')}
-          </Typography>
-          <Box
+          <AppInput
             sx={{
-              display: 'flex',
-              flexDirection: { xs: 'column' },
-              alignItems: 'start',
-              backgroundColor: 'grey.50',
-              overflow: 'hidden',
-              justifyContent: 'flex-start',
-              borderRadius: '47px',
-              boxShadow: 1,
-              fontWeight: 'bold',
-              height: 500,
-              width: 500,
-              px: 10,
-              py: 8,
+              my: 2,
             }}
+            inputProps={{
+              value: email,
+              onChange: onEmailChange,
+              startAdornment: (
+                <AppIcon width={20} height={20} htmlColor={'white'}>
+                  <EmailIcon />
+                </AppIcon>
+              ),
+              placeholder: t('LoginPage.EmailPlaceholder'),
+            }}
+          />
+          <AppInput
+            sx={{
+              my: 2,
+            }}
+            inputProps={{
+              value: password,
+              onChange: onPasswordChange,
+              type: showPassword ? 'text' : 'password',
+              startAdornment: (
+                <AppIcon
+                  width={20}
+                  height={20}
+                  htmlColor={'white'}
+                  onClick={onPasswordShowChange}
+                  sx={{
+                    cursor: 'pointer',
+                  }}
+                >
+                  {showPassword ? <DontShowEyeIcon /> : <ShowEyeIcon />}
+                </AppIcon>
+              ),
+              placeholder: t('LoginPage.PasswordPlaceholder'),
+            }}
+          />
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+          }}
+        >
+          <AppCheckbox
+            labelProps={{
+              label: t('LoginPage.RememberMe'),
+            }}
+          />
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            width: '100%',
+            marginTop: '1.5rem',
+          }}
+        >
+          <AppBaseButton
+            variant={'contained'}
+            color={'primary'}
+            type={'button'}
+            onClick={onLoginTry}
           >
-            <Typography
-              variant={'h4'}
-              component={'h2'}
-              fontWeight={'bold'}
-              textAlign={'left'}
-              marginBottom={'1rem'}
-            >
-              {t('LoginPage.Login')}
-            </Typography>
-            <Typography
-              variant={'h6'}
-              component={'h6'}
-              color={'grey.100'}
-              maxWidth={'38ch'}
-              marginBottom={'1rem'}
-            >
-              {t('LoginPage.LoginInfo')}
-            </Typography>
-            <Box
-              sx={{
-                maxWidth: '18.75rem',
-                width: '100%',
-              }}
-            >
-              <AppInput
-                sx={{
-                  my: 2,
-                }}
-                inputProps={{
-                  value: email,
-                  onChange: onEmailChange,
-                  startAdornment: (
-                    <AppIcon width={20} height={20} htmlColor={'white'}>
-                      <EmailIcon />
-                    </AppIcon>
-                  ),
-                  placeholder: t('LoginPage.EmailPlaceholder'),
-                }}
-              />
-              <AppInput
-                sx={{
-                  my: 2,
-                }}
-                inputProps={{
-                  value: password,
-                  onChange: onPasswordChange,
-                  type: showPassword ? 'text' : 'password',
-                  startAdornment: (
-                    <AppIcon
-                      width={20}
-                      height={20}
-                      htmlColor={'white'}
-                      onClick={onPasswordShowChange}
-                      sx={{
-                        cursor: 'pointer',
-                      }}
-                    >
-                      {showPassword ? <DontShowEyeIcon /> : <ShowEyeIcon />}
-                    </AppIcon>
-                  ),
-                  placeholder: t('LoginPage.PasswordPlaceholder'),
-                }}
-              />
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-              }}
-            >
-              <AppCheckbox
-                labelProps={{
-                  label: t('LoginPage.RememberMe'),
-                }}
-              />
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                width: '100%',
-                marginTop: '1.5rem',
-              }}
-            >
-              <AppBaseButton
-                variant={'contained'}
-                color={'primary'}
-                type={'button'}
-                onClick={onLoginTry}
-              >
-                {t('LoginPage.Enter')}
-              </AppBaseButton>
-            </Box>
-          </Box>
-          <Box>
-            <Typography />
-            <Typography />
-          </Box>
-        </Container>
-      </Box>
+            {t('LoginPage.Enter')}
+          </AppBaseButton>
+        </Box>
+      </BoxedContainer>
     </>
   );
 };

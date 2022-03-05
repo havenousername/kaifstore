@@ -36,6 +36,14 @@ export class ViewController {
   }
 
   @Public()
+  @ApiOperation({ summary: 'Register page' })
+  @ApiResponse({ status: 200 })
+  @Get('/register')
+  public async showRegister(@Req() req: Request, @Res() res: Response) {
+    await this.handler(req, res);
+  }
+
+  @Public()
   @ApiOperation({ summary: 'Catalog page' })
   @ApiResponse({ status: 200 })
   @Get('/catalog')

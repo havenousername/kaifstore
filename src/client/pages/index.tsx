@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Typography } from '@mui/material';
 import { Product } from '../../backend/model/products.model';
 import { NextPageWithLayout } from '../interfaces/pages-layout';
-import AppLayout from '../components/app-layout';
+import AppLayout from '../components/functional/app-layout';
 import LoginButton from '../components/login-button';
 import { AuthenticationContext } from '../context/authenticated.context';
 import ProductsCollection from '../components/products-collection';

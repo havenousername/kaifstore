@@ -1,7 +1,7 @@
 import { Box, Typography, Avatar } from '@mui/material';
-import { User } from '../../backend/model/users.model';
-import { ReactComponent as DefaultUserIcon } from '../assets/icons/default-user.svg';
-import AppBaseButton from './app-base-button';
+import { User } from '../../../backend/model/users.model';
+import { ReactComponent as DefaultUserIcon } from '../../assets/icons/default-user.svg';
+import AppBaseButton from '../common/app-base-button';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';

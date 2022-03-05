@@ -1,7 +1,7 @@
 import Fade from '@mui/material/Fade';
 import { Box, Popper, PopperPlacementType, styled } from '@mui/material';
 import React, { MutableRefObject, ReactNode, useRef } from 'react';
-import useOnClickOutside from '../hooks/use-on-click-outside';
+import useOnClickOutside from '../../hooks/use-on-click-outside';
 import { SxProps } from '@mui/system';
 
 const StyledPopperContent = styled(Box)(({ theme }) => ({

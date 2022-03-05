@@ -1,6 +1,6 @@
 import { alpha, InputBase, styled } from '@mui/material';
-import { ReactComponent as SearchIcon } from '../assets/icons/search.svg';
-import { SearchbarProps } from '../interfaces/searchbar';
+import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg';
+import { SearchbarProps } from '../../interfaces/searchbar';
 import { lighten } from '@mui/system/colorManipulator';
 
 const Search = styled('div')(({ theme }) => ({

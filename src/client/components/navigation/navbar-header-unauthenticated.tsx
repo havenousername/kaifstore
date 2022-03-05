@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import LoginButton from './login-button';
+import LoginButton from '../login-button';
 
 const NavbarHeaderUnauthenticated = () => {
   const { t } = useTranslation();

@@ -1,4 +1,4 @@
-import AppCarousel from './app-carousel';
+import AppCarousel from './carousel/app-carousel';
 import { CarouselProvider } from 'pure-react-carousel';
 import React from 'react';
 import useGetHttpUrl from '../hooks/use-get-http-url';

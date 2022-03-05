@@ -1,4 +1,4 @@
-import { ReactComponent as GoBackIcon } from '../assets/icons/left-arrow.svg';
+import { ReactComponent as GoBackIcon } from '../../assets/icons/left-arrow.svg';
 import { Box, Typography } from '@mui/material';
 
 const BackButton = ({ goBack, text }: { goBack: () => void; text: string }) => {

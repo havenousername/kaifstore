@@ -1,6 +1,6 @@
 import { NextPageWithLayout } from '../interfaces/pages-layout';
 import React, { ReactElement, useCallback, useEffect, useRef } from 'react';
-import AppLayout from '../components/app-layout';
+import AppLayout from '../components/functional/app-layout';
 import { Box, Typography } from '@mui/material';
 import ProductsCollection from '../components/products-collection';
 import useGetProducts from '../hooks/use-get-products';

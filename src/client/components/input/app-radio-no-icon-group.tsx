@@ -6,7 +6,7 @@ import {
   RadioGroup,
   RadioProps,
 } from '@mui/material';
-import { RadioInputProps } from '../interfaces/radio-input-props';
+import { RadioInputProps } from '../../interfaces/radio-input-props';
 import { SxProps } from '@mui/system';
 
 function BpRadio(props: RadioProps) {
