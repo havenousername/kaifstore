@@ -1,5 +1,6 @@
 import * as yup from 'yup';
 import { TFunction } from 'react-i18next';
+import { subYears } from 'date-fns';
 
 const useRegisterSchema = (t: TFunction) => {
   return yup
@@ -60,7 +61,10 @@ const useRegisterSchema = (t: TFunction) => {
           t('Validation.Required', { field: t('Register.ConfirmPassword') }),
         )
         .oneOf([yup.ref('password'), null], t('Validation.ConfirmPassword')),
-      birthDate: yup.date().required(),
+      birthDate: yup
+        .date()
+        .required()
+        .max(subYears(new Date(), 18), t('Validation.DateOfBirth')),
       agree: yup.boolean().test(
         'validCheckbox',
         () => t('Validation.AgreeCondition'),

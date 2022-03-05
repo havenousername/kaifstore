@@ -1,4 +1,9 @@
-import React, { FunctionComponent, useCallback, useState } from 'react';
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import background from '../assets/background-register.png';
 import { Box, FormGroup, Typography } from '@mui/material';
 import BoxedContainer from '../components/boxed-container';
@@ -16,6 +21,7 @@ import { Gender } from '../interfaces/gender';
 import FormDatePicker from '../components/input/validation/form-date-picker';
 import FormCheckbox from '../components/input/validation/form-checkbox';
 import useRegisterSchema from '../hooks/use-register-schema';
+import { subYears } from 'date-fns';
 
 const Register: FunctionComponent = () => {
   const { t, i18n } = useTranslation();
@@ -48,6 +54,10 @@ const Register: FunctionComponent = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onSubmit = (data) => console.log('successfully submitted');
+
+  useEffect(() => {
+    console.log(subYears(new Date(), 18));
+  }, []);
 
   return (
     <BoxedContainer
