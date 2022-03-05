@@ -1,4 +1,4 @@
-import AppCarousel from './app-carousel';
+import AppCarousel from './carousel/app-carousel';
 import { Box, Typography } from '@mui/material';
 import ProductCard from './product-card';
 import React, { MouseEvent } from 'react';

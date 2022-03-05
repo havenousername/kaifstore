@@ -10,6 +10,7 @@ import { AddressesService } from '../addresses/addresses.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import omit from 'lodash/omit';
 import { Role } from '../model/roles.model';
+import { Address } from '../model/addresses.model';
 
 @Injectable()
 export class UsersService {
@@ -29,11 +30,14 @@ export class UsersService {
   }
 
   async create(dto: CreateUserDto) {
-    const address = await this.addressService.create(dto.address);
+    let address: Address;
+    if (dto.address) {
+      address = await this.addressService.create(dto.address);
+    }
 
     return await this.userRepository.create({
       ...dto,
-      addressId: address.id,
+      addressId: address ? address.id : undefined,
       roleId: dto.roleId ?? (await this.getDefaultRole()).id,
     });
   }

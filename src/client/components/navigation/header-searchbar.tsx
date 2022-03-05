@@ -1,10 +1,10 @@
 import { Box, Typography } from '@mui/material';
-import AppSearchbar from './app-searchbar';
-import { SearchbarProps } from '../interfaces/searchbar';
+import AppSearchbar from '../common/app-searchbar';
+import { SearchbarProps } from '../../interfaces/searchbar';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
-import useEffectDebounce from '../hooks/use-effect-debounce';
-import SearchbarFilter from './searchbar-filter';
+import useEffectDebounce from '../../hooks/use-effect-debounce';
+import SearchbarFilter from '../searchbar-filter';
 import { useEffect, useRef, useState } from 'react';
 import { ParsedUrlQuery } from 'querystring';
 

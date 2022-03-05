@@ -3,17 +3,17 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import NavbarSection from './navbar-section';
 import useSWR from 'swr';
-import useNavbarLinks from '../hooks/use-navbar-links';
+import useNavbarLinks from '../../hooks/use-navbar-links';
 import { Box, Divider, Typography } from '@mui/material';
-import AppAccordion from './app-accordion';
-import { AccordionPropData } from '../interfaces/accordions';
-import { ProductGroupLimited } from '../../backend/interfaces/product-groups';
-import { ProductGroup } from '../../backend/model/product-groups.model';
-import standardFetcher from '../api/standard-fetcher';
+import AppAccordion from '../common/app-accordion';
+import { AccordionPropData } from '../../interfaces/accordions';
+import { ProductGroupLimited } from '../../../backend/interfaces/product-groups';
+import { ProductGroup } from '../../../backend/model/product-groups.model';
+import standardFetcher from '../../api/standard-fetcher';
 import {
   AuthenticationContext,
   UserAuthenticated,
-} from '../context/authenticated.context';
+} from '../../context/authenticated.context';
 import NavbarHeaderAuthenticated from './navbar-header-authenticated';
 import NavbarHeaderUnauthenticated from './navbar-header-unauthenticated';
 import { useRouter } from 'next/router';

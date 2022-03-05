@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import AppLayout from '../components/app-layout';
+import AppLayout from '../components/functional/app-layout';
 import { NextPageWithLayout } from '../interfaces/pages-layout';
 
 const Settings: NextPageWithLayout = () => {

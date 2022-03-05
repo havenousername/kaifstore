@@ -5,8 +5,8 @@ import MuiAccordionSummary, {
   AccordionSummaryProps,
 } from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
-import { ReactComponent as ArrowForwardIcon } from '../assets/icons/arrow-forward.svg';
-import { AccordionPropData } from '../interfaces/accordions';
+import { ReactComponent as ArrowForwardIcon } from '../../assets/icons/arrow-forward.svg';
+import { AccordionPropData } from '../../interfaces/accordions';
 import { Theme } from '@mui/material/styles';
 
 const Accordion = styled((props: AccordionProps) => (

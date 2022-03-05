@@ -7,7 +7,7 @@ import {
   Typography,
 } from '@mui/material';
 import Link from 'next/link';
-import { LinkItem } from '../interfaces/navbars';
+import { LinkItem } from '../../interfaces/navbars';
 
 const NavbarSection = ({
   title,

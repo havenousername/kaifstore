@@ -3,6 +3,7 @@ import {
   IsDateString,
   IsEmail,
   IsObject,
+  IsOptional,
   IsString,
   Length,
 } from 'class-validator';
@@ -61,8 +62,9 @@ export class CreateUserDto {
     example: 'country, city, etc...',
     description: 'Object of address',
   })
+  @IsOptional({ always: true })
   @IsObject({ message: 'Address is not an object' })
-  readonly address: AddAddressDto;
+  readonly address?: AddAddressDto;
 
   @ApiProperty({
     example: 1,

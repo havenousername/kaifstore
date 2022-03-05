@@ -1,10 +1,10 @@
 import { ItemProp } from '../interfaces/labeled-prop';
 import React, { ChangeEvent, FunctionComponent, useState } from 'react';
 import { Box } from '@mui/material';
-import FilterTabHeader from './filter-tab-header';
+import FilterTabHeader from './filter/filter-tab-header';
 import { useTranslation } from 'react-i18next';
-import AppRadioNoIconGroup from './app-radio-no-icon-group';
-import FilterTabFooter from './filter-tab-footer';
+import AppRadioNoIconGroup from './input/app-radio-no-icon-group';
+import FilterTabFooter from './filter/filter-tab-footer';
 
 const OptionSelectFilter: FunctionComponent<{
   value: number;

@@ -10,7 +10,7 @@ import React, {
 import 'pure-react-carousel/dist/react-carousel.es.css';
 import AppCarouselCardSlide from './app-carousel-card-slide';
 import AppCarouselDotGroup from './app-carousel-dot-group';
-import { ReactComponent as ArrowIcon } from '../assets/icons/left-arrow.svg';
+import { ReactComponent as ArrowIcon } from '../../assets/icons/left-arrow.svg';
 import { Box } from '@mui/material';
 
 const AppCarousel = ({

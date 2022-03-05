@@ -1,7 +1,7 @@
 import { ChangeEvent, ReactNode, useState } from 'react';
-import Navbar from './navbar';
+import Navbar from '../navigation/navbar';
 import { Box } from '@mui/material';
-import HeaderSearchbar from './header-searchbar';
+import HeaderSearchbar from '../navigation/header-searchbar';
 import { useTranslation } from 'react-i18next';
 
 const AppLayout = ({ children }: { children: ReactNode }) => {

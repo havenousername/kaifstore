@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useRouter } from 'next/router';
-import AppBaseButton from './app-base-button';
+import AppBaseButton from './common/app-base-button';
 import { useTranslation } from 'react-i18next';
 import { SxProps } from '@mui/system';
 

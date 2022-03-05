@@ -4,7 +4,7 @@ import '../styles/app.css';
 import '../i18n';
 import { useTranslation } from 'react-i18next';
 import { AppPropsWithLayout } from '../interfaces/pages-layout';
-import AppTheme from '../components/app-theme';
+import AppTheme from '../components/functional/app-theme';
 import darkScrollbar from '@mui/material/darkScrollbar';
 import useCheckAuthentication from '../hooks/use-check-authentication';
 import { AuthenticationContext } from '../context/authenticated.context';

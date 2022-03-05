@@ -8,10 +8,10 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import DropdownPopper from './dropdown-popper';
+import DropdownPopper from './common/dropdown-popper';
 import { TabItemProp } from '../interfaces/tabs-props';
-import AppTabs from './app-tabs';
-import PriceFilter from './price-filter';
+import AppTabs from './common/app-tabs';
+import PriceFilter from './filter/price-filter';
 import { SearchFiltersState } from '../interfaces/searchbar';
 import OptionSelectFilter from './option-select-filter';
 import { ItemProp } from '../interfaces/labeled-prop';

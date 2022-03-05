@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
-import AppBaseButton from './app-base-button';
+import AppBaseButton from '../common/app-base-button';
 import React from 'react';
-import { FilterTabFooterProps } from '../interfaces/filter-tab-footer';
+import { FilterTabFooterProps } from '../../interfaces/filter-tab-footer';
 
 const FilterTabFooter = ({
   onSelect,

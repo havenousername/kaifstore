@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
-import AppRange from './app-range';
+import AppRange from '../input/app-range';
 import React, { ChangeEvent, useState } from 'react';
-import AppInput from './app-input';
+import AppInput from '../input/app-input';
 import { useTranslation } from 'react-i18next';
 import FilterTabFooter from './filter-tab-footer';
 import FilterTabHeader from './filter-tab-header';

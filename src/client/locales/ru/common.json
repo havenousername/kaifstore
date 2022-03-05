@@ -7,7 +7,17 @@
     "Enter": "Войти",
     "RememberMe": "Запомнить меня",
     "DontHaveAccount": "Не имеете аккаунта",
-    "Register":  ""
+    "NoAccount": "Не имеете еще аккаунта?",
+    "Register": "Зарегистрироваться"
+  },
+  "Placeholder": {
+    "Password": "Пароль",
+    "Email": "Емайл",
+    "FirstName": "Имя",
+    "FamilyName": "Фaмилия",
+    "ConfirmPassword": "Потвердите пароль",
+    "Gender": "Пол",
+    "DateOfBirth": "Дата рождения"
   },
   "KaifStore": "KaifStore",
   "IndexPage": {
@@ -70,9 +80,33 @@
     "LastVisited": "Недавно просмотренные",
     "NoViews": "Вы еще не посетили не один другой продукт на данный момент"
   },
+  "Register": {
+    "CreateAccount": "Cоздать аккаунт",
+    "CreateAccountReason": "Создайте аккаунт чтобы получить полный доступ \nко всем функциям приложения",
+    "Name": "Имя",
+    "FamilyName": "Фамилия",
+    "Password": "Пароль",
+    "ConfirmPassword": "Потвердить пароль",
+    "Gender": "Пол",
+    "DateOfBirth": "Дата рождения",
+    "AgreeText": "Я согласен с условиями\nи что мне больше 18 лет",
+    "Register": "Зарегестрироваться",
+    "HaveAccount": "Уже имеете аккаунт?",
+    "Login": "Войти"
+  },
   "Utils": {
     "Select": "Выбрать",
     "Cancel": "Отмена",
     "GoBack": "Назад"
+  },
+  "Validation": {
+    "Email": "Электронная почта должна быть валидна (пример: user@mail.com)",
+    "DateOfBirth": "Вам должно быть как минимум 18 для регистрации",
+    "Required": "Поле \"{{field}}\" является обязательным",
+    "MinLength": "Поле \"{{field}}\" не может быть короче {{length}} символов",
+    "MaxLength": "Поле \"{{field}}\" не может быть длиннее {{length}} символов",
+    "Password": "Пароль должен иметь в себе один символ, одну заглавную и одну строчную букву",
+    "ConfirmPassword": "Пароли не совпадают",
+    "AgreeCondition": "Для регистрации вы должны потвердить что вы старше 18"
   }
 }
