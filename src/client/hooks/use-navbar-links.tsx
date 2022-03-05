@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { LinkItem } from '../interfaces/navbars';
 import { ReactComponent as MainPage } from '/assets/icons/main.svg';
 import { ReactComponent as CatalogPage } from '../assets/icons/catalog.svg';
+import { ReactComponent as ProductPage } from '../assets/icons/products.svg';
 import { useRouter } from 'next/router';
 
 const useNavbarLinks = () => {
@@ -23,13 +24,25 @@ const useNavbarLinks = () => {
     },
   ]);
 
+  const [adminNavbars, setAdminNavbars] = useState<Array<LinkItem>>([
+    {
+      name: t('Pages.Products'),
+      path: '/products',
+      current: router.route === '/products',
+      icon: <ProductPage />,
+    },
+  ]);
+
   useEffect(() => {
     setNavbars((prev) =>
       prev.map((path) => ({ ...path, current: router.route === path.path })),
     );
+    setAdminNavbars((prev) =>
+      prev.map((path) => ({ ...path, current: router.route === path.path })),
+    );
   }, [router.route]);
 
-  return [navBars];
+  return [navBars, adminNavbars];
 };
 
 export default useNavbarLinks;

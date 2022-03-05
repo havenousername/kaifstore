@@ -12,21 +12,25 @@ import { LinkItem } from '../../interfaces/navbars';
 const NavbarSection = ({
   title,
   linkItems,
+  showDivider = true,
 }: {
-  title: string;
+  title?: string;
   linkItems: LinkItem[];
+  showDivider?: boolean;
 }) => {
   return (
     <>
-      <Divider sx={{ margin: '2rem 0 3rem' }} />
-      <Typography
-        variant={'caption'}
-        component={'span'}
-        gutterBottom
-        paddingLeft={'1rem'}
-      >
-        {title}
-      </Typography>
+      {showDivider && <Divider sx={{ margin: '2rem 0 3rem' }} />}
+      {title && (
+        <Typography
+          variant={'caption'}
+          component={'span'}
+          gutterBottom
+          paddingLeft={'1rem'}
+        >
+          {title}
+        </Typography>
+      )}
       <MenuList>
         {linkItems.map((navbar, key) => {
           return (
