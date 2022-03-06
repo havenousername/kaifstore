@@ -13,14 +13,15 @@ const useNavbarLinks = () => {
     {
       name: t('Pages.Index'),
       path: '/',
-      current: router.route === '/',
+      current: false,
       icon: <MainPage />,
     },
     {
       name: t('Pages.Catalog'),
       path: '/catalog',
-      current: router.route === '/catalog',
+      current: false,
       icon: <CatalogPage />,
+      subPaths: ['/catalog/[productId]'],
     },
   ]);
 
@@ -28,18 +29,22 @@ const useNavbarLinks = () => {
     {
       name: t('Pages.Products'),
       path: '/admin/products',
-      current: router.route === '/admin/products',
+      current: false,
       icon: <ProductPage />,
+      subPaths: ['/admin/products/[productId]'],
     },
   ]);
 
   useEffect(() => {
-    setNavbars((prev) =>
-      prev.map((path) => ({ ...path, current: router.route === path.path })),
-    );
-    setAdminNavbars((prev) =>
-      prev.map((path) => ({ ...path, current: router.route === path.path })),
-    );
+    const applyCurrent = (prevState: LinkItem[]) =>
+      prevState.map((state) => ({
+        ...state,
+        current:
+          router.route === state.path ||
+          (state.subPaths && state.subPaths.includes(router.route)),
+      }));
+    setNavbars((prevState) => applyCurrent(prevState));
+    setAdminNavbars((prev) => applyCurrent(prev));
   }, [router.route]);
 
   return [navBars, adminNavbars];

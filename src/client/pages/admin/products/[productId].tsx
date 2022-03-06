@@ -65,6 +65,10 @@ const ProductDetails: NextPageWithLayout = (props: {
   });
   const [isLoaded, setIsLoaded] = useState(false);
   const [selectableGroups, setSelectableGroups] = useState<SelectValue[]>([]);
+  const [productTypes] = useState<SelectValue[]>([
+    { value: '1', content: t('Products.TypeStandard') },
+    { value: '2', content: t('Products.TypeTobaccoMarked') },
+  ]);
 
   useEffect(() => {
     if (product && !isLoaded) {
@@ -73,6 +77,7 @@ const ProductDetails: NextPageWithLayout = (props: {
       setValue('costPrice', product.costPrice);
       setValue('price', product.price);
       setValue('characteristics', product.characteristics);
+      setValue('productType', product.productType);
       setIsLoaded(true);
     }
   }, [isLoaded, product, setValue]);
@@ -190,7 +195,7 @@ const ProductDetails: NextPageWithLayout = (props: {
         <Box display={'flex'} justifyContent={'space-between'}>
           <FormGroup sx={{ flexBasis: '48%' }}>
             <Typography variant={'h5'} component={'h5'} fontWeight={600}>
-              {t('Products.Characteristics')}*
+              {t('Products.Characteristics')}
             </Typography>
             <FormMultiselect
               name={'characteristics'}
@@ -200,9 +205,22 @@ const ProductDetails: NextPageWithLayout = (props: {
                   content: i,
                   value: i,
                 })),
-                noElements: 'No characteristics',
-                placeholder: 'Select characteristics',
+                noElements: t('Products.NoCharacteristics'),
+                placeholder: t('Placeholder.Characteristics'),
               }}
+            />
+          </FormGroup>
+          <FormGroup sx={{ flexBasis: '48%' }}>
+            <Typography variant={'h5'} component={'h5'} fontWeight={600}>
+              {t('Products.ProductType')}
+            </Typography>
+            <FormSelect<EditableProduct>
+              name={'productType'}
+              control={control}
+              selectProps={{
+                values: productTypes,
+              }}
+              helperProps={helperProps}
             />
           </FormGroup>
         </Box>

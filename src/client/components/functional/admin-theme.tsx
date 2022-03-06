@@ -16,6 +16,10 @@ const AdminTheme: FC = ({ children }) => {
         dark: kaifstoreColors.adminBlueDark,
         contrastText: '#ffffff',
       },
+      background: {
+        default: kaifstoreColors.blackGrayBackground,
+        paper: kaifstoreColors.adminBlueDark,
+      },
     },
   });
 

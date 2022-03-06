@@ -17,7 +17,8 @@
     "FamilyName": "Фaмилия",
     "ConfirmPassword": "Потвердите пароль",
     "Gender": "Пол",
-    "DateOfBirth": "Дата рождения"
+    "DateOfBirth": "Дата рождения",
+    "Characteristics": "Выберите характеристику (пример: белый, черный и тд)"
   },
   "KaifStore": "KaifStore",
   "IndexPage": {
@@ -106,11 +107,14 @@
     "Quantity": "Количество",
     "HasBarcodes": "Есть баркоды",
     "ProductType": "Тип продукта",
+    "TypeStandard": "Стандартный",
+    "TypeTobaccoMarked": "Табачное изделие",
     "Barcodes": "Баркоды",
     "Code": "Код",
     "Discounts": "Скидки",
     "AllowedToSell": "Разрешено продавать",
-    "Описание": "Description"
+    "Описание": "Description",
+    "NoCharacteristics": "Нет доступных/выбранных характеристик. Для создания новой просто пропишите и нажмите Enter"
   },
   "Utils": {
     "Select": "Выбрать",

@@ -123,6 +123,14 @@ const AppSearchSelect = (props: AppMultiSelect) => {
         anchorEl={anchorEl}
         handleOpen={handleOpenPopper}
         modifiers={popperModifiers}
+        sxRoot={{
+          transition:
+            'opacity 263ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, transform 175ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+          border: 'none',
+          boxShadow:
+            '0px 5px 5px -3px rgb(0 0 0 / 20%), 0px 8px 10px 1px rgb(0 0 0 / 14%), 0px 3px 14px 2px rgb(0 0 0 / 12%)',
+          backgroundColor: 'background.default',
+        }}
       >
         <List
           sx={{
@@ -144,10 +152,10 @@ const AppSearchSelect = (props: AppMultiSelect) => {
                 borderRadius: '10px',
                 my: '0.5rem',
                 '&:hover': {
-                  backgroundColor: 'primary.main',
+                  backgroundColor: 'background.paper',
                 },
                 '&[aria-selected="true"]': {
-                  backgroundColor: 'secondary.contrastText',
+                  backgroundColor: 'primary.main',
                 },
                 ...props.sxListItem,
               }}
