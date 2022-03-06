@@ -4,7 +4,13 @@ import { Box } from '@mui/material';
 import HeaderSearchbar from '../navigation/header-searchbar';
 import { useTranslation } from 'react-i18next';
 
-const AppLayout = ({ children }: { children: ReactNode }) => {
+const AppLayout = ({
+  children,
+  hasHeader = true,
+}: {
+  children: ReactNode;
+  hasHeader?: boolean;
+}) => {
   const [searchValue, setSearchValue] = useState<string>('');
   const { t } = useTranslation();
 
@@ -23,13 +29,15 @@ const AppLayout = ({ children }: { children: ReactNode }) => {
       <Box sx={{ display: 'flex' }}>
         <Navbar />
         <Box component={'main'} sx={{ width: '100%' }}>
-          <HeaderSearchbar
-            searchBar={{
-              value: searchValue,
-              placeholder: t('Searchbar.Placeholder'),
-              onChange: changeSearchValue,
-            }}
-          />
+          {hasHeader && (
+            <HeaderSearchbar
+              searchBar={{
+                value: searchValue,
+                placeholder: t('Searchbar.Placeholder'),
+                onChange: changeSearchValue,
+              }}
+            />
+          )}
           {children}
         </Box>
       </Box>

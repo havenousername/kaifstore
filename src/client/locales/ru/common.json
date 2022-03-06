@@ -96,6 +96,9 @@
     "HaveAccount": "Уже имеете аккаунт?",
     "Login": "Войти"
   },
+  "Products": {
+    "Products": "Продукты"
+  },
   "Utils": {
     "Select": "Выбрать",
     "Cancel": "Отмена",

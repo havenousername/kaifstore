@@ -41,7 +41,7 @@ const useGetProducts = (
           )
         ).json();
         setProducts({
-          items: [...pageProducts.items, ...products.items],
+          items: [...products.items, ...pageProducts.items],
           meta: pageProducts.meta,
         });
       } catch (e) {
