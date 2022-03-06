@@ -29,7 +29,7 @@ export class Discount extends Model<Discount, DiscountCreationAttribute> {
 
   @ApiProperty({
     example: 20,
-    description: 'Percentage of discount from product',
+    description: 'Percentage of discount for product',
   })
   @Column({
     type: DataType.SMALLINT,

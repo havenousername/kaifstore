@@ -18,6 +18,7 @@ import NavbarHeaderAuthenticated from './navbar-header-authenticated';
 import NavbarHeaderUnauthenticated from './navbar-header-unauthenticated';
 import { useRouter } from 'next/router';
 import { SUPER_USER_ROLE } from '../../../backend/app/contstants';
+import AdminTheme from '../functional/admin-theme';
 
 const Navbar = () => {
   const { t } = useTranslation();
@@ -144,7 +145,12 @@ const Navbar = () => {
             user &&
             Object.keys(user).length > 0 &&
             user.role.name === SUPER_USER_ROLE.name && (
-              <NavbarSection linkItems={adminPages} showDivider={false} />
+              <AdminTheme>
+                <NavbarSection
+                  title={t('Navbar.Admin')}
+                  linkItems={adminPages}
+                />
+              </AdminTheme>
             )}
           <NavbarSection title={t('Navbar.Pages')} linkItems={pages} />
           <Divider sx={{ margin: '2rem 0 3rem' }} />

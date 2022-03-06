@@ -1,7 +1,7 @@
-import { NextPageWithLayout } from '../interfaces/pages-layout';
+import { NextPageWithLayout } from '../../interfaces/pages-layout';
 import { Box, Typography } from '@mui/material';
 import React, { ReactElement } from 'react';
-import AppLayout from '../components/functional/app-layout';
+import AppLayout from '../../components/functional/app-layout';
 
 const Catalog: NextPageWithLayout = () => {
   return (

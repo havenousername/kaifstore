@@ -8,15 +8,18 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { LinkItem } from '../../interfaces/navbars';
+import { SxProps } from '@mui/system';
 
 const NavbarSection = ({
   title,
   linkItems,
   showDivider = true,
+  menuItemSx,
 }: {
   title?: string;
   linkItems: LinkItem[];
   showDivider?: boolean;
+  menuItemSx?: SxProps;
 }) => {
   return (
     <>
@@ -37,7 +40,7 @@ const NavbarSection = ({
             <Link href={navbar.path} key={key}>
               <MenuItem
                 aria-selected={navbar.current}
-                sx={{ margin: '1rem 0' }}
+                sx={{ margin: '1rem 0', ...menuItemSx }}
               >
                 <ListItemIcon>{navbar.icon}</ListItemIcon>
                 <ListItemText>{navbar.name}</ListItemText>

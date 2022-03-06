@@ -15,6 +15,9 @@ const kaifstoreColors = {
   roseDark: '#800F31',
   black: '#000000',
   white: '#ffffff',
+  adminBlue: '#0E4262',
+  adminBlueLight: '#1E7CB6',
+  adminBlueDark: '#093149',
 };
 
 export default kaifstoreColors;

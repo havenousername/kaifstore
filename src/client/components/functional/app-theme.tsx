@@ -1,16 +1,9 @@
-import { createTheme, ThemeProvider } from '@mui/material';
-import palette from '../../theme/theme-palette';
-import typography from '../../theme/theme-typography';
+import { ThemeProvider } from '@mui/material';
 import { ReactNode } from 'react';
-import components from '../../theme/theme-components';
+import useAppTheme from '../../hooks/use-app-theme';
 
 const AppTheme = ({ children }: { children: ReactNode }) => {
-  const theme = createTheme({
-    palette,
-    typography: typography(palette),
-  });
-
-  theme.components = components(theme);
+  const theme = useAppTheme();
 
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 };

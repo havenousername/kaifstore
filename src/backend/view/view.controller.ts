@@ -88,7 +88,7 @@ export class ViewController {
   @UseGuards(JwtRolesGuard)
   @UseFilters(new ViewAuthFilter())
   @UseFilters(new ViewAdminFilter())
-  @Get('/products')
+  @Get('/admin/products')
   public async showProducts(@Req() req: Request, @Res() res: Response) {
     await this.handler(req, res);
   }

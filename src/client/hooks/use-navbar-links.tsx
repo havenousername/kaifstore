@@ -27,8 +27,8 @@ const useNavbarLinks = () => {
   const [adminNavbars, setAdminNavbars] = useState<Array<LinkItem>>([
     {
       name: t('Pages.Products'),
-      path: '/products',
-      current: router.route === '/products',
+      path: '/admin/products',
+      current: router.route === '/admin/products',
       icon: <ProductPage />,
     },
   ]);
