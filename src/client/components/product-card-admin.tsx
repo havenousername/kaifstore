@@ -8,6 +8,7 @@ import AppBaseButton from './common/app-base-button';
 const ProductCardAdmin = ({
   product,
   onCardTitleClick,
+  onEdit,
 }: {
   product: Product;
   onCardTitleClick?: (e: MouseEvent, product: Product) => void;
@@ -51,7 +52,7 @@ const ProductCardAdmin = ({
             sx={{
               fontWeight: '700',
             }}
-            onClick={(e) => onCardTitleClick(e, product)}
+            onClick={(e) => onEdit(e, product)}
           >
             {'Edit'}
           </AppBaseButton>

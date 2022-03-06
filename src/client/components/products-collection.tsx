@@ -16,6 +16,10 @@ const ProductsCollection = forwardRef(
       router.push(`/catalog/${product.id}`);
     };
 
+    const onProductEdit = (e: MouseEvent, product: Product) => {
+      router.push(`/admin/products/${product.id}`);
+    };
+
     return (
       <Box
         ref={ref}
@@ -38,6 +42,7 @@ const ProductsCollection = forwardRef(
                     <ProductCardAdmin
                       product={product}
                       onCardTitleClick={onProductClick}
+                      onEdit={onProductEdit}
                     />
                   )}
                 </Grid>

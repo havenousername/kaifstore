@@ -17,6 +17,7 @@ const AppSelect: (props: AppSelectProps) => ReactElement = ({
   onChange,
   values,
   error,
+  selectProps,
 }) => {
   return (
     <StandardSelect
@@ -27,6 +28,7 @@ const AppSelect: (props: AppSelectProps) => ReactElement = ({
       input={<StandardInput />}
       IconComponent={() => <ArrowDownIcon />}
       error={error}
+      {...selectProps}
     >
       {values.map((item, key) => (
         <MenuItem

@@ -97,7 +97,20 @@
     "Login": "Войти"
   },
   "Products": {
-    "Products": "Продукты"
+    "Products": "Продукты",
+    "ProductName": "Название товара",
+    "ProductGroup": "Группа Товаров",
+    "ProductPrice": "Цена",
+    "ProductCostPrice": "Цена закупки",
+    "Characteristics": "Характеристики",
+    "Quantity": "Количество",
+    "HasBarcodes": "Есть баркоды",
+    "ProductType": "Тип продукта",
+    "Barcodes": "Баркоды",
+    "Code": "Код",
+    "Discounts": "Скидки",
+    "AllowedToSell": "Разрешено продавать",
+    "Описание": "Description"
   },
   "Utils": {
     "Select": "Выбрать",

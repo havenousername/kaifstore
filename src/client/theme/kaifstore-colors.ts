@@ -13,6 +13,7 @@ const kaifstoreColors = {
   greenDark: '#007D3A',
   roseLight: '#FF007A',
   roseDark: '#800F31',
+  blackGrey: '#1E2225',
   black: '#000000',
   blackAdmin: '#131618',
   white: '#ffffff',
