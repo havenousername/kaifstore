@@ -1,4 +1,10 @@
-import { Box, FormControl, FormGroup, Typography } from '@mui/material';
+import {
+  Box,
+  FormControl,
+  FormGroup,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import React, { ReactElement, ReactNode, useEffect, useState } from 'react';
 import AdminTheme from '../../../components/functional/admin-theme';
 import AppLayout from '../../../components/functional/app-layout';
@@ -16,6 +22,12 @@ import FormSelect from '../../../components/input/validation/form-select';
 import { ProductGroup } from '../../../../backend/model/product-groups.model';
 import { SelectValue } from '../../../interfaces/input-props';
 import FormMultiselect from '../../../components/input/validation/form-multiselect';
+import FormInputSelect from '../../../components/input/validation/form-inputselect';
+import { Discount } from '../../../../backend/model/discounts.model';
+import {
+  ProductMeasure,
+  productMeasures,
+} from '../../../interfaces/product-measure';
 
 export const getStaticPaths = async () => {
   return {
@@ -46,9 +58,16 @@ const ProductDetails: NextPageWithLayout = (props: {
     fetcher,
   );
 
+  const { data: discounts } = useSWRImmutable<Discount[]>(
+    'v1/discounts',
+    fetcher,
+  );
+
+  const theme = useTheme();
+
   const schema = useProductSchema(t);
 
-  const { handleSubmit, control, setValue } = useForm<EditableProduct>({
+  const { handleSubmit, control, setValue, watch } = useForm<EditableProduct>({
     mode: 'onSubmit',
     resolver: yupResolver(schema),
     defaultValues: {
@@ -61,14 +80,26 @@ const ProductDetails: NextPageWithLayout = (props: {
       barCodes: [],
       productType: 0,
       allowToSell: true,
+      measureName: ProductMeasure.PIECE,
+      code: '',
+      articleNumber: 0,
+      description: '',
     },
   });
   const [isLoaded, setIsLoaded] = useState(false);
   const [selectableGroups, setSelectableGroups] = useState<SelectValue[]>([]);
+  const [selectableDiscounts, setSelectableDiscounts] = useState<SelectValue[]>(
+    [],
+  );
   const [productTypes] = useState<SelectValue[]>([
     { value: '1', content: t('Products.TypeStandard') },
     { value: '2', content: t('Products.TypeTobaccoMarked') },
   ]);
+  const [productMeasureTypes] = useState<SelectValue[]>(
+    productMeasures.map((i) => ({ content: i as string, value: i as string })),
+  );
+
+  const hasBarcode = watch('hasBarcode');
 
   useEffect(() => {
     if (product && !isLoaded) {
@@ -78,6 +109,13 @@ const ProductDetails: NextPageWithLayout = (props: {
       setValue('price', product.price);
       setValue('characteristics', product.characteristics);
       setValue('productType', product.productType);
+      setValue('hasBarcode', !!product.barCodes && product.barCodes.length > 0);
+      setValue('barCodes', product.barCodes);
+      setValue('quantity', product.quantity);
+      setValue('code', product.code);
+      setValue('articleNumber', product.articleNumber);
+      setValue('measureName', product.measureName);
+      setValue('description', product.description);
       setIsLoaded(true);
     }
   }, [isLoaded, product, setValue]);
@@ -91,6 +129,16 @@ const ProductDetails: NextPageWithLayout = (props: {
       setSelectableGroups(selectable);
     }
   }, [groups]);
+
+  useEffect(() => {
+    if (discounts) {
+      const selectable = discounts.map((discount) => ({
+        value: String(discount.id),
+        content: discount.name,
+      }));
+      setSelectableDiscounts(selectable);
+    }
+  }, [discounts]);
 
   const onSubmit = (pr: EditableProduct) => console.log('submitted', pr);
 
@@ -219,6 +267,197 @@ const ProductDetails: NextPageWithLayout = (props: {
               control={control}
               selectProps={{
                 values: productTypes,
+              }}
+              helperProps={helperProps}
+            />
+          </FormGroup>
+        </Box>
+        <Box display={'flex'} justifyContent={'space-between'}>
+          <FormGroup sx={{ flexBasis: '48%' }}>
+            <Typography variant={'h5'} component={'h5'} fontWeight={600}>
+              {t('Products.HasBarcodes')}
+            </Typography>
+            <FormInputSelect<EditableProduct, boolean>
+              sx={{
+                mt: '0.1rem',
+              }}
+              name={'hasBarcode'}
+              control={control}
+              helperProps={helperProps}
+              options={[
+                { content: 'No', value: false },
+                { content: 'Yes', value: true },
+              ]}
+            />
+          </FormGroup>
+          <FormGroup
+            sx={{
+              flexBasis: '48%',
+              pointerEvents: hasBarcode ? 'initial' : 'none',
+              '& > *': {
+                color: hasBarcode ? 'common.white' : 'grey.500',
+              },
+            }}
+          >
+            <Typography variant={'h5'} component={'h5'} fontWeight={600}>
+              {t('Products.Barcodes')}
+            </Typography>
+            <FormMultiselect
+              name={'barCodes'}
+              control={control}
+              selectProps={{
+                values: product.barCodes?.map((i) => ({
+                  content: i,
+                  value: i,
+                })),
+                noElements: t('Products.NoBarcodes'),
+                placeholder: t('Placeholder.Barcodes'),
+                sxInput: {
+                  '& input': {
+                    color: hasBarcode
+                      ? 'common.white'
+                      : theme.palette.grey[500] + ' !important',
+                    opacity: hasBarcode ? '1' : '0.4',
+                  },
+                },
+                sxTag: {
+                  width: '5rem',
+                  height: '2.5rem',
+                  '& > *': {
+                    color: hasBarcode ? 'common.white' : 'grey.500',
+                  },
+                },
+              }}
+            />
+          </FormGroup>
+        </Box>
+        <Box display={'flex'} justifyContent={'space-between'}>
+          <FormGroup sx={{ flexBasis: '48%' }}>
+            <Typography variant={'h5'} component={'h5'} fontWeight={600}>
+              {t('Products.Quantity')}
+            </Typography>
+            <FormInput<EditableProduct>
+              name={'quantity'}
+              control={control}
+              inputProps={{
+                placeholder: t('Products.Quantity'),
+                sx: {
+                  fontSize: '0.8rem',
+                },
+              }}
+              helperProps={helperProps}
+            />
+          </FormGroup>
+          <FormGroup sx={{ flexBasis: '48%' }}>
+            <Typography variant={'h5'} component={'h5'} fontWeight={600}>
+              {t('Products.ProductMeasure')}
+            </Typography>
+            <FormSelect<EditableProduct>
+              name={'measureName'}
+              control={control}
+              selectProps={{
+                values: productMeasureTypes,
+              }}
+              helperProps={helperProps}
+            />
+          </FormGroup>
+        </Box>
+        <Box display={'flex'} justifyContent={'space-between'}>
+          <FormGroup sx={{ flexBasis: '48%' }}>
+            <Typography variant={'h5'} component={'h5'} fontWeight={600}>
+              {t('Products.Code')}
+            </Typography>
+            <FormInput<EditableProduct>
+              name={'code'}
+              control={control}
+              inputProps={{
+                placeholder: t('Products.Code'),
+                sx: {
+                  fontSize: '0.8rem',
+                },
+              }}
+              helperProps={helperProps}
+            />
+          </FormGroup>
+          <FormGroup sx={{ flexBasis: '48%' }}>
+            <Typography variant={'h5'} component={'h5'} fontWeight={600}>
+              {t('Products.Article')}
+            </Typography>
+            <FormInput<EditableProduct>
+              name={'code'}
+              control={control}
+              inputProps={{
+                placeholder: t('Products.Article'),
+                sx: {
+                  fontSize: '0.8rem',
+                },
+              }}
+              helperProps={helperProps}
+            />
+          </FormGroup>
+        </Box>
+        <Box display={'flex'} justifyContent={'space-between'}>
+          <FormGroup sx={{ flexBasis: '48%' }}>
+            <Typography variant={'h5'} component={'h5'} fontWeight={600}>
+              {t('Products.Discounts')}
+            </Typography>
+            <FormMultiselect<EditableProduct>
+              name={'discounts'}
+              control={control}
+              selectProps={{
+                values: selectableDiscounts,
+                noElements: t('Products.NoDiscounts'),
+                placeholder: t('Placeholder.Discounts'),
+                disableOptionAddition: true,
+                sxTag: {
+                  width: '5rem',
+                  height: '2.5rem',
+                  '& .MuiTypography-root': {
+                    fontSize: '0.6rem',
+                  },
+                },
+              }}
+              helperProps={helperProps}
+            />
+          </FormGroup>
+          <FormGroup sx={{ flexBasis: '48%' }}>
+            <Typography variant={'h5'} component={'h5'} fontWeight={600}>
+              {t('Products.AllowedToSell')}
+            </Typography>
+            <FormInputSelect<EditableProduct, boolean>
+              sx={{
+                mt: '0.1rem',
+              }}
+              name={'allowToSell'}
+              control={control}
+              helperProps={helperProps}
+              options={[
+                { content: 'No', value: false },
+                { content: 'Yes', value: true },
+              ]}
+            />
+          </FormGroup>
+        </Box>
+        <Box display={'flex'} justifyContent={'space-between'}>
+          <FormGroup sx={{ flexBasis: '100%' }}>
+            <Typography variant={'h5'} component={'h5'} fontWeight={600}>
+              {t('Products.Description')}
+            </Typography>
+            <FormInput<EditableProduct>
+              name={'description'}
+              control={control}
+              appInputProps={{
+                sx: {
+                  maxHeight: '7rem !important',
+                  '& .MuiInputBase-input': {
+                    height: '100%',
+                  },
+                },
+              }}
+              inputProps={{
+                placeholder: t('Products.Description'),
+                inputComponent: 'textarea',
+                rows: 3,
               }}
               helperProps={helperProps}
             />

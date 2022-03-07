@@ -33,7 +33,9 @@ const AppTag = ({
         ...sx,
       }}
     >
-      <Typography variant={'h6'}>{tag}</Typography>
+      <Typography variant={'h6'} textAlign={'center'}>
+        {tag}
+      </Typography>
     </Box>
   );
 };

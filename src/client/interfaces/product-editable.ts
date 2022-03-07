@@ -13,4 +13,5 @@ export type EditableProduct = Pick<
   | 'articleNumber'
   | 'allowToSell'
   | 'description'
+  | 'measureName'
 > & { hasBarcode: boolean; discounts: any[]; group: string };

@@ -9,7 +9,7 @@ const FormInput: <TFieldValues>(
 ) => ReactElement = ({
   control,
   name,
-  appInputProps,
+  appInputProps = { sx: {} },
   inputProps,
   helperProps,
   sx,
@@ -24,6 +24,7 @@ const FormInput: <TFieldValues>(
             {...appInputProps}
             sx={{
               mb: error ? 0 : '3.1rem',
+              ...appInputProps.sx,
             }}
             inputProps={{
               value,

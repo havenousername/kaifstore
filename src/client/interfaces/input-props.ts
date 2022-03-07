@@ -28,6 +28,12 @@ export type FormMultiSelectProps<TFieldValues> = Omit<
   selectProps: Omit<AppMultiSelect, 'selected' | 'onOptionChange' | 'error'>;
 };
 
+export type FormInputSelect<TFieldValues, Options> = Omit<
+  AppInputSelect<Options>,
+  'selected' | 'onChange'
+> &
+  Omit<FormInputProps<TFieldValues>, 'appInputProps' | 'inputProps'>;
+
 export type FormSelectProps<TFieldValues> = Omit<
   FormInputProps<TFieldValues>,
   'appInputProps' | 'inputProps'
@@ -77,7 +83,9 @@ export type AppMultiSelect = Omit<
   sxInput?: SxProps;
   sxList?: SxProps;
   sxListItem?: SxProps;
+  sxTag?: SxProps;
   onOptionChange?: (values: SelectValue[]) => void;
+  disableOptionAddition?: boolean;
 };
 
 export type SelectValue = { value: string; content: ReactNode | string };
@@ -92,4 +100,12 @@ export type AppDatePickerProps = {
 export type AppCheckBoxProps = {
   checkboxProps?: CheckboxProps;
   labelProps?: Omit<FormControlLabelProps, 'control'>;
+};
+
+export type AppInputSelect<Type> = {
+  options: { content: string | ReactNode; value: Type }[];
+  selected: Type;
+  onChange(t: Type, c: string | ReactNode): void;
+  sxRoot?: SxProps;
+  sxItem?: SxProps;
 };

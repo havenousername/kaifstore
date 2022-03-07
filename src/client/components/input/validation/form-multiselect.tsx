@@ -15,10 +15,14 @@ const FormMultiSelect: <TFieldValues>(
         <FormControl sx={sx}>
           <AppSearchSelect
             error={!!error}
-            selected={(value as string[]).map((i) => ({
-              content: i,
-              value: i,
-            }))}
+            selected={
+              !value
+                ? []
+                : (value as string[]).map((i) => ({
+                    content: i,
+                    value: i,
+                  }))
+            }
             onOptionChange={(v) => {
               onChange(v);
             }}

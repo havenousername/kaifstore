@@ -12,6 +12,11 @@ const AppSearchSelect = (props: AppMultiSelect) => {
     options ?? [],
   );
 
+  useEffect(() => {
+    setOptions(props.values);
+    setOptionsFiltered(props.values);
+  }, [props.values]);
+
   const [assignedSelected, setAssignedSelected] = useState(false);
 
   useEffect(() => {
@@ -56,6 +61,9 @@ const AppSearchSelect = (props: AppMultiSelect) => {
 
   const handleInputSubmit = (e: KeyboardEvent) => {
     if (e.code === 'Enter') {
+      if (props.disableOptionAddition) {
+        return;
+      }
       const found = options.find(
         (v) => v.value === inputValue && v.content === inputValue,
       );
@@ -86,7 +94,7 @@ const AppSearchSelect = (props: AppMultiSelect) => {
     } else {
       setSelected((prevState) => [...prevState, value]);
     }
-    props.onOptionChange(options);
+    props.onOptionChange(selected);
     setOpen(false);
   };
 
@@ -113,7 +121,12 @@ const AppSearchSelect = (props: AppMultiSelect) => {
             index={key}
             key={value.value}
             tag={value.content}
-            sx={{ marginRight: '1rem', width: '50px', my: '0.2rem' }}
+            sx={{
+              marginRight: '1rem',
+              width: '50px',
+              my: '0.2rem',
+              ...props.sxTag,
+            }}
           />
         ))}
       </Box>
