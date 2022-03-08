@@ -5,7 +5,14 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import React, { ReactElement, ReactNode, useEffect, useState } from 'react';
+import React, {
+  ReactElement,
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import AdminTheme from '../../../components/functional/admin-theme';
 import AppLayout from '../../../components/functional/app-layout';
 import { useTranslation } from 'react-i18next';
@@ -35,6 +42,9 @@ import { CarouselProvider } from 'pure-react-carousel';
 import useGetHttpUrl from '../../../hooks/use-get-http-url';
 import { ProductImagesContext } from 'src/client/context/product-images.context';
 import ImageChangeActions from '../../../components/image-change-actions';
+import FileInput from '../../../components/file-input';
+import { ReactComponent as PlusAddIcon } from '../../../assets/icons/plus-add.svg';
+import { SnackbarContext } from '../../../context/snackbar.context';
 
 export const getStaticPaths = async () => {
   return {
@@ -75,6 +85,8 @@ const ProductDetails: NextPageWithLayout = (props: {
 
   const schema = useProductSchema(t);
   const getHttpUrl = useGetHttpUrl();
+  const addImageRef = useRef<HTMLInputElement>();
+  const snackbar = useContext(SnackbarContext);
 
   const { handleSubmit, control, setValue, watch } = useForm<EditableProduct>({
     mode: 'onSubmit',
@@ -167,10 +179,27 @@ const ProductDetails: NextPageWithLayout = (props: {
   };
 
   const changeImage = (slide: number, fileUrl: string) => {
-    console.log(slide, 'slide');
     setImages((prevState) =>
       prevState.map((image, index) => (index === slide ? fileUrl : image)),
     );
+  };
+
+  const onAddNewImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (images.length > 9) {
+      snackbar.changeIsOpen(true);
+      snackbar.changeSeverity('warning');
+      snackbar.changeMessage('You can not upload more than 10 images');
+      return;
+    }
+    if (e.target.files[0]) {
+      const fileUrl = URL.createObjectURL(e.target.files[0]);
+      setImages((prevState) => [...prevState, fileUrl]);
+      snackbar.changeIsOpen(true);
+      snackbar.changeMessage('Successfully added');
+    } else {
+      snackbar.changeSeverity('error');
+      snackbar.changeMessage('An error has occurred while uploading an image');
+    }
   };
 
   if (!product) {
@@ -191,11 +220,45 @@ const ProductDetails: NextPageWithLayout = (props: {
       >
         {t('Products.Products')}
       </Typography>
-      <BackButton
-        goBack={router.back}
-        text={t('Utils.GoBack')}
-        sx={{ my: '1.5rem' }}
-      />
+      <Box
+        display={'flex'}
+        justifyContent={'space-between'}
+        alignItems={'center'}
+      >
+        <BackButton
+          goBack={router.back}
+          text={t('Utils.GoBack')}
+          sx={{ my: '1.5rem' }}
+        />
+        <FileInput
+          onChangeInput={onAddNewImage}
+          param={Math.round(Math.random() * 99)}
+          label={
+            <Box display={'flex'}>
+              <PlusAddIcon />
+              <Typography
+                sx={{
+                  color: images.length > 9 ? 'grey.500' : 'common.white',
+                }}
+              >
+                {t('Products.AddNewImage')}
+              </Typography>
+            </Box>
+          }
+          ref={addImageRef}
+          sxLabel={{
+            maxWidth: '250px',
+            borderRadius: '10px',
+            py: '0.68rem',
+            px: '1.5rem',
+            border:
+              images.length > 9
+                ? `1px solid ${theme.palette.grey[500]}`
+                : `1px solid ${theme.palette.common.white}`,
+            pointerEvents: images.length > 9 ? 'none' : 'initial',
+          }}
+        />
+      </Box>
       <Box marginBottom={'1.4rem'}>
         <ProductImagesContext.Provider
           value={{
@@ -225,7 +288,9 @@ const ProductDetails: NextPageWithLayout = (props: {
               }}
               sxSlider={{
                 '&:first-of-type': {
-                  height: '72%',
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column-reverse',
                 },
               }}
               sxDot={{

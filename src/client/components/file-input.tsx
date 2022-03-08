@@ -1,16 +1,17 @@
 import { Box, Input, InputLabel } from '@mui/material';
-import React, { FC, ForwardedRef, forwardRef } from 'react';
+import React, { FC, ForwardedRef, forwardRef, ReactNode } from 'react';
 import { SxProps } from '@mui/system';
 
 const FileInput: FC<{
   onChangeInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
   param: number;
-  label: string;
+  label: string | ReactNode;
   sxLabel?: SxProps;
   ref: ForwardedRef<HTMLInputElement>;
+  accept?: string;
 }> = forwardRef(
   (
-    { onChangeInput, param, label, sxLabel },
+    { onChangeInput, param, label, sxLabel, accept = '.jpeg, .jpg, .png' },
     ref: ForwardedRef<HTMLInputElement>,
   ) => {
     return (
@@ -32,6 +33,9 @@ const FileInput: FC<{
           ref={ref}
           type={'file'}
           onChange={onChangeInput}
+          inputProps={{
+            accept,
+          }}
           style={{
             display: 'none',
           }}

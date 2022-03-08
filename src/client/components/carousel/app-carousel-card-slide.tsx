@@ -23,13 +23,13 @@ const AppCarouselCardSlide = ({
   return (
     <Slide index={index}>
       <Box width={'100%'} height={'100%'} sx={sx} position={'relative'}>
-        {typeof src === 'string' ? <ImageWithZoomStyled src={src} /> : src}
         {Actions && (
           <Actions
             slide={index}
             sizeSx={{ width: '100%', maxWidth: '400px', fontSize: '1rem' }}
           />
         )}
+        {typeof src === 'string' ? <ImageWithZoomStyled src={src} /> : src}
       </Box>
     </Slide>
   );

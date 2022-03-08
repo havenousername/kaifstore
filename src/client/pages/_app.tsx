@@ -8,6 +8,7 @@ import AppTheme from '../components/functional/app-theme';
 import darkScrollbar from '@mui/material/darkScrollbar';
 import useCheckAuthentication from '../hooks/use-check-authentication';
 import { AuthenticationContext } from '../context/authenticated.context';
+import GlobalSnackbar from '../components/global-snackbar';
 
 const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   const { t } = useTranslation();
@@ -24,11 +25,13 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
       <AppTheme>
         <GlobalStyles styles={{ ...darkScrollbar() }} />
         <CssBaseline />
-        <AuthenticationContext.Provider
-          value={{ user, authenticated, checkAuthentication }}
-        >
-          {getComponent}
-        </AuthenticationContext.Provider>
+        <GlobalSnackbar>
+          <AuthenticationContext.Provider
+            value={{ user, authenticated, checkAuthentication }}
+          >
+            {getComponent}
+          </AuthenticationContext.Provider>
+        </GlobalSnackbar>
       </AppTheme>
     </>
   );
