@@ -88,6 +88,7 @@ const Register: FunctionComponent = () => {
             display={'flex'}
             minWidth={'280px'}
             justifyContent={'space-between'}
+            height={'auto'}
           >
             <span>{t('Register.HaveAccount')}</span>
             <Link color={'secondary'} fontWeight={'600'} href={'/login'}>

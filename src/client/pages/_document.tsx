@@ -22,6 +22,7 @@ class MyDocument extends Document {
               *:after,
               *:before {
                 box-sizing: border-box;
+                height: 100%;
               }
             `}
           </style>

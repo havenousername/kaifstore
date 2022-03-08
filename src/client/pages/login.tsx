@@ -68,6 +68,7 @@ const Login = () => {
               display={'flex'}
               minWidth={'450px'}
               justifyContent={'space-between'}
+              height={'auto'}
             >
               <span>{t('LoginPage.DontHaveAccount')}</span>
               <Link color={'secondary'} fontWeight={'600'} href={'/register'}>
