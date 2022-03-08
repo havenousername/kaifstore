@@ -1,6 +1,7 @@
 import { CarouselContext, Slider } from 'pure-react-carousel';
 import React, {
   CSSProperties,
+  FC,
   FunctionComponent,
   ReactNode,
   useContext,
@@ -12,10 +13,13 @@ import AppCarouselCardSlide from './app-carousel-card-slide';
 import AppCarouselDotGroup from './app-carousel-dot-group';
 import { ReactComponent as ArrowIcon } from '../../assets/icons/left-arrow.svg';
 import { Box } from '@mui/material';
+import { SxProps } from '@mui/system';
+import { ImageChangeProps } from '../../interfaces/image-change-props';
 
 const AppCarousel = ({
   items,
   sx,
+  sxRoot,
   beforeContentComponent,
   nextButton,
   showNextButton = true,
@@ -23,9 +27,18 @@ const AppCarousel = ({
   showPrevButton = true,
   prevButtonPosition,
   nextButtonPosition,
+  dotGroupActions,
+  sxSlider,
+  contentActions,
+  sxDotGroupItem,
+  sxDot,
 }: {
   items: (string | ReactNode)[];
   sx?: CSSProperties;
+  sxRoot?: SxProps;
+  sxSlider?: SxProps;
+  sxDotGroupItem?: SxProps;
+  sxDot?: SxProps;
   beforeContentComponent?: ReactNode;
   nextButton?: FunctionComponent<{
     onClick(): void;
@@ -35,8 +48,10 @@ const AppCarousel = ({
   }>;
   showNextButton?: boolean;
   showPrevButton?: boolean;
-  prevButtonPosition?: [string, string];
-  nextButtonPosition?: [string, string];
+  prevButtonPosition?: [[string, string], [string, string]];
+  nextButtonPosition?: [[string, string], [string, string]];
+  dotGroupActions?: FC<ImageChangeProps>;
+  contentActions?: FC<ImageChangeProps>;
 }) => {
   const carouselContext = useContext(CarouselContext);
   const [currentSlide, setCurrentSlide] = useState(
@@ -72,17 +87,17 @@ const AppCarousel = ({
   };
 
   const changeSlideButton = (
-    positionX: [string, string],
+    position: [[string, string], [string, string]],
     onClick: () => void,
   ) => (
     <Box
       sx={{
         position: 'absolute',
-        [positionX[0]]: [positionX[1]],
-        bottom: 90,
+        [position[0][0]]: position[0][1],
+        [position[1][0]]: position[1][1],
         cursor: 'pointer',
         '& svg': {
-          transform: positionX[0] === 'left' ? 'scaleX(1)' : 'scaleX(-1)',
+          transform: position[0][0] === 'left' ? 'scaleX(1)' : 'scaleX(-1)',
         },
       }}
       onClick={onClick}
@@ -93,29 +108,36 @@ const AppCarousel = ({
   );
 
   return (
-    <Box sx={{ position: 'relative' }}>
+    <Box sx={{ position: 'relative', ...sxRoot }}>
       {beforeContentComponent ?? null}
       <Box sx={sx}>
         <Slider style={sx}>
           {items.map((image, index) => (
             <AppCarouselCardSlide
               src={image}
-              sx={{ maxHeight: sx.maxHeight }}
+              sx={{ maxHeight: sx.maxHeight, ...sxSlider }}
               index={index}
               key={index}
+              Actions={contentActions}
             />
           ))}
         </Slider>
         {showPrevButton &&
           (prevButton ??
             changeSlideButton(
-              prevButtonPosition ?? ['left', '1.4rem'],
+              prevButtonPosition ?? [
+                ['left', '1.4rem'],
+                ['bottom', '90px'],
+              ],
               onPrevClick,
             ))}
         {showNextButton &&
           (nextButton ??
             changeSlideButton(
-              nextButtonPosition ?? ['right', '1.4rem'],
+              nextButtonPosition ?? [
+                ['right', '1.4rem'],
+                ['bottom', '90px'],
+              ],
               onNextClick,
             ))}
       </Box>
@@ -127,6 +149,11 @@ const AppCarousel = ({
           current={currentSlide}
           images={items as string[]}
           slides={items.length}
+          Actions={dotGroupActions}
+          sxItem={sxDotGroupItem}
+          sx={{
+            ...sxDot,
+          }}
         />
       )}
     </Box>

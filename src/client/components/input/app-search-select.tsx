@@ -13,8 +13,10 @@ const AppSearchSelect = (props: AppMultiSelect) => {
   );
 
   useEffect(() => {
-    setOptions(props.values);
-    setOptionsFiltered(props.values);
+    if (props.values && props.values.length > 0) {
+      setOptions(props.values);
+      setOptionsFiltered(props.values);
+    }
   }, [props.values]);
 
   const [assignedSelected, setAssignedSelected] = useState(false);

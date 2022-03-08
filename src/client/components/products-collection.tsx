@@ -5,6 +5,7 @@ import React, { forwardRef } from 'react';
 import { MouseEvent } from 'react';
 import { useRouter } from 'next/router';
 import ProductCardAdmin from './product-card-admin';
+import { useTranslation } from 'react-i18next';
 
 const ProductsCollection = forwardRef(
   (
@@ -12,6 +13,7 @@ const ProductsCollection = forwardRef(
     ref,
   ) => {
     const router = useRouter();
+    const { t } = useTranslation();
     const onProductClick = (e: MouseEvent, product: Product) => {
       router.push(`/catalog/${product.id}`);
     };
@@ -40,6 +42,7 @@ const ProductsCollection = forwardRef(
                     />
                   ) : (
                     <ProductCardAdmin
+                      editText={t('Products.Edit')}
                       product={product}
                       onCardTitleClick={onProductClick}
                       onEdit={onProductEdit}

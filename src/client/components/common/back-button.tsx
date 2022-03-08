@@ -1,13 +1,23 @@
 import { ReactComponent as GoBackIcon } from '../../assets/icons/left-arrow.svg';
 import { Box, Typography } from '@mui/material';
+import { SxProps } from '@mui/system';
 
-const BackButton = ({ goBack, text }: { goBack: () => void; text: string }) => {
+const BackButton = ({
+  goBack,
+  text,
+  sx,
+}: {
+  goBack: () => void;
+  text: string;
+  sx?: SxProps;
+}) => {
   return (
     <Box
       display={'flex'}
       alignItems={'center'}
       sx={{
         cursor: 'pointer',
+        ...sx,
       }}
       onClick={goBack}
     >

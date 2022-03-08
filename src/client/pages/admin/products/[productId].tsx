@@ -28,6 +28,13 @@ import {
   ProductMeasure,
   productMeasures,
 } from '../../../interfaces/product-measure';
+import BackButton from '../../../components/common/back-button';
+import { useRouter } from 'next/router';
+import AppCarousel from '../../../components/carousel/app-carousel';
+import { CarouselProvider } from 'pure-react-carousel';
+import useGetHttpUrl from '../../../hooks/use-get-http-url';
+import { ProductImagesContext } from 'src/client/context/product-images.context';
+import ImageChangeActions from '../../../components/image-change-actions';
 
 export const getStaticPaths = async () => {
   return {
@@ -49,6 +56,7 @@ const ProductDetails: NextPageWithLayout = (props: {
   children?: ReactNode;
 }) => {
   const { t } = useTranslation();
+  const router = useRouter();
   const { data: product } = useSWRImmutable<Product>(
     `v1/products/${props.productId}`,
     fetcher,
@@ -66,6 +74,7 @@ const ProductDetails: NextPageWithLayout = (props: {
   const theme = useTheme();
 
   const schema = useProductSchema(t);
+  const getHttpUrl = useGetHttpUrl();
 
   const { handleSubmit, control, setValue, watch } = useForm<EditableProduct>({
     mode: 'onSubmit',
@@ -99,6 +108,8 @@ const ProductDetails: NextPageWithLayout = (props: {
     productMeasures.map((i) => ({ content: i as string, value: i as string })),
   );
 
+  const [images, setImages] = useState<string[]>([]);
+
   const hasBarcode = watch('hasBarcode');
 
   useEffect(() => {
@@ -116,6 +127,7 @@ const ProductDetails: NextPageWithLayout = (props: {
       setValue('articleNumber', product.articleNumber);
       setValue('measureName', product.measureName);
       setValue('description', product.description);
+      setImages(product.images);
       setIsLoaded(true);
     }
   }, [isLoaded, product, setValue]);
@@ -149,6 +161,18 @@ const ProductDetails: NextPageWithLayout = (props: {
     },
   };
 
+  const onClickItemRemove = (slide: number) => {
+    const leftImages = images.filter((_, i) => i !== slide);
+    setImages(leftImages);
+  };
+
+  const changeImage = (slide: number, fileUrl: string) => {
+    console.log(slide, 'slide');
+    setImages((prevState) =>
+      prevState.map((image, index) => (index === slide ? fileUrl : image)),
+    );
+  };
+
   if (!product) {
     return <></>;
   }
@@ -167,6 +191,54 @@ const ProductDetails: NextPageWithLayout = (props: {
       >
         {t('Products.Products')}
       </Typography>
+      <BackButton
+        goBack={router.back}
+        text={t('Utils.GoBack')}
+        sx={{ my: '1.5rem' }}
+      />
+      <Box marginBottom={'1.4rem'}>
+        <ProductImagesContext.Provider
+          value={{
+            images,
+            changeImage,
+            removeImage: onClickItemRemove,
+          }}
+        >
+          <CarouselProvider
+            visibleSlides={1}
+            totalSlides={images.length}
+            naturalSlideHeight={200}
+            naturalSlideWidth={200}
+            orientation={'vertical'}
+            infinite={true}
+          >
+            <AppCarousel
+              items={images.map((image) => getHttpUrl(image))}
+              sxRoot={{ display: 'grid', gridTemplateColumns: '3fr 1fr' }}
+              sx={{ maxHeight: '400px' }}
+              showPrevButton={false}
+              showNextButton={false}
+              dotGroupActions={ImageChangeActions}
+              contentActions={ImageChangeActions}
+              sxDotGroupItem={{
+                flexDirection: 'column',
+              }}
+              sxSlider={{
+                '&:first-of-type': {
+                  height: '72%',
+                },
+              }}
+              sxDot={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                maxHeight: '380px',
+                overflowY: 'scroll',
+              }}
+            />
+          </CarouselProvider>
+        </ProductImagesContext.Provider>
+      </Box>
       <FormControl
         component={'form'}
         onSubmit={handleSubmit(onSubmit)}

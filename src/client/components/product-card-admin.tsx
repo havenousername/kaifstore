@@ -9,10 +9,12 @@ const ProductCardAdmin = ({
   product,
   onCardTitleClick,
   onEdit,
+  editText,
 }: {
   product: Product;
   onCardTitleClick?: (e: MouseEvent, product: Product) => void;
   onEdit?: (e: MouseEvent, product: Product) => void;
+  editText: string;
 }) => {
   const theme = useTheme();
 
@@ -54,7 +56,7 @@ const ProductCardAdmin = ({
             }}
             onClick={(e) => onEdit(e, product)}
           >
-            {'Edit'}
+            {editText}
           </AppBaseButton>
         </Box>
       }
