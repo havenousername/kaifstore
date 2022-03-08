@@ -18,11 +18,14 @@ class MyDocument extends Document {
                 background-color: ${palette.background.default};
               }
 
+              #__next > div {
+                height: 100%;
+              }
+
               *,
               *:after,
               *:before {
                 box-sizing: border-box;
-                height: 100%;
               }
             `}
           </style>
