@@ -1,6 +1,5 @@
 import React, { FC, useContext, useRef } from 'react';
-import { Box } from '@mui/material';
-import AppBaseButton from './common/app-base-button';
+import { Box, useTheme } from '@mui/material';
 import { ProductImagesContext } from '../context/product-images.context';
 import { ImageChangeProps } from '../interfaces/image-change-props';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +12,7 @@ const ImageChangeActions: FC<ImageChangeProps> = ({
 }) => {
   const { changeImage, removeImage } = useContext(ProductImagesContext);
   const { t } = useTranslation();
+  const theme = useTheme();
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files[0]) {
       const fileUrl = URL.createObjectURL(e.target.files[0]);
@@ -27,14 +27,16 @@ const ImageChangeActions: FC<ImageChangeProps> = ({
       alignItems={'center'}
       mt={0.5}
     >
-      <AppBaseButton
-        variant={'outlined'}
-        color={'secondary'}
+      <Box
         sx={{
           p: 0,
+          maxWidth: '250px',
           fontSize: '0.6rem',
           display: 'flex',
-          borderColor: 'error.light',
+          justifyContent: 'center',
+          border: `1px solid ${theme.palette.error.light}`,
+          cursor: 'pointer',
+          borderRadius: '5px',
           my: '0.2rem',
           textTransform: 'initial',
           ...sizeSx,
@@ -42,7 +44,7 @@ const ImageChangeActions: FC<ImageChangeProps> = ({
         onClick={() => removeImage(slide)}
       >
         {t('Products.Delete')}
-      </AppBaseButton>
+      </Box>
       {canBeEdited && (
         <FileInput
           onChangeInput={onChangeInput}

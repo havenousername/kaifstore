@@ -10,7 +10,7 @@ export class FilesService {
    **
    * @throws {HttpException}
    */
-  async createFile(file: Express.Multer.File, directory = 'default') {
+  createFile(file: Express.Multer.File, directory = 'default') {
     try {
       const fileName = uuid.v4() + '.' + file.mimetype.split('/')[1];
       const filePath = path.resolve(__dirname, '..', `static/${directory}`);
@@ -46,5 +46,10 @@ export class FilesService {
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  hasFile(filename: string, subPath: string): boolean {
+    const filePath = path.resolve(__dirname, '..', `static/${subPath}`);
+    return fs.existsSync(path.join(filePath, filename));
   }
 }

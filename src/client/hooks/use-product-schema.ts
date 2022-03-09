@@ -80,7 +80,7 @@ const useProductSchema = (t: TFunction) => {
       ),
     code: yup.string(),
     barCodes: yup.array(),
-    articleNumber: yup.number(),
+    articleNumber: yup.number().nullable(),
     discounts: yup.array().of(yup.string()),
     allowToSell: yup.boolean(),
     tax: yup.string(),

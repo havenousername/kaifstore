@@ -45,6 +45,7 @@ import ImageChangeActions from '../../../components/image-change-actions';
 import FileInput from '../../../components/file-input';
 import { ReactComponent as PlusAddIcon } from '../../../assets/icons/plus-add.svg';
 import { SnackbarContext } from '../../../context/snackbar.context';
+import AppBaseButton from '../../../components/common/app-base-button';
 
 export const getStaticPaths = async () => {
   return {
@@ -89,7 +90,7 @@ const ProductDetails: NextPageWithLayout = (props: {
   const snackbar = useContext(SnackbarContext);
 
   const { handleSubmit, control, setValue, watch } = useForm<EditableProduct>({
-    mode: 'onSubmit',
+    mode: 'onChange',
     resolver: yupResolver(schema),
     defaultValues: {
       name: '',
@@ -136,7 +137,7 @@ const ProductDetails: NextPageWithLayout = (props: {
       setValue('barCodes', product.barCodes);
       setValue('quantity', product.quantity);
       setValue('code', product.code);
-      setValue('articleNumber', product.articleNumber);
+      setValue('articleNumber', product.articleNumber ?? 0);
       setValue('measureName', product.measureName);
       setValue('description', product.description);
       setImages(product.images);
@@ -164,7 +165,8 @@ const ProductDetails: NextPageWithLayout = (props: {
     }
   }, [discounts]);
 
-  const onSubmit = (pr: EditableProduct) => console.log('submitted', pr);
+  const onSubmit = (pr: EditableProduct) =>
+    console.log('submitted', pr, images);
 
   const helperProps = {
     sx: {
@@ -521,13 +523,14 @@ const ProductDetails: NextPageWithLayout = (props: {
               {t('Products.Article')}
             </Typography>
             <FormInput<EditableProduct>
-              name={'code'}
+              name={'articleNumber'}
               control={control}
               inputProps={{
                 placeholder: t('Products.Article'),
                 sx: {
                   fontSize: '0.8rem',
                 },
+                type: 'number',
               }}
               helperProps={helperProps}
             />
@@ -599,6 +602,24 @@ const ProductDetails: NextPageWithLayout = (props: {
               helperProps={helperProps}
             />
           </FormGroup>
+        </Box>
+        <Box display={'flex'} justifyContent={'flex-start'} marginTop={'2rem'}>
+          <AppBaseButton variant={'contained'} type={'submit'}>
+            {t('Products.Save')}
+          </AppBaseButton>
+          <AppBaseButton
+            variant={'outlined'}
+            type={'button'}
+            sx={{
+              marginLeft: '2rem',
+              border: `1px solid ${theme.palette.error.light}`,
+              '&:hover': {
+                backgroundColor: theme.palette.error.light,
+              },
+            }}
+          >
+            {t('Products.Delete')}
+          </AppBaseButton>
         </Box>
       </FormControl>
     </Box>

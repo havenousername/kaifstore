@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Product } from '../model/products.model';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -11,6 +11,7 @@ import { ProductQuery } from '../utils/product-query';
 import { FindAndCountOptions, Op, WhereOptions } from 'sequelize';
 import { isString } from '../utils/type-checkers';
 import { ProductGroupsService } from '../product-groups/product-groups.service';
+import { EditProductDto } from './dto/edit-product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -144,5 +145,38 @@ export class ProductsService {
       });
       throw e;
     }
+  }
+
+  public async update(
+    dto: EditProductDto,
+    images: never | Express.Multer.File[],
+  ): Promise<[number, Product[]]> {
+    const oldProduct = this.getById(dto.id);
+    if (!oldProduct) {
+      throw new HttpException(
+        `There is no such product with id ${dto.id}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (images.length > 0) {
+      const imagePaths = images.map((image) => {
+        const [path, file] = image.path.split('/');
+        if (!this.fileService.hasFile(file, path)) {
+          return this.fileService.createFile(image, 'products');
+        }
+        return image.path;
+      });
+
+      await this.productRepository.update(
+        { images: imagePaths },
+        { where: { id: dto.id } },
+      );
+    }
+
+    return await this.productRepository.update(
+      { ...dto },
+      { where: { id: dto.id } },
+    );
   }
 }

@@ -29,6 +29,7 @@ import {
 } from '../utils/product-query';
 import { CustomQueries } from '../interfaces/query';
 import { generatePaginationOptions } from '../utils';
+import { EditProductDto } from './dto/edit-product.dto';
 
 @ApiTags('Products')
 @Controller({
@@ -125,5 +126,16 @@ export class ProductsController {
     @UploadedFiles() images: Express.Multer.File[],
   ) {
     return this.productService.create(dto, images);
+  }
+
+  @ApiOperation({ summary: 'Product creation' })
+  @ApiResponse({ status: 200, type: Product })
+  @Post()
+  @UseInterceptors(FilesInterceptor('images'))
+  update(
+    @Body() dto: EditProductDto,
+    @UploadedFiles() images: Express.Multer.File[],
+  ) {
+    return this.productService.update(dto, images);
   }
 }
