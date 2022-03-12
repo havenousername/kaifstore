@@ -128,7 +128,11 @@
     "Change": "Изменить",
     "Edit": "Редактировать",
     "AddNewImage": "Добавить новое изображение",
-    "Save": "Сохранить"
+    "Save": "Сохранить",
+    "SuccessfullyUpdated": "Продукт успешно обновлен",
+    "ErrorOccurred": "Произошла ошибка",
+    "SuccessfullyCreated": "Продукт успешно создан",
+    "SuccessfullyDelete": "Продукт успешно удален"
   },
   "Utils": {
     "Select": "Выбрать",

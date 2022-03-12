@@ -19,3 +19,5 @@ export type EditableProduct = Pick<
   characteristics: { content: string; value: string }[];
   barCodes: { content: string; value: string }[];
 };
+
+export type EditableProductWithId = EditableProduct & { id: number };

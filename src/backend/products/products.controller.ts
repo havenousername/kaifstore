@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   DefaultValuePipe,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -131,7 +132,7 @@ export class ProductsController {
   }
 
   @ApiOperation({ summary: 'Product creation' })
-  @ApiResponse({ status: 200, type: Product })
+  @ApiResponse({ status: 200, type: Number })
   @Put()
   @UseInterceptors(FilesInterceptor('images'))
   update(
@@ -139,5 +140,12 @@ export class ProductsController {
     @UploadedFiles() images: Express.Multer.File[],
   ) {
     return this.productService.update(dto, images);
+  }
+
+  @ApiOperation({ summary: 'Product deletion' })
+  @ApiResponse({ status: 200, type: Product })
+  @Delete(':id')
+  delete(@Param('id') id: number) {
+    return this.productService.delete(id);
   }
 }

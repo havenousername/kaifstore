@@ -1,5 +1,11 @@
 import { useTheme } from '@mui/material';
-import React, { ReactElement, ReactNode, useEffect, useState } from 'react';
+import React, {
+  ReactElement,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import AdminTheme from '../../../components/functional/admin-theme';
 import AppLayout from '../../../components/functional/app-layout';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +19,8 @@ import useProductFetchCall from 'src/client/hooks/use-product-fetch-call';
 import { FieldErrors } from 'react-hook-form/dist/types/errors';
 import ProductForm from '../../../components/product-form';
 import useProductFormData from '../../../hooks/use-product-form-data';
+import { SnackbarContext } from '../../../context/snackbar.context';
+import useProductFetchRemove from '../../../hooks/use-product-fetch-remove';
 
 export const getStaticPaths = async () => {
   return {
@@ -38,6 +46,7 @@ const ProductDetails: NextPageWithLayout = (props: {
     `v1/products/${props.productId}`,
     fetcher,
   );
+  const snackbar = useContext(SnackbarContext);
 
   const theme = useTheme();
   const [isLoaded, setIsLoaded] = useState(false);
@@ -84,10 +93,63 @@ const ProductDetails: NextPageWithLayout = (props: {
     }
   }, [isLoaded, product, setValue]);
 
-  const [updateProduct] = useProductFetchCall('change');
+  const {
+    initialize: updateProduct,
+    data: updateData,
+    error: updateError,
+  } = useProductFetchCall('change');
+  const {
+    initialize: deleteProduct,
+    error: deleteProductError,
+    data: productDeleteData,
+  } = useProductFetchRemove();
 
-  const onSubmit = (pr: EditableProduct) =>
-    updateProduct({ ...pr, id: product.id }, images);
+  const onSubmit = (pr: EditableProduct) => {
+    updateProduct({ ...pr, id: product.id } as EditableProduct, images);
+  };
+
+  const onDelete = (id: number) => {
+    deleteProduct(id);
+  };
+
+  useEffect(() => {
+    if (updateError) {
+      snackbar.changeIsOpen(true);
+      snackbar.changeMessage(t('Products.ErrorOccurred'));
+      snackbar.changeAutoHide(1000);
+      snackbar.changeSeverity('error');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateError]);
+
+  useEffect(() => {
+    if (updateData) {
+      snackbar.changeIsOpen(true);
+      snackbar.changeMessage(t('Products.SuccessfullyUpdated'));
+      snackbar.changeSeverity('success');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateData]);
+
+  useEffect(() => {
+    if (deleteProductError) {
+      snackbar.changeIsOpen(true);
+      snackbar.changeMessage(t('Products.ErrorOccurred'));
+      snackbar.changeAutoHide(1000);
+      snackbar.changeSeverity('error');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteProductError]);
+
+  useEffect(() => {
+    if (productDeleteData) {
+      snackbar.changeSeverity('success');
+      snackbar.changeIsOpen(true);
+      snackbar.changeAutoHide(1000);
+      snackbar.changeMessage(t('Products.SuccessfullyDelete'));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [productDeleteData]);
 
   const onInvalidSubmit = (errors: FieldErrors<EditableProduct>) => {
     console.error(errors);
@@ -125,6 +187,7 @@ const ProductDetails: NextPageWithLayout = (props: {
           <AppBaseButton
             variant={'outlined'}
             type={'button'}
+            onClick={() => onDelete(product.id)}
             sx={{
               marginLeft: '2rem',
               border: `1px solid ${theme.palette.error.light}`,

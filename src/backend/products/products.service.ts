@@ -143,7 +143,7 @@ export class ProductsService {
       });
 
       if (dto.discounts) {
-        await this.removeDiscounts(dto.discounts, product.id);
+        await this.updateDiscounts(dto.discounts, product.id);
       }
 
       return product;
@@ -171,6 +171,17 @@ export class ProductsService {
         where: { discountId, productId },
       });
     });
+  }
+
+  public async removeProductDiscounts(productId: number) {
+    await this.productDiscountsRepository.destroy({
+      where: { productId },
+    });
+  }
+
+  public async delete(id: number): Promise<number> {
+    await this.removeProductDiscounts(id);
+    return this.productRepository.destroy({ where: { id } });
   }
 
   public async update(
