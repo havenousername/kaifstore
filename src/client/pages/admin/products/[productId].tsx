@@ -155,6 +155,7 @@ const ProductDetails: NextPageWithLayout = (props: {
           value: String(i.id),
         })),
       );
+      setValue('allowToSell', product.allowToSell);
       setImages(product.images);
       setIsLoaded(true);
     }
