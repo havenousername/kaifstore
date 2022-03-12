@@ -18,10 +18,12 @@ const FormMultiSelect: <TFieldValues>(
             selected={
               !value
                 ? []
-                : (value as string[]).map((i) => ({
+                : typeof value === 'string'
+                ? (value as string[]).map((i) => ({
                     content: i,
                     value: i,
                   }))
+                : value
             }
             onOptionChange={(v) => {
               onChange(v);

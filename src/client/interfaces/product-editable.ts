@@ -5,13 +5,17 @@ export type EditableProduct = Pick<
   | 'name'
   | 'price'
   | 'costPrice'
-  | 'characteristics'
   | 'quantity'
-  | 'barCodes'
   | 'productType'
   | 'code'
   | 'articleNumber'
   | 'allowToSell'
   | 'description'
   | 'measureName'
-> & { hasBarcode: boolean; discounts: any[]; group: string };
+> & {
+  hasBarcode: boolean;
+  discounts: { content: string; value: string }[];
+  group: string;
+  characteristics: { content: string; value: string }[];
+  barCodes: { content: string; value: string }[];
+};

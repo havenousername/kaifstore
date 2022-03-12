@@ -44,7 +44,7 @@ export class Discount extends Model<Discount, DiscountCreationAttribute> {
   @Column({
     type: DataType.STRING,
   })
-  name: number;
+  name: string;
 
   @ApiProperty({
     example: 'https://github.com/havenousername/kaifstore',
@@ -57,5 +57,5 @@ export class Discount extends Model<Discount, DiscountCreationAttribute> {
   image: string;
 
   @BelongsToMany(() => Product, () => ProductDiscount)
-  discounts: ProductDiscount[];
+  products: Product[];
 }

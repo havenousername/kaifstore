@@ -46,6 +46,8 @@ import FileInput from '../../../components/file-input';
 import { ReactComponent as PlusAddIcon } from '../../../assets/icons/plus-add.svg';
 import { SnackbarContext } from '../../../context/snackbar.context';
 import AppBaseButton from '../../../components/common/app-base-button';
+import useUpdateProduct from 'src/client/hooks/use-update-product';
+import { FieldErrors } from 'react-hook-form/dist/types/errors';
 
 export const getStaticPaths = async () => {
   return {
@@ -128,18 +130,31 @@ const ProductDetails: NextPageWithLayout = (props: {
   useEffect(() => {
     if (product && !isLoaded) {
       setValue('name', product.name);
-      setValue('group', String(product.group.id));
+      setValue('group', String(product.group.uuid));
       setValue('costPrice', product.costPrice);
       setValue('price', product.price);
-      setValue('characteristics', product.characteristics);
+      setValue(
+        'characteristics',
+        product.characteristics.map((i) => ({ content: i, value: i })),
+      );
       setValue('productType', product.productType);
       setValue('hasBarcode', !!product.barCodes && product.barCodes.length > 0);
-      setValue('barCodes', product.barCodes);
+      setValue(
+        'barCodes',
+        product.barCodes.map((i) => ({ content: i, value: i })),
+      );
       setValue('quantity', product.quantity);
       setValue('code', product.code);
       setValue('articleNumber', product.articleNumber ?? 0);
       setValue('measureName', product.measureName);
       setValue('description', product.description);
+      setValue(
+        'discounts',
+        product.discounts.map((i) => ({
+          content: i.name,
+          value: String(i.id),
+        })),
+      );
       setImages(product.images);
       setIsLoaded(true);
     }
@@ -148,7 +163,7 @@ const ProductDetails: NextPageWithLayout = (props: {
   useEffect(() => {
     if (groups) {
       const selectable = groups.map((group) => ({
-        value: String(group.id),
+        value: group.uuid,
         content: group.name,
       }));
       setSelectableGroups(selectable);
@@ -165,8 +180,14 @@ const ProductDetails: NextPageWithLayout = (props: {
     }
   }, [discounts]);
 
+  const [updateProduct] = useUpdateProduct();
+
   const onSubmit = (pr: EditableProduct) =>
-    console.log('submitted', pr, images);
+    updateProduct({ ...pr, id: product.id }, images);
+
+  const onInvalidSubmit = (errors: FieldErrors<EditableProduct>) => {
+    console.error(errors);
+  };
 
   const helperProps = {
     sx: {
@@ -306,11 +327,7 @@ const ProductDetails: NextPageWithLayout = (props: {
           </CarouselProvider>
         </ProductImagesContext.Provider>
       </Box>
-      <FormControl
-        component={'form'}
-        onSubmit={handleSubmit(onSubmit)}
-        sx={{ width: '100%' }}
-      >
+      <FormControl component={'form'} sx={{ width: '100%' }}>
         <Box display={'flex'} justifyContent={'space-between'}>
           <FormGroup sx={{ flexBasis: '48%' }}>
             <Typography variant={'h5'} component={'h5'} fontWeight={600}>
@@ -604,7 +621,11 @@ const ProductDetails: NextPageWithLayout = (props: {
           </FormGroup>
         </Box>
         <Box display={'flex'} justifyContent={'flex-start'} marginTop={'2rem'}>
-          <AppBaseButton variant={'contained'} type={'submit'}>
+          <AppBaseButton
+            variant={'contained'}
+            type={'button'}
+            onClick={handleSubmit(onSubmit, onInvalidSubmit)}
+          >
             {t('Products.Save')}
           </AppBaseButton>
           <AppBaseButton

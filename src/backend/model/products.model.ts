@@ -220,5 +220,5 @@ export class Product extends Model<Product, ProductCreationAttributes> {
   tax: string;
 
   @BelongsToMany(() => Discount, () => ProductDiscount)
-  discounts: ProductDiscount[];
+  discounts: Discount[];
 }

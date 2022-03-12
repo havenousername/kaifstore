@@ -93,10 +93,13 @@ const AppSearchSelect = (props: AppMultiSelect) => {
         (st) => st.value !== found.value && st.content !== found.content,
       );
       setSelected(filtered);
+      props.onOptionChange(filtered);
     } else {
       setSelected((prevState) => [...prevState, value]);
+      props.onOptionChange([...selected, value]);
     }
-    props.onOptionChange(selected);
+
+    setAssignedSelected(true);
     setOpen(false);
   };
 
@@ -121,7 +124,7 @@ const AppSearchSelect = (props: AppMultiSelect) => {
         {selected.map((value, key) => (
           <AppTag
             index={key}
-            key={value.value}
+            key={key}
             tag={value.content}
             sx={{
               marginRight: '1rem',

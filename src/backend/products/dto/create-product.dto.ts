@@ -24,7 +24,7 @@ export class CreateProductDto {
 
   @ApiProperty({
     example: '123e4567-e89b-12d3-a456-426614174000',
-    description: 'Product name',
+    description: 'Group id',
   })
   @IsUUID('all', { message: 'Should be always uuid' })
   readonly groupId: string;

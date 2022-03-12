@@ -12,11 +12,14 @@ import { FindAndCountOptions, Op, WhereOptions } from 'sequelize';
 import { isString } from '../utils/type-checkers';
 import { ProductGroupsService } from '../product-groups/product-groups.service';
 import { EditProductDto } from './dto/edit-product.dto';
+import { ProductDiscount } from '../model/product-discounts.model';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectModel(Product) private productRepository: typeof Product,
+    @InjectModel(ProductDiscount)
+    private productDiscountsRepository: typeof ProductDiscount,
     private fileService: FilesService,
     private paginateService: PaginateService,
     private productGroupService: ProductGroupsService,
@@ -147,11 +150,28 @@ export class ProductsService {
     }
   }
 
+  public async updateDiscounts(ids: number[], productId: number) {
+    ids.map(async (discountId) => {
+      await this.productDiscountsRepository.create({
+        discountId,
+        productId,
+      });
+    });
+  }
+
+  public async removeDiscounts(ids: number[], productId: number) {
+    ids.map(async (discountId) => {
+      await this.productDiscountsRepository.destroy({
+        where: { discountId, productId },
+      });
+    });
+  }
+
   public async update(
     dto: EditProductDto,
     images: never | Express.Multer.File[],
   ): Promise<[number, Product[]]> {
-    const oldProduct = this.getById(dto.id);
+    const oldProduct = await this.getById(dto.id);
     if (!oldProduct) {
       throw new HttpException(
         `There is no such product with id ${dto.id}`,
@@ -161,11 +181,11 @@ export class ProductsService {
 
     if (images.length > 0) {
       const imagePaths = images.map((image) => {
-        const [path, file] = image.path.split('/');
-        if (!this.fileService.hasFile(file, path)) {
+        const name = image.originalname;
+        if (!this.fileService.hasFile(name, 'products')) {
           return this.fileService.createFile(image, 'products');
         }
-        return image.path;
+        return 'products/' + image.originalname;
       });
 
       await this.productRepository.update(
@@ -174,8 +194,20 @@ export class ProductsService {
       );
     }
 
+    if (dto.discounts) {
+      const fiDiscounts = dto.discounts.filter(
+        (discountId) =>
+          oldProduct.discounts.filter((d) => d.id === discountId).length === 0,
+      );
+      const dDiscounts = oldProduct.discounts
+        .filter((discount) => !fiDiscounts.includes(discount.id))
+        .map((i) => i.id);
+      await this.updateDiscounts(fiDiscounts, dto.id);
+      await this.removeDiscounts(dDiscounts, dto.id);
+    }
+
     return await this.productRepository.update(
-      { ...dto },
+      { ...dto, discounts: undefined },
       { where: { id: dto.id } },
     );
   }

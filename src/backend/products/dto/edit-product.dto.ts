@@ -7,6 +7,13 @@ export class EditProductDto extends CreateProductDto {
     example: '1',
     description: 'Product name',
   })
-  @IsNumber({}, { message: 'Should be always number as group id' })
+  @IsNumber({}, { message: 'Should be always number' })
   readonly id: number;
+
+  @ApiProperty({
+    example: 1,
+    description: 'Discount id',
+  })
+  @IsNumber({}, { message: 'Should be always number' })
+  readonly discounts: number[];
 }
