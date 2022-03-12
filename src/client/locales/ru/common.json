@@ -102,6 +102,7 @@
   "Products": {
     "Products": "Продукты",
     "ProductName": "Название товара",
+    "CreateNewProduct": "Создать новый продукт",
     "ProductGroup": "Группа Товаров",
     "ProductPrice": "Цена",
     "ProductCostPrice": "Цена закупки",

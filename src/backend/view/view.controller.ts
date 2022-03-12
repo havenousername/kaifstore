@@ -93,7 +93,7 @@ export class ViewController {
     await this.handler(req, res);
   }
 
-  @ApiOperation({ summary: 'Admin Products Page' })
+  @ApiOperation({ summary: 'Admin Products Edit' })
   @ApiResponse({ status: 200 })
   @Roles(SUPER_USER_ROLE.name)
   @UseGuards(JwtRolesGuard)
@@ -101,6 +101,17 @@ export class ViewController {
   @UseFilters(new ViewAdminFilter())
   @Get('/admin/products/:id')
   public async showProductsDetails(@Req() req: Request, @Res() res: Response) {
+    await this.handler(req, res);
+  }
+
+  @ApiOperation({ summary: 'Admin Products Create' })
+  @ApiResponse({ status: 200 })
+  @Roles(SUPER_USER_ROLE.name)
+  @UseGuards(JwtRolesGuard)
+  @UseFilters(new ViewAuthFilter())
+  @UseFilters(new ViewAdminFilter())
+  @Get('/admin/products/create')
+  public async showProductsCreate(@Req() req: Request, @Res() res: Response) {
     await this.handler(req, res);
   }
 

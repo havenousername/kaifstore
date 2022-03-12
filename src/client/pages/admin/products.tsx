@@ -1,5 +1,5 @@
 import { NextPageWithLayout } from '../../interfaces/pages-layout';
-import { Box, Typography } from '@mui/material';
+import { Box, Link, Typography } from '@mui/material';
 import React, { ReactElement, useCallback, useEffect, useRef } from 'react';
 import AppLayout from '../../components/functional/app-layout';
 import useDetectBottomScroll from '../../hooks/use-detect-bottom-scroll';
@@ -7,6 +7,7 @@ import ProductsCollection from '../../components/products-collection';
 import useGetProducts from '../../hooks/use-get-products';
 import AdminTheme from '../../components/functional/admin-theme';
 import { useTranslation } from 'react-i18next';
+import AppBaseButton from '../../components/common/app-base-button';
 
 const Catalog: NextPageWithLayout = () => {
   const catalogPath = useCallback(
@@ -31,14 +32,39 @@ const Catalog: NextPageWithLayout = () => {
         padding: '1rem 8rem 4rem',
       }}
     >
-      <Typography
-        variant={'h4'}
-        component={'h4'}
-        padding={(theme) => theme.spacing(2, 3)}
-        fontWeight={600}
+      <Box
+        display={'flex'}
+        justifyContent={'space-between'}
+        alignItems={'center'}
       >
-        {t('Products.Products')}
-      </Typography>
+        <Typography
+          variant={'h4'}
+          component={'h4'}
+          padding={(theme) => theme.spacing(2, 3)}
+          fontWeight={600}
+        >
+          {t('Products.Products')}
+        </Typography>
+        <Link
+          href={'/admin/products/create'}
+          sx={{
+            '&:hover': {
+              textDecoration: 'none',
+            },
+          }}
+        >
+          <AppBaseButton
+            variant={'contained'}
+            color={'primary'}
+            sx={{
+              fontWeight: 700,
+              maxHeight: '2.75rem',
+            }}
+          >
+            {t('Products.CreateNewProduct')}
+          </AppBaseButton>
+        </Link>
+      </Box>
       {products && (
         <ProductsCollection
           isAdmin
