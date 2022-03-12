@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { EditableProduct } from '../interfaces/product-editable';
 import { useFilesFromUrl } from './get-file-from-url';
 
-const useUpdateProduct = () => {
+const useProductFetchCall = (type: 'create' | 'change') => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>();
   const getFilesFromUrl = useFilesFromUrl();
@@ -10,7 +10,12 @@ const useUpdateProduct = () => {
   const initialize = async (product: EditableProduct, images: string[]) => {
     const formData = new FormData();
     setLoading(true);
-    formData.append('_method', 'PUT');
+    if (type === 'create') {
+      formData.append('_method', 'POST');
+    } else {
+      formData.append('_method', 'PUT');
+    }
+
     const imageMap: [string, string][] = images.map((image) => [
       image,
       image.substring(image.indexOf('/') + 1, image.lastIndexOf('.')),
@@ -37,7 +42,7 @@ const useUpdateProduct = () => {
     }
 
     const res = await fetch('/v1/products', {
-      method: 'PUT',
+      method: type === 'create' ? 'POST' : 'PUT',
       headers: {
         Accept: '*/*',
       },
@@ -56,4 +61,4 @@ const useUpdateProduct = () => {
   return [initialize, loading, error];
 };
 
-export default useUpdateProduct;
+export default useProductFetchCall;
