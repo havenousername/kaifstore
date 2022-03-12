@@ -50,12 +50,10 @@ const CustomFilterButton = styled(Box)(({ theme }) => ({
 
 const SearchbarFilter = ({
   setCurrentQuery,
-  queryRating,
   queryDiscount,
   queryPriceRange,
 }: {
   setCurrentQuery: (s: Record<string, string>) => void;
-  queryRating: number | undefined;
   queryPriceRange: [number, number] | undefined;
   queryDiscount: number | undefined;
 }) => {
@@ -82,21 +80,12 @@ const SearchbarFilter = ({
     { content: 60, label: t('Searchbar.UnderDiscount.60%'), disabled: false },
   ];
 
-  const ratingOptions: (ItemProp<number> & { disabled: boolean })[] = [
-    { content: 5, label: t('Searchbar.UnderRating.5star'), disabled: false },
-    { content: 4, label: t('Searchbar.UnderRating.4star'), disabled: false },
-    { content: 3, label: t('Searchbar.UnderRating.3star'), disabled: false },
-  ];
-
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [currentTab, setCurrentTab] = useState(0);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
   const [discountAmount, setDiscountAmount] = useState<number | null>(
     initialFilters.current.discountAmount,
-  );
-  const [rating, setRating] = useState<number | null>(
-    initialFilters.current.rating,
   );
 
   const handlePriceRange = (pr: [number, number]) => {
@@ -108,12 +97,6 @@ const SearchbarFilter = ({
   const handleDiscount = (discount: number) => {
     setDiscountAmount(discount);
     setCurrentQuery({ discount: String(discount) });
-    setOpen(false);
-  };
-
-  const handleRating = (rating: number) => {
-    setRating(rating);
-    setCurrentQuery({ rating: String(rating) });
     setOpen(false);
   };
 
@@ -138,18 +121,6 @@ const SearchbarFilter = ({
           options={discountOptions}
           value={discountAmount}
           onSelect={(v) => handleDiscount(v)}
-          onCancelSelect={() => handleOpenPopper(false)}
-        />
-      ),
-      update: false,
-    },
-    {
-      label: t('Searchbar.FilterUnderRating'),
-      content: (
-        <OptionSelectFilter
-          options={ratingOptions}
-          value={rating}
-          onSelect={(v) => handleRating(v)}
           onCancelSelect={() => handleOpenPopper(false)}
         />
       ),
@@ -218,26 +189,6 @@ const SearchbarFilter = ({
     ]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [discountAmount, queryDiscount]);
-
-  useEffect(() => {
-    if (queryRating) {
-      setQueryPassed((prevState) => ({ ...prevState, rating: true }));
-    }
-
-    const current = !queryPassed.rating ? queryRating ?? rating : rating;
-
-    setTabItems((prevState) => [
-      ...prevState.slice(0, 2),
-      {
-        ...prevState[2],
-        content: React.cloneElement(prevState[2].content as ReactElement, {
-          value: current,
-        }),
-        update: !!current,
-      },
-    ]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queryRating, rating]);
 
   useEffect(() => {
     setPriceRange((prevState) => [minRangeData, prevState[1]]);

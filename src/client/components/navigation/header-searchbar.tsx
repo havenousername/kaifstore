@@ -28,7 +28,6 @@ const HeaderSearchbar = ({ searchBar }: { searchBar: SearchbarProps }) => {
     querySearch.current = searchBar.value;
   }, [searchBar.value]);
 
-  const [queryRating, setQueryRating] = useState<number | undefined>();
   const [queryDiscount, setQueryDiscount] = useState<number | undefined>();
   const [queryPriceRange, setQueryPriceRange] = useState<
     [number, number] | undefined
@@ -71,10 +70,6 @@ const HeaderSearchbar = ({ searchBar }: { searchBar: SearchbarProps }) => {
 
   useEffect(() => {
     if (router.isReady && !queryParsed) {
-      if (!isNaN(+router.query['rating'])) {
-        setQueryRating(+decodeURI(router.query['rating'] as string));
-      }
-
       if (!isNaN(+router.query['discount'])) {
         setQueryDiscount(+decodeURI(router.query['discount'] as string));
       }
@@ -124,7 +119,6 @@ const HeaderSearchbar = ({ searchBar }: { searchBar: SearchbarProps }) => {
       />
       <SearchbarFilter
         setCurrentQuery={setCurrentQuery}
-        queryRating={queryRating}
         queryDiscount={queryDiscount}
         queryPriceRange={queryPriceRange}
       />
