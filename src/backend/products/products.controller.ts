@@ -92,7 +92,6 @@ export class ProductsController {
   @Public()
   @Get('/ids/:ids')
   async getByIds(@Param('ids') ids: string) {
-    console.log(ids);
     return this.productService.getByIds(JSON.parse(ids));
   }
 
@@ -143,9 +142,10 @@ export class ProductsController {
   }
 
   @ApiOperation({ summary: 'Product deletion' })
-  @ApiResponse({ status: 200, type: Product })
+  @ApiResponse({ status: 200, type: Number })
   @Delete(':id')
   delete(@Param('id') id: number) {
+    console.log('delete product');
     return this.productService.delete(id);
   }
 }

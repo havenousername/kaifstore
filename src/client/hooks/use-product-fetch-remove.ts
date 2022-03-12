@@ -1,20 +1,19 @@
 import { useState } from 'react';
+import useGetHttpUrl from './use-get-http-url';
 
 const useProductFetchRemove = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>();
   const [data, setData] = useState();
+  const path = useGetHttpUrl();
 
   const initialize = async (id: number) => {
     try {
-      const res = await fetch(`v1/products/${id}`, {
+      const res = await fetch(path(`v1/products/${id}`), {
         method: 'DELETE',
-        headers: {
-          Accept: '*/*',
-        },
       });
 
-      if (res.status !== 201) {
+      if (res.status !== 201 && res.status !== 200) {
         const error = await res.json();
         setError(error);
         return;

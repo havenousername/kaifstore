@@ -21,6 +21,7 @@ import ProductForm from '../../../components/product-form';
 import useProductFormData from '../../../hooks/use-product-form-data';
 import { SnackbarContext } from '../../../context/snackbar.context';
 import useProductFetchRemove from '../../../hooks/use-product-fetch-remove';
+import { useRouter } from 'next/router';
 
 export const getStaticPaths = async () => {
   return {
@@ -47,6 +48,7 @@ const ProductDetails: NextPageWithLayout = (props: {
     fetcher,
   );
   const snackbar = useContext(SnackbarContext);
+  const router = useRouter();
 
   const theme = useTheme();
   const [isLoaded, setIsLoaded] = useState(false);
@@ -147,6 +149,7 @@ const ProductDetails: NextPageWithLayout = (props: {
       snackbar.changeIsOpen(true);
       snackbar.changeAutoHide(1000);
       snackbar.changeMessage(t('Products.SuccessfullyDelete'));
+      router.back();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productDeleteData]);
