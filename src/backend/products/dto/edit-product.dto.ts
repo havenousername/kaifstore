@@ -9,11 +9,4 @@ export class EditProductDto extends CreateProductDto {
   })
   @IsNumber({}, { message: 'Should be always number' })
   readonly id: number;
-
-  @ApiProperty({
-    example: 1,
-    description: 'Discount id',
-  })
-  @IsNumber({}, { message: 'Should be always number' })
-  readonly discounts: number[];
 }

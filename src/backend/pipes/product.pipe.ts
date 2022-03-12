@@ -8,15 +8,16 @@ export class ProductPipe implements PipeTransform<unknown> {
   transform(
     value: Record<keyof EditProductDto, any>,
   ): CreateProductDto | EditProductDto {
-    console.log(value.barCodes);
     return {
-      description: String(value.description),
+      description: value.description ? String(value.description) : '',
       allowToSell: Boolean(value.allowToSell),
-      articleNumber: Number(value.articleNumber),
+      articleNumber: value.articleNumber
+        ? Number(value.articleNumber)
+        : undefined,
       barCodes: JSON.parse(value.barCodes),
-      code: String(value.code),
-      productType: +value.productType,
-      quantity: +value.quantity,
+      code: value.code ? String(value.code) : undefined,
+      productType: value.code ? +value.productType : undefined,
+      quantity: value.quantity ? +value.quantity : undefined,
       characteristics: JSON.parse(value.characteristics),
       price: +value.price,
       costPrice: +value.costPrice,

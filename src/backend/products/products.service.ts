@@ -136,11 +136,17 @@ export class ProductsService {
       : [];
     const uuid = v4();
     try {
-      return await this.productRepository.create({
+      const product = await this.productRepository.create({
         ...dto,
         uuid: uuid,
         images: filenames,
       });
+
+      if (dto.discounts) {
+        await this.removeDiscounts(dto.discounts, product.id);
+      }
+
+      return product;
     } catch (e) {
       filenames.map((fileName) => {
         const [path, file] = fileName.split('/');

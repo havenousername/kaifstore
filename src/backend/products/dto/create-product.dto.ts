@@ -104,4 +104,11 @@ export class CreateProductDto {
   })
   @IsString({ message: 'Should be string' })
   tax: string;
+
+  @ApiProperty({
+    example: 1,
+    description: 'Discount id',
+  })
+  @IsNumber({}, { message: 'Should be always number' })
+  readonly discounts: number[];
 }

@@ -9,7 +9,7 @@ const useProductSchema = (t: TFunction) => {
         t('Validation.Required', { field: t('Products.ProductName') }),
       )
       .min(5, () =>
-        t('ValidationMinLength', {
+        t('Validation.MinLength', {
           length: 5,
           field: t('Products.ProductName'),
         }),
@@ -35,6 +35,12 @@ const useProductSchema = (t: TFunction) => {
           length: 1000000,
           field: t('Products.ProductPrice'),
         });
+      })
+      .when('costPrice', {
+        is: (val) => val && val > 0,
+        then: yup
+          .number()
+          .moreThan(yup.ref('costPrice'), t('Products.PriceLessCostPrice')),
       }),
     costPrice: yup
       .number()
@@ -52,12 +58,6 @@ const useProductSchema = (t: TFunction) => {
           length: 1000000,
           field: t('Products.ProductCostPrice'),
         });
-      })
-      .when('price', {
-        is: (val) => val && val > 0,
-        then: yup
-          .number()
-          .lessThan(yup.ref('price'), 'Cost price cannot be bigger than price'),
       }),
     characteristics: yup.array(),
     quantity: yup

@@ -4,6 +4,7 @@ import { SxProps } from '@mui/system';
 import { MouseEvent, ReactNode } from 'react';
 import useGetHttpUrl from '../hooks/use-get-http-url';
 import { Product } from '../../backend/model/products.model';
+import noImage from '../assets/no-image.png';
 
 interface NewIcon {
   isNew: boolean;
@@ -53,7 +54,11 @@ const ProductCardSkeleton = ({
     >
       <ProductMediaCard
         newText={newIcon.newText}
-        image={getHttpUrl(product.images[0])}
+        image={
+          product.images.length === 0
+            ? noImage.src
+            : getHttpUrl(product.images[0])
+        }
         isNew={newIcon.isNew}
         hasDiscount={false}
         isFavourite={false}
