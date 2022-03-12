@@ -17,6 +17,7 @@ import {
 import NavbarHeaderAuthenticated from './navbar-header-authenticated';
 import NavbarHeaderUnauthenticated from './navbar-header-unauthenticated';
 import { useRouter } from 'next/router';
+import { SUPER_USER_ROLE } from '../../../backend/app/contstants';
 
 const Navbar = () => {
   const { t } = useTranslation();
@@ -102,7 +103,7 @@ const Navbar = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, router]);
 
-  const [pages] = useNavbarLinks();
+  const [pages, adminPages] = useNavbarLinks();
 
   return (
     <>
@@ -119,40 +120,48 @@ const Navbar = () => {
           padding: '0 1rem',
         }}
       >
-        <Typography variant={'h4'} component={'h3'} padding={'2rem 1rem'}>
-          {t('Kaifstore')}
-        </Typography>
-        <Typography
-          variant={'caption'}
-          component={'span'}
-          gutterBottom
-          paddingLeft={'1rem'}
-        >
-          {t('Navbar.User')}
-        </Typography>
-        {authenticated && user && Object.keys(user).length > 0 ? (
-          <NavbarHeaderAuthenticated
-            user={user}
-            checkAuthentication={() => checkAuthentication()}
-          />
-        ) : (
-          <NavbarHeaderUnauthenticated />
-        )}
-        <NavbarSection title={t('Navbar.Pages')} linkItems={pages} />
-        <Divider sx={{ margin: '2rem 0 3rem' }} />
-        <Typography
-          variant={'caption'}
-          component={'span'}
-          gutterBottom
-          paddingLeft={'1rem'}
-        >
-          {t('Navbar.Categories')}
-        </Typography>
         <Box sx={{ overflowY: 'scroll' }}>
-          <AppAccordion
-            data={groupAccordion}
-            onChange={(data) => onGroupRoute(data)}
-          />
+          <Typography variant={'h4'} component={'h3'} padding={'2rem 1rem'}>
+            {t('Kaifstore')}
+          </Typography>
+          <Typography
+            variant={'caption'}
+            component={'span'}
+            gutterBottom
+            paddingLeft={'1rem'}
+          >
+            {t('Navbar.User')}
+          </Typography>
+          {authenticated && user && Object.keys(user).length > 0 ? (
+            <NavbarHeaderAuthenticated
+              user={user}
+              checkAuthentication={() => checkAuthentication()}
+            />
+          ) : (
+            <NavbarHeaderUnauthenticated />
+          )}
+          {authenticated &&
+            user &&
+            Object.keys(user).length > 0 &&
+            user.role.name === SUPER_USER_ROLE.name && (
+              <NavbarSection title={t('Navbar.Admin')} linkItems={adminPages} />
+            )}
+          <NavbarSection title={t('Navbar.Pages')} linkItems={pages} />
+          <Divider sx={{ margin: '2rem 0 3rem' }} />
+          <Typography
+            variant={'caption'}
+            component={'span'}
+            gutterBottom
+            paddingLeft={'1rem'}
+          >
+            {t('Navbar.Categories')}
+          </Typography>
+          <Box sx={{ overflowY: 'scroll' }}>
+            <AppAccordion
+              data={groupAccordion}
+              onChange={(data) => onGroupRoute(data)}
+            />
+          </Box>
         </Box>
       </Paper>
     </>

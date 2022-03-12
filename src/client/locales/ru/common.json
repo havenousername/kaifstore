@@ -17,7 +17,10 @@
     "FamilyName": "Фaмилия",
     "ConfirmPassword": "Потвердите пароль",
     "Gender": "Пол",
-    "DateOfBirth": "Дата рождения"
+    "DateOfBirth": "Дата рождения",
+    "Characteristics": "Выберите характеристику (пример: белый, черный и тд)",
+    "Barcodes": "Выберите или создайте баркоды (пример: 9781234567897, 978123456756 и тд)",
+    "Discounts": "Выберите скидки из списка"
   },
   "KaifStore": "KaifStore",
   "IndexPage": {
@@ -36,7 +39,8 @@
     "About": "О проекте",
     "News": "Новости",
     "Documents": "Документы",
-    "Contacts": "Контакты"
+    "Contacts": "Контакты",
+    "Products": "Продукты"
   },
   "Navbar": {
     "Pages": "Страницы",
@@ -45,7 +49,8 @@
     "UnauthText": "Добро пожаловать, гость!",
     "NoAccount": "нет аккаунта?",
     "Register":  "Зарегестрируйтесь",
-    "Logout": "Выйти"
+    "Logout": "Выйти",
+    "Admin": "Админ"
   },
   "Searchbar": {
     "Placeholder": "Введите название товара",
@@ -93,6 +98,37 @@
     "Register": "Зарегестрироваться",
     "HaveAccount": "Уже имеете аккаунт?",
     "Login": "Войти"
+  },
+  "Products": {
+    "Products": "Продукты",
+    "ProductName": "Название товара",
+    "CreateNewProduct": "Создать новый продукт",
+    "ProductGroup": "Группа Товаров",
+    "ProductPrice": "Цена",
+    "ProductCostPrice": "Цена закупки",
+    "Characteristics": "Характеристики",
+    "Quantity": "Количество",
+    "HasBarcodes": "Есть баркоды",
+    "ProductType": "Тип продукта",
+    "TypeStandard": "Стандартный",
+    "TypeTobaccoMarked": "Табачное изделие",
+    "Barcodes": "Баркоды",
+    "Code": "Код",
+    "Discounts": "Скидки",
+    "ProductMeasure": "Мера количества",
+    "Article": "Артикул",
+    "AllowedToSell": "Разрешено продавать",
+    "Description": "Описание",
+    "NoCharacteristics": "Нет доступных/выбранных характеристик. Для создания новой пропишите и нажмите Enter",
+    "NoBarcodes": "Нет доступных/выбранных баркодов. Для создания нового пропишите и нажмите Enter",
+    "NoDiscounts": "Нет доступных скидок. Добавьте их на отдельной странице, либо напрямую в базу данный",
+    "PriceLessCostPrice": "Цена не может быть меньше закупочной цены",
+    "Delete": "Удалить",
+    "Create": "Создать",
+    "Change": "Изменить",
+    "Edit": "Редактировать",
+    "AddNewImage": "Добавить новое изображение",
+    "Save": "Сохранить"
   },
   "Utils": {
     "Select": "Выбрать",

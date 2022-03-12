@@ -24,7 +24,7 @@ export class CreateProductDto {
 
   @ApiProperty({
     example: '123e4567-e89b-12d3-a456-426614174000',
-    description: 'Product name',
+    description: 'Group id',
   })
   @IsUUID('all', { message: 'Should be always uuid' })
   readonly groupId: string;
@@ -104,4 +104,11 @@ export class CreateProductDto {
   })
   @IsString({ message: 'Should be string' })
   tax: string;
+
+  @ApiProperty({
+    example: 1,
+    description: 'Discount id',
+  })
+  @IsNumber({}, { message: 'Should be always number' })
+  readonly discounts: number[];
 }

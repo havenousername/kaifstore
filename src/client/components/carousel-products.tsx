@@ -33,8 +33,14 @@ const CarouselProducts = ({
       infinite={true}
     >
       <AppCarousel
-        prevButtonPosition={['left', '-10px']}
-        nextButtonPosition={['right', '-40px']}
+        prevButtonPosition={[
+          ['left', '-10px'],
+          ['bottom', '90px'],
+        ]}
+        nextButtonPosition={[
+          ['right', '-40px'],
+          ['bottom', '90px'],
+        ]}
         sx={{
           height: '500px',
         }}

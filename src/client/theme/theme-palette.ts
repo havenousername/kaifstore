@@ -23,6 +23,7 @@ const secondary: PaletteColorOptions = {
   light: kaifstoreColors.grayBackground,
   main: kaifstoreColors.white,
   dark: kaifstoreColors.white,
+  contrastText: kaifstoreColors.blackGrey,
 };
 
 const text: Partial<TypeText> = {
@@ -36,6 +37,7 @@ const grey: Partial<Color> = {
   200: kaifstoreColors.whiteGray,
   300: kaifstoreColors.grayText,
   500: kaifstoreColors.gray,
+  600: kaifstoreColors.blackAdmin,
   700: kaifstoreColors.grayBackground,
   800: kaifstoreColors.blackAlmost,
 };

@@ -5,4 +5,5 @@ export type LinkItem = {
   path: string;
   current: boolean;
   icon: ReactNode;
+  subPaths?: string[];
 };

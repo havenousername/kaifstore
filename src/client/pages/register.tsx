@@ -2,7 +2,6 @@ import React, {
   FunctionComponent,
   useCallback,
   useContext,
-  useEffect,
   useState,
 } from 'react';
 import background from '../assets/background-register.png';
@@ -22,7 +21,6 @@ import { Gender } from '../interfaces/gender';
 import FormDatePicker from '../components/input/validation/form-date-picker';
 import FormCheckbox from '../components/input/validation/form-checkbox';
 import useRegisterSchema from '../hooks/use-register-schema';
-import { subYears } from 'date-fns';
 import useRegister from '../hooks/use-register';
 import { AuthenticationContext } from '../context/authenticated.context';
 import { useRouter } from 'next/router';
@@ -68,10 +66,6 @@ const Register: FunctionComponent = () => {
 
   const onSubmit = (data: RegisterUser) => register(data);
 
-  useEffect(() => {
-    console.log(subYears(new Date(), 18));
-  }, []);
-
   return (
     <BoxedContainer
       background={background.src}
@@ -94,6 +88,7 @@ const Register: FunctionComponent = () => {
             display={'flex'}
             minWidth={'280px'}
             justifyContent={'space-between'}
+            height={'auto'}
           >
             <span>{t('Register.HaveAccount')}</span>
             <Link color={'secondary'} fontWeight={'600'} href={'/login'}>

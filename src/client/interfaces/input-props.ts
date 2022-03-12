@@ -4,6 +4,7 @@ import {
   FormHelperTextProps,
   InputBaseProps,
   SelectChangeEvent,
+  SelectProps,
 } from '@mui/material';
 import { SxProps } from '@mui/system';
 import { Theme } from '@mui/material/styles';
@@ -19,6 +20,19 @@ export interface FormInputProps<TFieldValues> {
   helperProps?: FormHelperTextProps;
   sx?: SxProps;
 }
+
+export type FormMultiSelectProps<TFieldValues> = Omit<
+  FormInputProps<TFieldValues>,
+  'appInputProps' | 'inputProps'
+> & {
+  selectProps: Omit<AppMultiSelect, 'selected' | 'onOptionChange' | 'error'>;
+};
+
+export type FormInputSelect<TFieldValues, Options> = Omit<
+  AppInputSelect<Options>,
+  'selected' | 'onChange'
+> &
+  Omit<FormInputProps<TFieldValues>, 'appInputProps' | 'inputProps'>;
 
 export type FormSelectProps<TFieldValues> = Omit<
   FormInputProps<TFieldValues>,
@@ -51,12 +65,30 @@ export type AppInputProps = {
 };
 
 export type AppSelectProps = {
+  value: string | string[];
   inputProps?: AppInputProps;
-  value: string;
+  selectProps?: SelectProps<string | string[]>;
   onChange(e: SelectChangeEvent, child: ReactNode): void;
-  values: { value: string; content: ReactNode | string }[];
+  values: SelectValue[];
   error: boolean;
 };
+
+export type AppMultiSelect = Omit<
+  AppSelectProps,
+  'inputProps' | 'selectProps' | 'onChange' | 'value'
+> & {
+  selected: SelectValue[];
+  placeholder?: string;
+  noElements?: string | ReactNode;
+  sxInput?: SxProps;
+  sxList?: SxProps;
+  sxListItem?: SxProps;
+  sxTag?: SxProps;
+  onOptionChange?: (values: SelectValue[]) => void;
+  disableOptionAddition?: boolean;
+};
+
+export type SelectValue = { value: string; content: ReactNode | string };
 
 export type AppDatePickerProps = {
   locale: keyof typeof maskMap;
@@ -68,4 +100,12 @@ export type AppDatePickerProps = {
 export type AppCheckBoxProps = {
   checkboxProps?: CheckboxProps;
   labelProps?: Omit<FormControlLabelProps, 'control'>;
+};
+
+export type AppInputSelect<Type> = {
+  options: { content: string | ReactNode; value: Type }[];
+  selected: Type;
+  onChange(t: Type, c: string | ReactNode): void;
+  sxRoot?: SxProps;
+  sxItem?: SxProps;
 };

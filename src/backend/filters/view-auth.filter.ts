@@ -15,6 +15,8 @@ export class ViewAuthFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
 
+    console.log(exception.getResponse());
+
     response.status(status).redirect(PRIVATE_VIEW_REDIRECT_ROUTE);
   }
 }

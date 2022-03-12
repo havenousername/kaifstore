@@ -69,19 +69,21 @@ const ProductMediaCard = ({
   return (
     <>
       <CardMediaWithStatuses {...props}>
-        <FeatureRectangle>
-          <Typography
-            variant={'h5'}
-            component={'span'}
-            fontSize={18}
-            sx={{
-              marginRight: '0.5rem',
-            }}
-          >
-            {newText}
-          </Typography>
-          <NewIcon />
-        </FeatureRectangle>
+        {props.isNew && (
+          <FeatureRectangle>
+            <Typography
+              variant={'h5'}
+              component={'span'}
+              fontSize={18}
+              sx={{
+                marginRight: '0.5rem',
+              }}
+            >
+              {newText}
+            </Typography>
+            <NewIcon />
+          </FeatureRectangle>
+        )}
       </CardMediaWithStatuses>
     </>
   );

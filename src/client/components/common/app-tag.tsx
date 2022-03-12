@@ -1,5 +1,5 @@
 import { Box, Typography, useTheme } from '@mui/material';
-import React, { useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import { SxProps } from '@mui/system';
 
 const AppTag = ({
@@ -8,7 +8,7 @@ const AppTag = ({
   sx,
 }: {
   index: number;
-  tag: string;
+  tag: string | ReactNode;
   sx: SxProps;
 }) => {
   const theme = useTheme();
@@ -33,7 +33,9 @@ const AppTag = ({
         ...sx,
       }}
     >
-      <Typography variant={'h6'}>{tag}</Typography>
+      <Typography variant={'h6'} textAlign={'center'}>
+        {tag}
+      </Typography>
     </Box>
   );
 };

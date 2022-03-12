@@ -1,11 +1,24 @@
-import { Controller, Get, Req, Res, UseFilters } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Req,
+  Res,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
 import { ViewService } from './view.service';
 import { Request, Response } from 'express';
 import { parse } from 'url';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from '../decorators/public.decorator';
 import { ViewAuthFilter } from '../filters/view-auth.filter';
-import { PRIVATE_VIEW_REDIRECT_ROUTE } from '../app/contstants';
+import {
+  PRIVATE_VIEW_REDIRECT_ROUTE,
+  SUPER_USER_ROLE,
+} from '../app/contstants';
+import { Roles } from '../decorators/role-auth.decorator';
+import JwtRolesGuard from '../auth/guards/roles-auth.guard';
+import { ViewAdminFilter } from '../filters/view-admin.filter';
 
 @ApiTags('Pages')
 @Controller('/')
@@ -69,11 +82,36 @@ export class ViewController {
     await this.handler(req, res);
   }
 
-  @ApiOperation({ summary: 'Home page' })
+  @ApiOperation({ summary: 'Admin Products Page' })
   @ApiResponse({ status: 200 })
-  @Get('/')
+  @Roles(SUPER_USER_ROLE.name)
+  @UseGuards(JwtRolesGuard)
   @UseFilters(new ViewAuthFilter())
-  public async showHome(@Req() req: Request, @Res() res: Response) {
+  @UseFilters(new ViewAdminFilter())
+  @Get('/admin/products')
+  public async showProducts(@Req() req: Request, @Res() res: Response) {
+    await this.handler(req, res);
+  }
+
+  @ApiOperation({ summary: 'Admin Products Edit' })
+  @ApiResponse({ status: 200 })
+  @Roles(SUPER_USER_ROLE.name)
+  @UseGuards(JwtRolesGuard)
+  @UseFilters(new ViewAuthFilter())
+  @UseFilters(new ViewAdminFilter())
+  @Get('/admin/products/:id')
+  public async showProductsDetails(@Req() req: Request, @Res() res: Response) {
+    await this.handler(req, res);
+  }
+
+  @ApiOperation({ summary: 'Admin Products Create' })
+  @ApiResponse({ status: 200 })
+  @Roles(SUPER_USER_ROLE.name)
+  @UseGuards(JwtRolesGuard)
+  @UseFilters(new ViewAuthFilter())
+  @UseFilters(new ViewAdminFilter())
+  @Get('/admin/products/create')
+  public async showProductsCreate(@Req() req: Request, @Res() res: Response) {
     await this.handler(req, res);
   }
 

@@ -8,5 +8,6 @@ import { Discount } from '../model/discounts.model';
   controllers: [DiscountsController],
   providers: [DiscountsService],
   imports: [SequelizeModule.forFeature([Discount])],
+  exports: [DiscountsService],
 })
 export class DiscountsModule {}

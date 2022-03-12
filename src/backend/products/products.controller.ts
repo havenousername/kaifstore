@@ -7,6 +7,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
   Query,
   Req,
   Res,
@@ -29,6 +30,8 @@ import {
 } from '../utils/product-query';
 import { CustomQueries } from '../interfaces/query';
 import { generatePaginationOptions } from '../utils';
+import { EditProductDto } from './dto/edit-product.dto';
+import { ProductPipe } from '../pipes/product.pipe';
 
 @ApiTags('Products')
 @Controller({
@@ -121,9 +124,20 @@ export class ProductsController {
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
   create(
-    @Body() dto: CreateProductDto,
+    @Body(new ProductPipe()) dto: CreateProductDto,
     @UploadedFiles() images: Express.Multer.File[],
   ) {
     return this.productService.create(dto, images);
+  }
+
+  @ApiOperation({ summary: 'Product creation' })
+  @ApiResponse({ status: 200, type: Product })
+  @Put()
+  @UseInterceptors(FilesInterceptor('images'))
+  update(
+    @Body(new ProductPipe()) dto: EditProductDto,
+    @UploadedFiles() images: Express.Multer.File[],
+  ) {
+    return this.productService.update(dto, images);
   }
 }
