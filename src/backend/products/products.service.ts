@@ -72,6 +72,19 @@ export class ProductsService {
       };
     }
 
+    if (queryOptions.discount) {
+      const productDiscounts = await this.productDiscountsRepository.findAll({
+        include: { all: true },
+      });
+      const discounts = productDiscounts.filter(
+        (discount) => discount.discount.amount > queryOptions.discount,
+      );
+      const productIds = discounts.map((i) => i.productId);
+      filters['id'] = {
+        [Op.in]: productIds,
+      };
+    }
+
     if (queryOptions.groupId && isString(queryOptions.groupId)) {
       const groupId: undefined = queryOptions.groupId as undefined;
       const groups =
