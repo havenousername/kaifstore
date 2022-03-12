@@ -106,6 +106,7 @@ const SearchbarFilter = ({
       content: (
         <PriceFilter
           priceRange={priceRange}
+          initialRange={[minRangeData, maxRangeData]}
           maxRange={maxRangeData}
           minRange={minRangeData}
           onPriceRangeSelect={handlePriceRange}
@@ -120,6 +121,7 @@ const SearchbarFilter = ({
         <OptionSelectFilter
           options={discountOptions}
           value={discountAmount}
+          initialValue={null}
           onSelect={(v) => handleDiscount(v)}
           onCancelSelect={() => handleOpenPopper(false)}
         />
