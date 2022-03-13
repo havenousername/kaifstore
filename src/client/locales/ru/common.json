@@ -132,12 +132,18 @@
     "SuccessfullyUpdated": "Продукт успешно обновлен",
     "ErrorOccurred": "Произошла ошибка",
     "SuccessfullyCreated": "Продукт успешно создан",
-    "SuccessfullyDelete": "Продукт успешно удален"
+    "SuccessfullyDelete": "Продукт успешно удален",
+    "ParentGroup": "Родительская группа",
+    "ChildGroup": "Вложенная группа",
+    "NoDescription": "Описание не добавлено",
+    "Group": "Группы"
   },
   "Utils": {
     "Select": "Выбрать",
     "Cancel": "Отмена",
-    "GoBack": "Назад"
+    "GoBack": "Назад",
+    "Browse": "Просмотреть",
+    "Delete": "Удалить"
   },
   "Validation": {
     "Email": "Электронная почта должна быть валидна (пример: user@mail.com)",

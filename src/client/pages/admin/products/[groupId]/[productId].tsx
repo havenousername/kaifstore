@@ -54,7 +54,7 @@ const ProductDetails: NextPageWithLayout = (props: {
   const [isLoaded, setIsLoaded] = useState(false);
   const [images, setImages] = useState<string[]>([]);
   const {
-    form: { handleSubmit, control, setValue, watch },
+    form: { handleSubmit, control, setValue, watch, getValues },
     productTypes,
     productMeasureTypes,
     selectableGroups,
@@ -164,6 +164,7 @@ const ProductDetails: NextPageWithLayout = (props: {
 
   return (
     <ProductForm
+      getValues={getValues}
       selectableGroups={selectableGroups}
       selectableDiscounts={selectableDiscounts}
       productTypes={productTypes}

@@ -19,7 +19,7 @@ const ProductCreate: NextPageWithLayout = () => {
 
   const router = useRouter();
   const {
-    form: { handleSubmit, control, watch },
+    form: { handleSubmit, control, watch, getValues },
     productTypes,
     productMeasureTypes,
     selectableGroups,
@@ -68,6 +68,7 @@ const ProductCreate: NextPageWithLayout = () => {
   return (
     <Box>
       <ProductForm
+        getValues={getValues}
         selectableGroups={selectableGroups}
         selectableDiscounts={selectableDiscounts}
         productTypes={productTypes}

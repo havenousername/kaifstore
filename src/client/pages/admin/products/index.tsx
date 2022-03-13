@@ -23,6 +23,20 @@ import { TypographyLineEllipsis } from 'src/client/components/product-card-skele
 
 const GroupCard = ({ group }: { group: ProductGroup }) => {
   const theme = useTheme();
+  const getProductsCount = (g: ProductGroup): number => {
+    if (!g.childrenGroups || g.childrenGroups.length === 0) {
+      return g.products ? g.products.length : 0;
+    }
+
+    return (
+      g.products.length +
+      g.childrenGroups
+        .map((child) => getProductsCount(child))
+        .reduce((a, b) => a + b, 0)
+    );
+  };
+
+  const { t } = useTranslation();
   return (
     <Card
       sx={{
@@ -55,7 +69,9 @@ const GroupCard = ({ group }: { group: ProductGroup }) => {
             justifyContent={'space-between'}
           >
             <Typography variant={'subtitle2'}>
-              {!group.parentGroup ? 'Parent Group' : 'Child Group'}
+              {!group.parentGroup
+                ? t('Products.ParentGroup')
+                : t('Products.ChildGroup')}
             </Typography>
             {!group.parentGroup ? <ParentGroupIcon /> : <ChildGroupIcon />}
           </Box>
@@ -74,7 +90,7 @@ const GroupCard = ({ group }: { group: ProductGroup }) => {
               }}
             >
               {group.description.length === 0
-                ? 'No description provided'
+                ? t('Products.NoDescription')
                 : group.description}
             </Typography>
           </Box>
@@ -84,7 +100,7 @@ const GroupCard = ({ group }: { group: ProductGroup }) => {
             <Box display={'flex'} alignItems={'center'}>
               <ProductIcon />
               <Typography marginLeft={1} variant={'h6'}>
-                {group.products.length}
+                {getProductsCount(group)}
               </Typography>
             </Box>
             {!group.parentGroup && (
@@ -119,7 +135,7 @@ const GroupCard = ({ group }: { group: ProductGroup }) => {
                   maxHeight: '2.75rem',
                 }}
               >
-                {'Browse'}
+                {t('Utils.Browse')}
               </AppBaseButton>
             </Link>
             <AppBaseButton
@@ -136,7 +152,7 @@ const GroupCard = ({ group }: { group: ProductGroup }) => {
                 },
               }}
             >
-              {'Delete'}
+              {t('Utils.Delete')}
             </AppBaseButton>
           </Box>
         </Box>
@@ -173,7 +189,7 @@ const Index = () => {
           padding={(theme) => theme.spacing(2, 3)}
           fontWeight={600}
         >
-          {t('Products.Products')}
+          {t('Products.Products')} / {t('Products.Group')}
         </Typography>
         <Link
           href={'/admin/products/create'}

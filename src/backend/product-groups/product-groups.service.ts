@@ -18,6 +18,7 @@ export class ProductGroupsService {
     const options: FindOptions<ProductGroup> = {
       include: {
         all: true,
+        nested: true,
       },
       order: [['groupId', OrderBy.DESC]],
     };
