@@ -1,15 +1,15 @@
-import { NextPageWithLayout } from '../../interfaces/pages-layout';
+import { NextPageWithLayout } from '../../../../interfaces/pages-layout';
 import { Box, Link, Typography } from '@mui/material';
 import React, { ReactElement, useCallback, useEffect, useRef } from 'react';
-import AppLayout from '../../components/functional/app-layout';
-import useDetectBottomScroll from '../../hooks/use-detect-bottom-scroll';
-import ProductsCollection from '../../components/products-collection';
-import useGetProducts from '../../hooks/use-get-products';
-import AdminTheme from '../../components/functional/admin-theme';
+import AppLayout from '../../../../components/functional/app-layout';
+import useDetectBottomScroll from '../../../../hooks/use-detect-bottom-scroll';
+import ProductsCollection from '../../../../components/products-collection';
+import useGetProducts from '../../../../hooks/use-get-products';
+import AdminTheme from '../../../../components/functional/admin-theme';
 import { useTranslation } from 'react-i18next';
-import AppBaseButton from '../../components/common/app-base-button';
+import AppBaseButton from '../../../../components/common/app-base-button';
 
-const Catalog: NextPageWithLayout = () => {
+const Index: NextPageWithLayout = () => {
   const catalogPath = useCallback(
     (currentPage: number, query = '') =>
       `/v1/products?page=${currentPage}&desc=createdAt&${query}`,
@@ -76,7 +76,7 @@ const Catalog: NextPageWithLayout = () => {
   );
 };
 
-Catalog.getLayout = function getLayout(page: ReactElement) {
+Index.getLayout = function getLayout(page: ReactElement) {
   return (
     <AdminTheme>
       <AppLayout hasHeader={false}>{page}</AppLayout>{' '}
@@ -84,4 +84,4 @@ Catalog.getLayout = function getLayout(page: ReactElement) {
   );
 };
 
-export default Catalog;
+export default Index;

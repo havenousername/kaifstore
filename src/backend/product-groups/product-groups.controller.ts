@@ -25,8 +25,8 @@ export class ProductGroupsController {
   @ApiResponse({ status: 200, type: [ProductGroup] })
   @Public()
   @Get()
-  getAll(@Query('name') name?: string) {
-    return this.service.getAll(name);
+  getAll() {
+    return this.service.getAll();
   }
 
   @ApiOperation({

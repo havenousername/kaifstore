@@ -6,21 +6,21 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import AdminTheme from '../../../components/functional/admin-theme';
-import AppLayout from '../../../components/functional/app-layout';
+import AdminTheme from '../../../../components/functional/admin-theme';
+import AppLayout from '../../../../components/functional/app-layout';
 import { useTranslation } from 'react-i18next';
 import useSWRImmutable from 'swr/immutable';
-import { Product } from '../../../../backend/model/products.model';
-import fetcher from '../../../api/root-fetcher';
-import { NextPageWithLayout } from '../../../interfaces/pages-layout';
-import { EditableProduct } from '../../../interfaces/product-editable';
-import AppBaseButton from '../../../components/common/app-base-button';
+import { Product } from '../../../../../backend/model/products.model';
+import fetcher from '../../../../api/root-fetcher';
+import { NextPageWithLayout } from '../../../../interfaces/pages-layout';
+import { EditableProduct } from '../../../../interfaces/product-editable';
+import AppBaseButton from '../../../../components/common/app-base-button';
 import useProductFetchCall from 'src/client/hooks/use-product-fetch-call';
 import { FieldErrors } from 'react-hook-form/dist/types/errors';
-import ProductForm from '../../../components/product-form';
-import useProductFormData from '../../../hooks/use-product-form-data';
-import { SnackbarContext } from '../../../context/snackbar.context';
-import useProductFetchRemove from '../../../hooks/use-product-fetch-remove';
+import ProductForm from '../../../../components/product-form';
+import useProductFormData from '../../../../hooks/use-product-form-data';
+import { SnackbarContext } from '../../../../context/snackbar.context';
+import useProductFetchRemove from '../../../../hooks/use-product-fetch-remove';
 import { useRouter } from 'next/router';
 
 export const getStaticPaths = async () => {

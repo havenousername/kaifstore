@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ProductGroup } from '../model/product-groups.model';
 import { FindOptions } from 'sequelize';
+import { OrderBy } from '../interfaces/query';
 
 @Injectable()
 export class ProductGroupsService {
@@ -13,13 +14,13 @@ export class ProductGroupsService {
     return this.groupRepository.findOne({ where: { id } });
   }
 
-  async getAll(name?: string) {
-    const options: FindOptions<ProductGroup> = name
-      ? {
-          where: { name },
-          include: { all: true },
-        }
-      : { include: { all: true } };
+  async getAll() {
+    const options: FindOptions<ProductGroup> = {
+      include: {
+        all: true,
+      },
+      order: [['groupId', OrderBy.DESC]],
+    };
     return this.groupRepository.findAll(options);
   }
 
