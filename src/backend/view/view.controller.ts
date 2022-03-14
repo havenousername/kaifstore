@@ -115,6 +115,20 @@ export class ViewController {
     await this.handler(req, res);
   }
 
+  @ApiOperation({ summary: 'Admin Products Import/Export' })
+  @ApiResponse({ status: 200 })
+  @Roles(SUPER_USER_ROLE.name)
+  @UseGuards(JwtRolesGuard)
+  @UseFilters(new ViewAuthFilter())
+  @UseFilters(new ViewAdminFilter())
+  @Get('/admin/products/import-export')
+  public async showProductsImportExport(
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    await this.handler(req, res);
+  }
+
   @ApiOperation({ summary: 'Admin Products Create' })
   @ApiResponse({ status: 200 })
   @Roles(SUPER_USER_ROLE.name)

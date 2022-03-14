@@ -175,13 +175,14 @@ const Index = () => {
   return (
     <Box
       sx={{
-        padding: '1rem 8rem 4rem',
+        padding: '2rem 8rem 4rem',
       }}
     >
       <Box
         display={'flex'}
         justifyContent={'space-between'}
         alignItems={'center'}
+        marginBottom={'1rem'}
       >
         <Typography
           variant={'h4'}
@@ -191,25 +192,51 @@ const Index = () => {
         >
           {t('Products.Products')} / {t('Products.Group')}
         </Typography>
-        <Link
-          href={'/admin/products/create'}
-          sx={{
-            '&:hover': {
-              textDecoration: 'none',
-            },
-          }}
+        <Box
+          display={'flex'}
+          maxWidth={'400px'}
+          width={'100%'}
+          justifyContent={'space-between'}
         >
-          <AppBaseButton
-            variant={'contained'}
-            color={'primary'}
+          <Link
+            href={'/admin/products/import-export'}
             sx={{
-              fontWeight: 700,
-              maxHeight: '2.75rem',
+              '&:hover': {
+                textDecoration: 'none',
+              },
             }}
           >
-            {t('Products.CreateNewProduct')}
-          </AppBaseButton>
-        </Link>
+            <AppBaseButton
+              variant={'outlined'}
+              color={'secondary'}
+              sx={{
+                fontWeight: 700,
+                maxHeight: '2.75rem',
+              }}
+            >
+              {t('Products.Import/Export')}
+            </AppBaseButton>
+          </Link>
+          <Link
+            href={'/admin/products/create'}
+            sx={{
+              '&:hover': {
+                textDecoration: 'none',
+              },
+            }}
+          >
+            <AppBaseButton
+              variant={'contained'}
+              color={'primary'}
+              sx={{
+                fontWeight: 700,
+                maxHeight: '2.75rem',
+              }}
+            >
+              {t('Products.CreateNewProduct')}
+            </AppBaseButton>
+          </Link>
+        </Box>
       </Box>
       <Grid container spacing={2}>
         {data.map((group, key) => (
