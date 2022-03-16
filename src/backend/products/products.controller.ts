@@ -69,6 +69,12 @@ export class ProductsController {
     return res.status(HttpStatus.OK).send(data);
   }
 
+  @Public()
+  @Get('/all')
+  async getAllProducts() {
+    return this.productService.findAll();
+  }
+
   @ApiOperation({ summary: 'Get latest products' })
   @ApiResponse({ status: 200, type: [Product] })
   @Public()

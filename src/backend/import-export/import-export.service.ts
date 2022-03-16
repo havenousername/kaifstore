@@ -3,8 +3,6 @@ import { MakeImportDto } from './dto/make-import.dto';
 import { ProductsService } from '../products/products.service';
 import { ProductGroupsService } from '../product-groups/product-groups.service';
 import { ProductType } from '../interfaces/product-type.enum';
-import { ProductGroup } from '../model/product-groups.model';
-import { Product } from '../model/products.model';
 
 @Injectable()
 export class ImportExportService {
@@ -13,56 +11,63 @@ export class ImportExportService {
     private productGroupsService: ProductGroupsService,
   ) {}
 
-  async import(
-    dto: MakeImportDto[],
-  ): Promise<{ groups: ProductGroup[]; products: Product[] }> {
+  async import(dto: MakeImportDto[]): Promise<boolean> {
     const products = dto.filter((i) => !i.group);
     const groups = dto.filter((i) => i.group);
     try {
-      const createdGroups = await Promise.all(
-        groups.map(
-          async (group) =>
-            await this.productGroupsService.create({
-              uuid: group.uuid,
-              groupId: group.parentUuid,
-              description: group.description,
-              code: group.code.toString(),
-              name: group.name,
-            }),
-        ),
-      );
+      let groupPromise = this.productGroupsService.create({
+        uuid: groups[0].uuid,
+        groupId: groups[0].parentUuid,
+        description: groups[0].description,
+        code: groups[0].code.toString(),
+        name: groups[0].name,
+      });
+      for (let i = 1; i < groups.length; i++) {
+        groupPromise = groupPromise.then(() =>
+          this.productGroupsService.create({
+            uuid: groups[i].uuid,
+            groupId: groups[i].parentUuid,
+            description: groups[i].description,
+            code: groups[i].code.toString(),
+            name: groups[i].name,
+          }),
+        );
+      }
 
-      const createdProducts = await Promise.all(
-        products.map(
-          async (product) =>
-            await this.productService.create(
-              {
-                uuid: product.uuid,
-                name: product.name,
-                price: product.price,
-                costPrice: product.costPrice,
-                groupId: product.parentUuid,
-                description: product.description,
-                code: product.code.toString(),
-                productType:
-                  product.type === 'NORMAL'
-                    ? ProductType.NORMAL
-                    : ProductType.TOBACCO_MARKED,
-                tax: product.tax,
-                allowToSell: product.allowToSell,
-                characteristics: [],
-                quantity: product.quantity,
-                barCodes: product.barCodes,
-                measureName: product.measureName,
-                articleNumber: product.articleNumber,
-                discounts: [],
-              },
-              [],
+      await groupPromise.then(
+        async () =>
+          await Promise.all(
+            products.map(
+              async (product) =>
+                await this.productService.create(
+                  {
+                    uuid: product.uuid,
+                    name: product.name,
+                    price: product.price,
+                    costPrice: product.costPrice,
+                    groupId: product.parentUuid,
+                    description: product.description,
+                    code: product.code.toString(),
+                    productType:
+                      product.type === 'NORMAL'
+                        ? ProductType.NORMAL
+                        : ProductType.TOBACCO_MARKED,
+                    tax: product.tax,
+                    allowToSell: product.allowToSell,
+                    characteristics: [],
+                    quantity: product.quantity,
+                    barCodes: product.barCodes,
+                    measureName: product.measureName,
+                    articleNumber: product.articleNumber,
+                    discounts: [],
+                  },
+                  [],
+                ),
             ),
-        ),
+          ),
       );
 
-      return { groups: createdGroups, products: createdProducts };
+      return true;
     } catch (e) {
       console.error(e);
       throw new HttpException(

@@ -5,12 +5,11 @@ import { JsonEntity } from '../interfaces/json-entity';
 const useCreateImportGroupsProducts = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>();
-  const [data, setData] = useState<JsonEntity[]>();
+  const [data, setData] = useState<boolean>();
   const path = useGetHttpUrl();
 
   const initialize = async (items: JsonEntity[]) => {
     try {
-      console.log(items);
       const res = await fetch(path(`v1/import-export`), {
         method: 'POST',
         headers: {
@@ -25,11 +24,9 @@ const useCreateImportGroupsProducts = () => {
         setError(error);
         return;
       }
-
       setError(undefined);
       setLoading(false);
-      const data = await res.json();
-      setData(data);
+      setData(true);
     } catch (e) {
       setError(e);
     }

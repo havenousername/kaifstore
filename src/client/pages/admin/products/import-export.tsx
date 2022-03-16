@@ -40,7 +40,7 @@ const ImportExport: NextPageWithLayout = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: products } = useSWRImmutable<Product[]>(
-    '/v1/products',
+    '/v1/products/all',
     standardFetcher,
   );
 
@@ -136,7 +136,7 @@ const ImportExport: NextPageWithLayout = () => {
   };
 
   useEffect(() => {
-    if (error) {
+    if (!!error) {
       snackbar.changeIsOpen(true);
       snackbar.changeSeverity('error');
       snackbar.changeMessage(error.message);
@@ -145,11 +145,11 @@ const ImportExport: NextPageWithLayout = () => {
   }, [error]);
 
   useEffect(() => {
-    if (data && data.length > 0) {
+    if (data) {
       snackbar.changeIsOpen(true);
       snackbar.changeSeverity('success');
       snackbar.changeMessage('All items have been successfully added');
-      router.push('admin/products');
+      router.push('/admin/products');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
@@ -166,28 +166,6 @@ const ImportExport: NextPageWithLayout = () => {
 
     const transformToNumber = (num: unknown) =>
       num ? +num.toString().replace(',', '.') : undefined;
-
-    const findIndexOfParentGroup = (
-      current: JsonEntity,
-      currentIndex: number,
-      all: JsonEntity[],
-    ) => {
-      const groupIndex = all.findIndex(
-        (entity) => entity.uuid === current.parentUuid,
-      );
-      if (groupIndex === -1) {
-        console.error(current.parentUuid, all);
-        throw new Error(
-          `No index was found for entity with name ${current.name}`,
-        );
-      }
-
-      if (groupIndex > currentIndex) {
-        return { groupIndex, currentIndex };
-      }
-
-      return { groupIndex: currentIndex, currentIndex: groupIndex };
-    };
 
     try {
       const jsonWorkbook = Object.values(workbook.Sheets)
@@ -211,22 +189,76 @@ const ImportExport: NextPageWithLayout = () => {
             ? entity.barCodes.toString().split(',')
             : [],
         }))
-        .sort((a) => (a.group ? (a.parentUuid ? 1 : -1) : 1))
-        .map((entity, index, array) => {
-          if (entity.group && entity.parentUuid) {
-            const { currentIndex, groupIndex } = findIndexOfParentGroup(
-              entity,
-              index,
-              array,
+        .sort((a) => (a.group ? (a.parentUuid ? 1 : -1) : 1));
+
+      jsonWorkbook.forEach((entity, index, array) => {
+        if (entity.group && entity.parentUuid) {
+          const groupIndex = array.findIndex(
+            (e) => e.uuid === entity.parentUuid,
+          );
+          if (groupIndex === -1) {
+            console.error(entity.parentUuid, array);
+            throw new Error(
+              `No index was found for entity with name ${entity.name}`,
             );
-            const current = array[currentIndex];
-            array[currentIndex] = array[groupIndex];
-            array[groupIndex] = current;
           }
-          return entity;
-        });
+
+          if (groupIndex < index) {
+            return;
+          }
+
+          const group = array[groupIndex];
+          array[groupIndex] = array[index];
+          array[index] = group;
+        }
+      });
+
+      let hasDuplicateGroup = false;
+      let hasDuplicateProducts = false;
+      if (groups) {
+        hasDuplicateGroup =
+          jsonWorkbook
+            .filter((i) => !!i[JsonEntityField.GROUP])
+            .filter((i) =>
+              groups.find((group) => group.uuid === i[JsonEntityField.UUID]),
+            ).length > 0;
+
+        if (hasDuplicateGroup) {
+          snackbar.changeIsOpen(true);
+          snackbar.changeSeverity('error');
+          snackbar.changeMessage(
+            'Imported file has duplicated field with the groups already used in application. Delete this fields first and then try to import it again',
+          );
+          snackbar.changeAutoHide(3000);
+        }
+      }
+
+      if (products) {
+        hasDuplicateProducts =
+          jsonWorkbook
+            .filter((i) => !i[JsonEntityField.GROUP])
+            .filter((i) =>
+              products.find(
+                (product) => product.uuid === i[JsonEntityField.UUID],
+              ),
+            ).length > 0;
+        if (hasDuplicateProducts) {
+          snackbar.changeIsOpen(true);
+          snackbar.changeSeverity('error');
+          snackbar.changeMessage(
+            'Imported file has duplicated field with the products already used in application. Delete this fields first and then try to import it again',
+          );
+          snackbar.changeAutoHide(3000);
+        }
+      }
+
+      if (hasDuplicateGroup || hasDuplicateProducts) {
+        return;
+      }
+
       setRows(jsonWorkbook);
     } catch (e) {
+      console.error(e);
       snackbar.changeIsOpen(true);
       snackbar.changeSeverity('error');
       snackbar.changeMessage(
