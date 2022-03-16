@@ -10,6 +10,13 @@ import { ProductMeasure } from '../../interfaces/product-measure.enum';
 import { ProductType } from '../../interfaces/product-type.enum';
 
 export class CreateProductDto {
+  @ApiProperty({
+    example: '123e4567-e89b-12d3-a456-42661417400a',
+    description: 'Uuid',
+  })
+  @IsUUID('all', { message: 'Should be always string' })
+  uuid?: string;
+
   @ApiProperty({ example: 'Big hookah plate', description: 'Product name' })
   @IsString({ message: 'Should be always string' })
   readonly name: string;

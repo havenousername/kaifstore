@@ -3,12 +3,17 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ProductGroup } from '../model/product-groups.model';
 import { FindOptions } from 'sequelize';
 import { OrderBy } from '../interfaces/query';
+import { CreateGroupDto } from './dto/create-group.dto';
 
 @Injectable()
 export class ProductGroupsService {
   constructor(
     @InjectModel(ProductGroup) private groupRepository: typeof ProductGroup,
   ) {}
+
+  async create(dto: CreateGroupDto) {
+    return this.groupRepository.create(dto);
+  }
 
   async getById(id: number) {
     return this.groupRepository.findOne({ where: { id } });

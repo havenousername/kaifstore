@@ -17,6 +17,7 @@ import { Discount } from '../model/discounts.model';
 import { AlcoholProduct } from '../model/alcohol-products.model';
 import { ProductsModule } from '../products/products.module';
 import { DiscountsModule } from '../discounts/discounts.module';
+import { ImportExportModule } from '../import-export/import-export.module';
 import { FilesModule } from '../files/files.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { PaginateModule } from 'nestjs-sequelize-paginate';
@@ -70,6 +71,7 @@ const sequelizeOptions: SequelizeModuleOptions = !process.env.DATABASE_URL
     }),
     SequelizeModule.forRoot(sequelizeOptions),
     AuthModule,
+    ImportExportModule,
     // data modules
     UsersModule,
     FavouriteModule,

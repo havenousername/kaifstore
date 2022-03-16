@@ -147,7 +147,7 @@ export class ProductsService {
           images.map((image) => this.fileService.createFile(image, 'products')),
         )
       : [];
-    const uuid = v4();
+    const uuid = dto.uuid ? dto.uuid : v4();
     try {
       const product = await this.productRepository.create({
         ...dto,

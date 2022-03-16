@@ -89,7 +89,7 @@ const GroupCard = ({ group }: { group: ProductGroup }) => {
                 WebkitBoxOrient: 'vertical',
               }}
             >
-              {group.description.length === 0
+              {group.description && group.description.length === 0
                 ? t('Products.NoDescription')
                 : group.description}
             </Typography>
@@ -103,7 +103,7 @@ const GroupCard = ({ group }: { group: ProductGroup }) => {
                 {getProductsCount(group)}
               </Typography>
             </Box>
-            {!group.parentGroup && (
+            {!group.parentGroup && group.childrenGroups && (
               <Box marginLeft={4} display={'flex'} alignItems={'center'}>
                 <ChildGroupIcon />
                 <Typography marginLeft={1} variant={'h6'}>

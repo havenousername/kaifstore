@@ -15,6 +15,6 @@ import { ProductDiscount } from '../model/product-discounts.model';
     FilesModule,
     ProductGroupsModule,
   ],
-  exports: [],
+  exports: [ProductsService],
 })
 export class ProductsModule {}

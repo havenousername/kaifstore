@@ -44,7 +44,7 @@ const ProductCardAdmin = ({
               height: '3rem',
             }}
           >
-            {product.description.length > 50
+            {product.description && product.description.length > 50
               ? product.description.slice(0, 50) + '...'
               : product.description}
           </Typography>
