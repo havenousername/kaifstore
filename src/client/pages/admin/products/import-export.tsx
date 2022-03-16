@@ -32,13 +32,11 @@ const ImportExport: NextPageWithLayout = () => {
   const { initialize, error, data } = useCreateImportGroupsProducts();
   const [rows, setRows] = useState<JsonEntity[]>([]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: groups } = useSWRImmutable<ProductGroup[]>(
     '/v1/product-groups?desc=parentGroup&asc=childrenGroups',
     standardFetcher,
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: products } = useSWRImmutable<Product[]>(
     '/v1/products/all',
     standardFetcher,
