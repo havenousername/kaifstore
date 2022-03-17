@@ -151,7 +151,6 @@ export class ProductsController {
   @ApiResponse({ status: 200, type: Number })
   @Delete(':id')
   delete(@Param('id') id: number) {
-    console.log('delete product');
     return this.productService.delete(id);
   }
 }

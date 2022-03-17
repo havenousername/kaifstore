@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Product } from '../model/products.model';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -22,6 +28,7 @@ export class ProductsService {
     private productDiscountsRepository: typeof ProductDiscount,
     private fileService: FilesService,
     private paginateService: PaginateService,
+    @Inject(forwardRef(() => ProductGroupsService))
     private productGroupService: ProductGroupsService,
   ) {}
 
@@ -195,6 +202,10 @@ export class ProductsService {
   public async delete(id: number): Promise<number> {
     await this.removeProductDiscounts(id);
     return this.productRepository.destroy({ where: { id } });
+  }
+
+  public async deleteAllByGroup(uuid: string | string[]): Promise<number> {
+    return this.productRepository.destroy({ where: { groupId: uuid } });
   }
 
   public async update(

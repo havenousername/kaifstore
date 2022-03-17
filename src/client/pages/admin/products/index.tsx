@@ -1,5 +1,5 @@
 import standardFetcher from '../../../api/standard-fetcher';
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement, useContext, useEffect } from 'react';
 import AdminTheme from '../../../components/functional/admin-theme';
 import AppLayout from '../../../components/functional/app-layout';
 import {
@@ -23,8 +23,16 @@ import { TypographyLineEllipsis } from 'src/client/components/product-card-skele
 import GroupInitialButton from '../../../components/GroupInitialButton';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
+import useGroupFetchRemove from '../../../hooks/use-group-fetch-remove';
+import { SnackbarContext } from '../../../context/snackbar.context';
 
-const GroupCard = ({ group }: { group: ProductGroup }) => {
+const GroupCard = ({
+  group,
+  onRemove,
+}: {
+  group: ProductGroup;
+  onRemove: (group: ProductGroup) => void;
+}) => {
   const theme = useTheme();
   const getProductsCount = (g: ProductGroup): number => {
     if (!g.childrenGroups || g.childrenGroups.length === 0) {
@@ -144,6 +152,7 @@ const GroupCard = ({ group }: { group: ProductGroup }) => {
             <AppBaseButton
               variant={'outlined'}
               color={'error'}
+              onClick={() => onRemove(group)}
               sx={{
                 fontWeight: 700,
                 maxHeight: '2.75rem',
@@ -171,6 +180,33 @@ const Index = () => {
   );
   const { t } = useTranslation();
   const router = useRouter();
+  const snackbar = useContext(SnackbarContext);
+
+  const { initialize, data: removeSuccess, error } = useGroupFetchRemove();
+
+  const onRemoveGroup = (group: ProductGroup) => {
+    initialize({ id: group.id });
+  };
+
+  useEffect(() => {
+    if (!!removeSuccess) {
+      mutate();
+      snackbar.changeIsOpen(true);
+      snackbar.changeSeverity('success');
+      snackbar.changeMessage(t('Alert.GroupDeleted'));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [removeSuccess]);
+
+  useEffect(() => {
+    if (error) {
+      snackbar.changeIsOpen(true);
+      snackbar.changeSeverity('error');
+      snackbar.changeMessage(t('Alert.BackendError', { error: error }));
+      console.error('An error occured', error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   useEffect(() => {
     if (router.pathname) {
@@ -255,7 +291,7 @@ const Index = () => {
         <Grid container spacing={2}>
           {data.map((group, key) => (
             <Grid item xs={10} lg={6} key={key}>
-              <GroupCard group={group} />
+              <GroupCard group={group} onRemove={onRemoveGroup} />
             </Grid>
           ))}
         </Grid>
