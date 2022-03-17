@@ -1,6 +1,5 @@
 import standardFetcher from '../../../api/standard-fetcher';
-import useSWRImmutable from 'swr/immutable';
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import AdminTheme from '../../../components/functional/admin-theme';
 import AppLayout from '../../../components/functional/app-layout';
 import {
@@ -23,6 +22,7 @@ import { ReactComponent as ImportIcon } from '../../../assets/icons/import-icon.
 import { TypographyLineEllipsis } from 'src/client/components/product-card-skeleton';
 import GroupInitialButton from '../../../components/GroupInitialButton';
 import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
 const GroupCard = ({ group }: { group: ProductGroup }) => {
   const theme = useTheme();
@@ -165,12 +165,19 @@ const GroupCard = ({ group }: { group: ProductGroup }) => {
 };
 
 const Index = () => {
-  const { data } = useSWRImmutable<ProductGroup[]>(
+  const { data, mutate } = useSWR<ProductGroup[]>(
     '/v1/product-groups?desc=parentGroup&asc=childrenGroups',
     standardFetcher,
   );
   const { t } = useTranslation();
   const router = useRouter();
+
+  useEffect(() => {
+    if (router.pathname) {
+      mutate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.pathname]);
 
   if (!data) {
     return null;

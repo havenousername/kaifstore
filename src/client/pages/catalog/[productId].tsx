@@ -36,7 +36,6 @@ const CatalogSlug: NextPageWithLayout = (props: {
   productId: string;
   children?: ReactNode;
 }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: product } = useSWRImmutable<Product>(
     `v1/products/${props.productId}`,
     fetcher,
