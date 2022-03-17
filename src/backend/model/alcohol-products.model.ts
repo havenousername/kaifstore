@@ -28,7 +28,7 @@ export class AlcoholProduct extends Model<AlcoholProduct> {
     required: false,
   })
   @Column({
-    type: DataType.NUMBER,
+    type: DataType.INTEGER,
   })
   alcoholByValue: number;
 
