@@ -262,7 +262,7 @@ const Index = () => {
       ) : (
         <Box display={'flex'} flexDirection={'column'}>
           <GroupInitialButton
-            text={'Import groups/products'}
+            text={t('Products.ImportGroupsProducts')}
             onClick={() => router.push('/admin/products/import-export')}
             icon={<ImportIcon viewBox={'0,0,125px,115px'} />}
             disabled={false}
@@ -271,7 +271,7 @@ const Index = () => {
             }}
           />
           <GroupInitialButton
-            text={'Create product'}
+            text={t('Products.CreateNewProduct')}
             onClick={() => router.push('/admin/products/create')}
             icon={<ProductIcon transform={'scale(2.5)'} />}
             disabled={data.length === 0}

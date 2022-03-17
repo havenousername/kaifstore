@@ -17,6 +17,8 @@
     "FamilyName": "Фaмилия",
     "ConfirmPassword": "Потвердите пароль",
     "Gender": "Пол",
+    "Male": "Мужчина",
+    "Female": "Женщина",
     "DateOfBirth": "Дата рождения",
     "Characteristics": "Выберите характеристику (пример: белый, черный и тд)",
     "Barcodes": "Выберите или создайте баркоды (пример: 9781234567897, 978123456756 и тд)",
@@ -29,6 +31,9 @@
     "Callout": "Покупай.\nСохраняй.\nКайфуй.",
     "CalloutText": "Duis et egestas aliquam mi fames urna, porttitor faucibus. Commodo lectus accumsan dolor ac. Sit platea pellentesque tristique eu morbi a sed. Eu auctor neque, diam pellentesque sed at urna, faucibus potenti. ",
     "NewIconText": "Новинка"
+  },
+  "Settings": {
+    "Settings": "Настройки"
   },
   "Catalog": {
     "Catalog": "Каталог"
@@ -103,7 +108,18 @@
     "Products": "Продукты",
     "ProductName": "Название товара",
     "CreateNewProduct": "Создать новый продукт",
-    "Import/Export": "Импорт & Экспорт",
+    "Import/Export": "Импорт",
+    "ImportGroupsProducts": "Импортируйте продукты/группы",
+    "ImportProducts": "Импорт групп и их продуктов",
+    "ImportProductsExplanation1": "Вы можете испортировать группы и продукты напрямую в приложение. Стоит учитывать то, что на данный момент приложение понимает только форматы эксель файла: xls, xlsm.\n ",
+    "ImportProductsExplanation2":"Также если в файле присутствуют группы или продукты которые уже есть в приложении, то тогда импорт остановится на стадии проверки файла. Тогда вам придется сделать испорт заново с правильными данныеми, либо удалить группы/продукты которые мещают осуществить импорт",
+    "ImportantExplanation": "Важно! Импортированный файл должен иметь определенные поля иначе он не будет воприниматься приложением как правильный. Поля вашего Excel файла должны быть следующие",
+    "Required": "обязательное поле, не может быть пустым",
+    "NotRequired": "необязательное поле, может быть пустым, либо отсутвовать вовсе",
+    "Import": "Загрузить .xls/.xlsx файл",
+    "ImportToBackend": "Импортировать",
+    "NameOfCell": "Имя клетки",
+    "ImportRequired": "Обязательно для импорта",
     "ProductGroup": "Группа Товаров",
     "ProductPrice": "Цена",
     "ProductCostPrice": "Цена закупки",

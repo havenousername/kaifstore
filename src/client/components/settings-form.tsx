@@ -84,13 +84,13 @@ const SettingsForm = ({
       >
         <FormGroup sx={{ gridColumn: 'span 6' }}>
           <Typography variant={'h5'} component={'h5'} fontWeight={600}>
-            {'Name'}*
+            {t('Placeholder.FirstName')}*
           </Typography>
           <FormInput<EditableUser>
             name={'firstName'}
             control={control}
             inputProps={{
-              placeholder: t('Products.ProductName'),
+              placeholder: t('Placeholder.FirstName'),
               sx: {
                 fontSize: '0.8rem',
               },
@@ -101,7 +101,7 @@ const SettingsForm = ({
         </FormGroup>
         <FormGroup sx={{ gridColumn: 'span 6' }}>
           <Typography variant={'h5'} component={'h5'} fontWeight={600}>
-            {'Gender'}*
+            {t('Placeholder.Gender')}*
           </Typography>
           <FormSelect<EditableUser>
             name={'gender'}
@@ -109,7 +109,9 @@ const SettingsForm = ({
             selectProps={{
               values: [Gender.MALE, Gender.FEMALE].map((i) => ({
                 value: i,
-                content: i,
+                content: Gender.MALE
+                  ? t('Placeholder.Male')
+                  : t('Placeholder.Female'),
               })),
             }}
             helperProps={helperProps}
@@ -117,13 +119,13 @@ const SettingsForm = ({
         </FormGroup>
         <FormGroup sx={{ gridColumn: 'span 6' }}>
           <Typography variant={'h5'} component={'h5'} fontWeight={600}>
-            {'Family Name'}*
+            {t('Placeholder.FamilyName')}*
           </Typography>
           <FormInput<EditableUser>
             name={'lastName'}
             control={control}
             inputProps={{
-              placeholder: t('Products.ProductName'),
+              placeholder: t('Placeholder.FamilyName'),
               sx: {
                 fontSize: '0.8rem',
               },
@@ -134,7 +136,7 @@ const SettingsForm = ({
         </FormGroup>
         <FormGroup sx={{ gridColumn: 'span 6' }}>
           <Typography variant={'h5'} component={'h5'} fontWeight={600}>
-            {'Birth Date'}*
+            {t('Placeholder.DateOfBirth')}*
           </Typography>
           <FormDatePicker
             name={'birthDate'}
@@ -147,7 +149,7 @@ const SettingsForm = ({
         </FormGroup>
         <FormGroup sx={{ gridColumn: 'span 6' }}>
           <Typography variant={'h5'} component={'h5'} fontWeight={600}>
-            {'Password'}*
+            {t('Placeholder.Password')}*
           </Typography>
           <FormInput<EditableUser>
             name={'password'}
@@ -180,7 +182,7 @@ const SettingsForm = ({
         </FormGroup>
         <FormGroup sx={{ gridColumn: 'span 6' }}>
           <Typography variant={'h5'} component={'h5'} fontWeight={600}>
-            {'Confirm Password'}*
+            {t('Placeholder.ConfirmPassword')}*
           </Typography>
           <FormInput<EditableUser>
             name={'confirmPassword'}

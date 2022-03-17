@@ -8,7 +8,17 @@ import React, {
 } from 'react';
 import AdminTheme from '../../../components/functional/admin-theme';
 import AppLayout from '../../../components/functional/app-layout';
-import { Box, Typography } from '@mui/material';
+import {
+  Box,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material';
 import BackButton from '../../../components/common/back-button';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
@@ -265,6 +275,26 @@ const ImportExport: NextPageWithLayout = () => {
       return;
     }
   };
+
+  const importReqRows = [
+    { name: 'uuid', rule: t('Products.Required') },
+    { name: 'name', rule: t('Products.Required') },
+    { name: 'group', rule: t('Products.Required') },
+    { name: 'hasVariants', rule: t('Products.NotRequired') },
+    { name: 'code', rule: t('Products.NotRequired') },
+    { name: 'parentUuid', rule: t('Products.NotRequired') },
+    { name: 'measureName', rule: t('Products.NotRequired') },
+    { name: 'tax', rule: t('Products.NotRequired') },
+    { name: 'allowToSell', rule: t('Products.NotRequired') },
+    { name: 'description', rule: t('Products.NotRequired') },
+    { name: 'articleNumber', rule: t('Products.NotRequired') },
+    { name: 'type', rule: t('Products.NotRequired') },
+    { name: 'price', rule: t('Products.NotRequired') },
+    { name: 'costPrice', rule: t('Products.NotRequired') },
+    { name: 'quantity', rule: t('Products.NotRequired') },
+    { name: 'barCodes', rule: t('Products.NotRequired') },
+  ];
+
   return (
     <Box
       sx={{
@@ -293,39 +323,97 @@ const ImportExport: NextPageWithLayout = () => {
       </Box>
       <Box>
         <Typography variant={'h3'} component={'h5'} fontWeight={600}>
-          {'Import products'}
+          {t('Products.ImportProducts')}
         </Typography>
         <Typography variant={'subtitle1'} component={'h5'} marginBottom={2}>
-          {
-            "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."
-          }
+          {t('Products.ImportProductsExplanation1')}
         </Typography>
-        <FileInput
-          onChangeInput={onChangeImport}
-          param={0}
-          label={
-            <>
-              <Box
-                sx={{
-                  backgroundColor: 'primary.light',
-                  padding: '10px 20px',
-                  borderRadius: '10px',
-                  maxWidth: '300px',
-                }}
-              >
-                <Typography
-                  textAlign={'center'}
-                  variant={'subtitle2'}
-                  component={'h5'}
+        <Typography variant={'subtitle1'} component={'h5'} marginBottom={2}>
+          {t('Products.ImportProductsExplanation2')}
+        </Typography>
+        <Typography
+          variant={'h4'}
+          component={'h5'}
+          marginBottom={2}
+          sx={{
+            color: 'error.light',
+          }}
+        >
+          {t('Products.ImportantExplanation')}
+        </Typography>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  variant={'head'}
+                  sx={{ fontSize: '1rem', fontWeight: 'bold' }}
+                  align="left"
                 >
-                  {'Upload .xls/.xlsx file'}
-                </Typography>
-              </Box>
-            </>
-          }
-          ref={ref}
-          accept={'.xls, .xlsx'}
-        />
+                  {t('Products.NameOfCell')}
+                </TableCell>
+                <TableCell
+                  variant={'head'}
+                  sx={{ fontSize: '1rem', fontWeight: 'bold' }}
+                  align="left"
+                >
+                  {t('Products.ImportRequired')}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {importReqRows.map((row) => (
+                <TableRow
+                  key={row.name}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell
+                    sx={{ borderColor: 'grey.500' }}
+                    component="th"
+                    scope="row"
+                  >
+                    {row.name}
+                  </TableCell>
+                  <TableCell
+                    sx={{ borderColor: 'grey.500' }}
+                    component="th"
+                    scope="row"
+                  >
+                    {row.rule}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Box sx={{ marginTop: '2rem' }}>
+          <FileInput
+            onChangeInput={onChangeImport}
+            param={0}
+            label={
+              <>
+                <Box
+                  sx={{
+                    backgroundColor: 'primary.light',
+                    padding: '10px 20px',
+                    borderRadius: '10px',
+                    maxWidth: '300px',
+                  }}
+                >
+                  <Typography
+                    textAlign={'center'}
+                    variant={'subtitle2'}
+                    component={'h5'}
+                  >
+                    {t('Products.Import')}
+                  </Typography>
+                </Box>
+              </>
+            }
+            ref={ref}
+            accept={'.xls, .xlsx'}
+          />
+        </Box>
         {rows.length > 0 && (
           <Box height={'1000px'} marginTop={'3rem'}>
             <DataGrid
@@ -343,7 +431,7 @@ const ImportExport: NextPageWithLayout = () => {
                 marginTop: '2rem',
               }}
             >
-              {'Import products/groups'}
+              {t('Products.ImportToBackend')}
             </AppBaseButton>
           </Box>
         )}

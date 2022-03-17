@@ -52,7 +52,7 @@ const Settings: NextPageWithLayout = () => {
         padding={(theme) => theme.spacing(2, 3)}
         fontWeight={600}
       >
-        {'Settings'}
+        {t('Settings.Settings')}
       </Typography>
       <SettingsForm
         getValues={getValues}
