@@ -247,7 +247,7 @@ const Register: FunctionComponent = () => {
             control={control}
             checkboxProps={{
               labelProps: {
-                label: t('LoginPage.RememberMe'),
+                label: t('LoginPage.RememberMe').toString(),
               },
             }}
           />
