@@ -9,7 +9,8 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest build && cd src/client && next build && cd ../../ && npm run start:prod -p $PORT",
+    "postinstall": "nest build  && cd src/client && next build && cd ../../ ",
+    "start": "npm run start:prod -p $PORT",
     "start:dev": "dotenv -e .development.env -- nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "cross-env NODE_ENV=production node --optimize_for_size --max_old_space_size=2560 dist/main",
@@ -123,7 +124,8 @@
     "url-loader": "^4.1.1"
   },
   "engines": {
-    "node": "14.x"
+    "node": ">=14.0.O",
+    "npm": ">=7.7.0"
   },
   "jest": {
     "moduleFileExtensions": [

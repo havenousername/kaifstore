@@ -7,7 +7,8 @@ import { cookieToBearerMiddleware } from './middlewares/cookie-to-bearer.middlew
 import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
-  const PORT = process.env.PORT || '5000';
+  const PORT = process.env.PORT || '3000';
+  const host = '0.0.0.0';
   const app = await NestFactory.create(ServerModule);
 
   app.enableVersioning({
@@ -29,7 +30,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/docs', app, document);
 
-  await app.listen(PORT, () => console.log(`Server started at port: ${PORT}`));
+  await app.listen(PORT, host, () =>
+    console.log(`Server started at port: ${PORT}`),
+  );
 }
 
 bootstrap().catch((ex: any) => {
