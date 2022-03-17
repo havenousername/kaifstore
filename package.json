@@ -124,8 +124,7 @@
     "url-loader": "^4.1.1"
   },
   "engines": {
-    "node": ">=14.0.O",
-    "npm": ">=7.7.0"
+    "node": "14.x"
   },
   "jest": {
     "moduleFileExtensions": [
