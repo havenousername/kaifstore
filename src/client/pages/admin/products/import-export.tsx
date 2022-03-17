@@ -156,7 +156,7 @@ const ImportExport: NextPageWithLayout = () => {
     if (data) {
       snackbar.changeIsOpen(true);
       snackbar.changeSeverity('success');
-      snackbar.changeMessage('All items have been successfully added');
+      snackbar.changeMessage(t('Alert.ItemsAdded'));
       router.push('/admin/products');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -166,7 +166,7 @@ const ImportExport: NextPageWithLayout = () => {
     if (!e.target.files[0]) {
       snackbar.changeIsOpen(true);
       snackbar.changeSeverity('error');
-      snackbar.changeMessage('An error has occurred while uploading a file');
+      snackbar.changeMessage(t('Alert.UploadError', { error: '' }));
       return;
     }
     const buffer = await e.target.files[0].arrayBuffer();
@@ -206,9 +206,7 @@ const ImportExport: NextPageWithLayout = () => {
           );
           if (groupIndex === -1) {
             console.error(entity.parentUuid, array);
-            throw new Error(
-              `No index was found for entity with name ${entity.name}`,
-            );
+            throw new Error(t('Alert.NoIndexError', { entity: entity.name }));
           }
 
           if (groupIndex < index) {
@@ -234,9 +232,7 @@ const ImportExport: NextPageWithLayout = () => {
         if (hasDuplicateGroup) {
           snackbar.changeIsOpen(true);
           snackbar.changeSeverity('error');
-          snackbar.changeMessage(
-            'Imported file has duplicated field with the groups already used in application. Delete this fields first and then try to import it again',
-          );
+          snackbar.changeMessage(t('Alert.DuplicatedItem'));
           snackbar.changeAutoHide(3000);
         }
       }
@@ -253,9 +249,7 @@ const ImportExport: NextPageWithLayout = () => {
         if (hasDuplicateProducts) {
           snackbar.changeIsOpen(true);
           snackbar.changeSeverity('error');
-          snackbar.changeMessage(
-            'Imported file has duplicated field with the products already used in application. Delete this fields first and then try to import it again',
-          );
+          snackbar.changeMessage(t('Alert.DuplicatedItem'));
           snackbar.changeAutoHide(3000);
         }
       }
@@ -269,9 +263,7 @@ const ImportExport: NextPageWithLayout = () => {
       console.error(e);
       snackbar.changeIsOpen(true);
       snackbar.changeSeverity('error');
-      snackbar.changeMessage(
-        'An error has occurred while uploading a file. ' + e.message,
-      );
+      snackbar.changeMessage(t('Alert.UploadError', { error: e.message }));
       return;
     }
   };
