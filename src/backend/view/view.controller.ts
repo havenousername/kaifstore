@@ -82,13 +82,24 @@ export class ViewController {
     await this.handler(req, res);
   }
 
-  @ApiOperation({ summary: 'Admin Products Page' })
+  @ApiOperation({ summary: 'Admin Products Group' })
   @ApiResponse({ status: 200 })
   @Roles(SUPER_USER_ROLE.name)
   @UseGuards(JwtRolesGuard)
   @UseFilters(new ViewAuthFilter())
   @UseFilters(new ViewAdminFilter())
   @Get('/admin/products')
+  public async showProductGroups(@Req() req: Request, @Res() res: Response) {
+    await this.handler(req, res);
+  }
+
+  @ApiOperation({ summary: 'Admin Products Page' })
+  @ApiResponse({ status: 200 })
+  @Roles(SUPER_USER_ROLE.name)
+  @UseGuards(JwtRolesGuard)
+  @UseFilters(new ViewAuthFilter())
+  @UseFilters(new ViewAdminFilter())
+  @Get('/admin/products/:groupId')
   public async showProducts(@Req() req: Request, @Res() res: Response) {
     await this.handler(req, res);
   }
@@ -99,8 +110,22 @@ export class ViewController {
   @UseGuards(JwtRolesGuard)
   @UseFilters(new ViewAuthFilter())
   @UseFilters(new ViewAdminFilter())
-  @Get('/admin/products/:id')
+  @Get('/admin/products/:groupId/:id')
   public async showProductsDetails(@Req() req: Request, @Res() res: Response) {
+    await this.handler(req, res);
+  }
+
+  @ApiOperation({ summary: 'Admin Products Import/Export' })
+  @ApiResponse({ status: 200 })
+  @Roles(SUPER_USER_ROLE.name)
+  @UseGuards(JwtRolesGuard)
+  @UseFilters(new ViewAuthFilter())
+  @UseFilters(new ViewAdminFilter())
+  @Get('/admin/products/import-export')
+  public async showProductsImportExport(
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     await this.handler(req, res);
   }
 

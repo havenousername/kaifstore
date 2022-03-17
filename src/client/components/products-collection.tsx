@@ -19,7 +19,7 @@ const ProductsCollection = forwardRef(
     };
 
     const onProductEdit = (e: MouseEvent, product: Product) => {
-      router.push(`/admin/products/${product.id}`);
+      router.push(`/admin/products/${product.groupId}/${product.id}`);
     };
 
     return (

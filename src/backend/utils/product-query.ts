@@ -3,7 +3,12 @@ import { CustomQueries, CustomQueryKey } from '../interfaces/query';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { isString } from './type-checkers';
 
-export type ProductQuery = 'priceRange' | 'q' | 'groupId' | 'characteristics';
+export type ProductQuery =
+  | 'priceRange'
+  | 'q'
+  | 'groupId'
+  | 'characteristics'
+  | 'discount';
 
 export const productQuerySelect = (
   query: unknown,
@@ -13,6 +18,7 @@ export const productQuerySelect = (
     q: query['q'],
     groupId: query['groupId'],
     characteristics: query['characteristics'],
+    discount: query['discount'],
   };
 };
 
@@ -41,6 +47,10 @@ export const productQueryToArray = (
 
   if (value.characteristics) {
     query.characteristics = value.characteristics.split(',');
+  }
+
+  if (!isNaN(+value.discount)) {
+    query.discount = +value.discount;
   }
 
   return query;

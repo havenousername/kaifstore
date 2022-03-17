@@ -48,6 +48,11 @@ const typography = (pallete: PaletteOptions): TypographyOptions => ({
     lineHeight: 1.5,
     color: `${pallete.grey[200]} !important`,
   },
+  subtitle2: {
+    fontWeight: 700,
+    fontSize: '1rem',
+    lineHeight: 1.5,
+  },
   caption: {
     color: pallete.text.primary,
     fontSize: '0.9rem',

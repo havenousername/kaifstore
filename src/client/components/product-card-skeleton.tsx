@@ -11,7 +11,7 @@ interface NewIcon {
   newText: string;
 }
 
-const TypographyLineEllipsis = styled(Typography)(() => ({
+export const TypographyLineEllipsis = styled(Typography)(() => ({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   display: '-webkit-box',

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   DefaultValuePipe,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -68,6 +69,12 @@ export class ProductsController {
     return res.status(HttpStatus.OK).send(data);
   }
 
+  @Public()
+  @Get('/all')
+  async getAllProducts() {
+    return this.productService.findAll();
+  }
+
   @ApiOperation({ summary: 'Get latest products' })
   @ApiResponse({ status: 200, type: [Product] })
   @Public()
@@ -91,7 +98,6 @@ export class ProductsController {
   @Public()
   @Get('/ids/:ids')
   async getByIds(@Param('ids') ids: string) {
-    console.log(ids);
     return this.productService.getByIds(JSON.parse(ids));
   }
 
@@ -131,7 +137,7 @@ export class ProductsController {
   }
 
   @ApiOperation({ summary: 'Product creation' })
-  @ApiResponse({ status: 200, type: Product })
+  @ApiResponse({ status: 200, type: Number })
   @Put()
   @UseInterceptors(FilesInterceptor('images'))
   update(
@@ -139,5 +145,12 @@ export class ProductsController {
     @UploadedFiles() images: Express.Multer.File[],
   ) {
     return this.productService.update(dto, images);
+  }
+
+  @ApiOperation({ summary: 'Product deletion' })
+  @ApiResponse({ status: 200, type: Number })
+  @Delete(':id')
+  delete(@Param('id') id: number) {
+    return this.productService.delete(id);
   }
 }

@@ -149,7 +149,7 @@ const Login = () => {
         >
           <AppCheckbox
             labelProps={{
-              label: t('LoginPage.RememberMe'),
+              label: t('LoginPage.RememberMe').toString(),
             }}
           />
         </Box>

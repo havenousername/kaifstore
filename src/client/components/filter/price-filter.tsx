@@ -12,15 +12,16 @@ const PriceFilter = ({
   maxRange,
   onPriceRangeSelect,
   onCancelSelect,
+  initialRange,
 }: {
   priceRange: [number, number];
   minRange: number;
   maxRange: number;
   onPriceRangeSelect: (pr: [number, number]) => void;
   onCancelSelect: () => void;
+  initialRange: [number, number];
 }) => {
   const [range, setRange] = useState<[number, number]>(priceRange);
-  const [initialRange] = useState<[number, number]>(priceRange);
   const { t } = useTranslation();
 
   const onChangeRange = (range: [number, number]) => {
@@ -83,7 +84,9 @@ const PriceFilter = ({
   return (
     <Box>
       <FilterTabHeader
-        onRestore={() => setRange(initialRange)}
+        onRestore={() => {
+          setRange(initialRange);
+        }}
         restoreText={t('Searchbar.Restore')}
       />
       <Box pt={2}>

@@ -5,6 +5,7 @@ import { useFilesFromUrl } from './get-file-from-url';
 const useProductFetchCall = (type: 'create' | 'change') => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>();
+  const [data, setData] = useState();
   const getFilesFromUrl = useFilesFromUrl();
 
   const initialize = async (product: EditableProduct, images: string[]) => {
@@ -49,16 +50,19 @@ const useProductFetchCall = (type: 'create' | 'change') => {
       body: formData,
     });
 
-    if (res.status !== 201) {
-      setError(res.json());
+    if (res.status !== 201 && res.status !== 200) {
+      const data = await res.json();
+      setError(data);
       return;
     }
 
+    setError(undefined);
     setLoading(false);
-    return res.json();
+    const data = await res.json();
+    setData(data);
   };
 
-  return [initialize, loading, error];
+  return { initialize, data, loading, error };
 };
 
 export default useProductFetchCall;

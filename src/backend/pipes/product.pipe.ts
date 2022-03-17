@@ -20,7 +20,7 @@ export class ProductPipe implements PipeTransform<unknown> {
       quantity: value.quantity ? +value.quantity : undefined,
       characteristics: JSON.parse(value.characteristics),
       price: +value.price,
-      costPrice: +value.costPrice,
+      costPrice: isNaN(+value.costPrice) ? 0 : +value.costPrice,
       discounts: value.discounts ? JSON.parse(value.discounts) : undefined,
       groupId: value.groupId,
       id: +value.id ? +value.id : undefined,

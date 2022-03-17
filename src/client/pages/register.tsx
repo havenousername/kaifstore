@@ -220,8 +220,8 @@ const Register: FunctionComponent = () => {
             control={control}
             selectProps={{
               values: [
-                { value: Gender.MALE, content: 'Male' },
-                { value: Gender.FEMALE, content: 'Female' },
+                { value: Gender.MALE, content: t('Placeholder.Male') },
+                { value: Gender.FEMALE, content: t('Placeholder.Female') },
               ],
             }}
             sx={{
@@ -247,7 +247,7 @@ const Register: FunctionComponent = () => {
             control={control}
             checkboxProps={{
               labelProps: {
-                label: t('LoginPage.RememberMe'),
+                label: t('LoginPage.RememberMe').toString(),
               },
             }}
           />

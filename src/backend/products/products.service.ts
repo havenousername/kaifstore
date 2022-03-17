@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Product } from '../model/products.model';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -22,6 +28,7 @@ export class ProductsService {
     private productDiscountsRepository: typeof ProductDiscount,
     private fileService: FilesService,
     private paginateService: PaginateService,
+    @Inject(forwardRef(() => ProductGroupsService))
     private productGroupService: ProductGroupsService,
   ) {}
 
@@ -69,6 +76,19 @@ export class ProductsService {
     if (queryOptions.characteristics) {
       filters['characteristics'] = {
         [Op.contains]: queryOptions.characteristics as string[],
+      };
+    }
+
+    if (queryOptions.discount) {
+      const productDiscounts = await this.productDiscountsRepository.findAll({
+        include: { all: true },
+      });
+      const discounts = productDiscounts.filter(
+        (discount) => discount.discount.amount > queryOptions.discount,
+      );
+      const productIds = discounts.map((i) => i.productId);
+      filters['id'] = {
+        [Op.in]: productIds,
       };
     }
 
@@ -134,7 +154,7 @@ export class ProductsService {
           images.map((image) => this.fileService.createFile(image, 'products')),
         )
       : [];
-    const uuid = v4();
+    const uuid = dto.uuid ? dto.uuid : v4();
     try {
       const product = await this.productRepository.create({
         ...dto,
@@ -143,7 +163,7 @@ export class ProductsService {
       });
 
       if (dto.discounts) {
-        await this.removeDiscounts(dto.discounts, product.id);
+        await this.updateDiscounts(dto.discounts, product.id);
       }
 
       return product;
@@ -171,6 +191,21 @@ export class ProductsService {
         where: { discountId, productId },
       });
     });
+  }
+
+  public async removeProductDiscounts(productId: number) {
+    await this.productDiscountsRepository.destroy({
+      where: { productId },
+    });
+  }
+
+  public async delete(id: number): Promise<number> {
+    await this.removeProductDiscounts(id);
+    return this.productRepository.destroy({ where: { id } });
+  }
+
+  public async deleteAllByGroup(uuid: string | string[]): Promise<number> {
+    return this.productRepository.destroy({ where: { groupId: uuid } });
   }
 
   public async update(

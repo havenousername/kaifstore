@@ -29,7 +29,11 @@ import FormInputSelect from './input/validation/form-inputselect';
 import { useRouter } from 'next/router';
 import useGetHttpUrl from '../hooks/use-get-http-url';
 import { SelectValue } from '../interfaces/input-props';
-import { Control, UseFormWatch } from 'react-hook-form/dist/types';
+import {
+  Control,
+  UseFormGetValues,
+  UseFormWatch,
+} from 'react-hook-form/dist/types';
 
 const ProductForm = ({
   selectableGroups,
@@ -43,6 +47,7 @@ const ProductForm = ({
   characteristics = [],
   images,
   setImages,
+  getValues,
 }: {
   selectableGroups: SelectValue[];
   selectableDiscounts: SelectValue[];
@@ -53,6 +58,7 @@ const ProductForm = ({
   footer: ReactNode;
   control: Control<EditableProduct, any>;
   watch: UseFormWatch<EditableProduct>;
+  getValues: UseFormGetValues<EditableProduct>;
   images?: string[];
   setImages: Dispatch<SetStateAction<string[]>>;
 }) => {
@@ -113,7 +119,8 @@ const ProductForm = ({
         padding={(theme) => theme.spacing(2, 3)}
         fontWeight={600}
       >
-        {t('Products.Products')}
+        {t('Products.Products')} /{' '}
+        {getValues('name') ? getValues('name') : t('Products.Create')}
       </Typography>
       <Box
         display={'flex'}

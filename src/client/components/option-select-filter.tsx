@@ -11,8 +11,9 @@ const OptionSelectFilter: FunctionComponent<{
   options: (ItemProp<number> & { disabled: boolean })[];
   onSelect: (v: number) => void;
   onCancelSelect: () => void;
-}> = ({ options, value, onSelect, onCancelSelect }) => {
-  const [initialValue] = useState<number>(value);
+  initialValue: number;
+}> = ({ options, value, onSelect, onCancelSelect, initialValue }) => {
+  // const [initialValue] = useState<number>(options);
   const [changeableValue, setChangeableValue] = useState<number>(value);
   const { t } = useTranslation();
 

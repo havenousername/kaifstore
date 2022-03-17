@@ -3,7 +3,9 @@ import React, { FC, ForwardedRef, forwardRef, ReactNode } from 'react';
 import { SxProps } from '@mui/system';
 
 const FileInput: FC<{
-  onChangeInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeInput: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => void;
   param: number;
   label: string | ReactNode;
   sxLabel?: SxProps;
@@ -32,7 +34,10 @@ const FileInput: FC<{
           id={'image-' + param.toString()}
           ref={ref}
           type={'file'}
-          onChange={onChangeInput}
+          onClick={(e) => ((e.target as HTMLInputElement).value = '')}
+          onChange={(e) => {
+            onChangeInput(e);
+          }}
           inputProps={{
             accept,
           }}

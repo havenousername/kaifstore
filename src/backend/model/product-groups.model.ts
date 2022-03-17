@@ -10,8 +10,19 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { Product } from './products.model';
 
+interface ProductGroupCreationAttributes {
+  uuid: string;
+  code?: string;
+  name: string;
+  description?: string;
+  groupId?: string;
+}
+
 @Table({ tableName: 'product_groups' })
-export class ProductGroup extends Model<ProductGroup> {
+export class ProductGroup extends Model<
+  ProductGroup,
+  ProductGroupCreationAttributes
+> {
   @ApiProperty({ example: 1, description: 'Unique identifier' })
   @Column({
     type: DataType.INTEGER,

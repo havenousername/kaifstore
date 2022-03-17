@@ -4,6 +4,7 @@ import { ServerModule } from './server.module';
 import { VersioningType } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import { cookieToBearerMiddleware } from './middlewares/cookie-to-bearer.middleware';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const PORT = process.env.PORT || '5000';
@@ -14,6 +15,9 @@ async function bootstrap() {
   });
   app.use(cookieParser());
   app.use(cookieToBearerMiddleware);
+
+  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
   const config = new DocumentBuilder()
     .setTitle('Kaifstore')
