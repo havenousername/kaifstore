@@ -19,7 +19,10 @@ import { lighten } from '@mui/system/colorManipulator';
 import { ReactComponent as ParentGroupIcon } from '../../../assets/icons/parent-group.svg';
 import { ReactComponent as ChildGroupIcon } from '../../../assets/icons/child-group.svg';
 import { ReactComponent as ProductIcon } from '../../../assets/icons/products.svg';
+import { ReactComponent as ImportIcon } from '../../../assets/icons/import-icon.svg';
 import { TypographyLineEllipsis } from 'src/client/components/product-card-skeleton';
+import GroupInitialButton from '../../../components/GroupInitialButton';
+import { useRouter } from 'next/router';
 
 const GroupCard = ({ group }: { group: ProductGroup }) => {
   const theme = useTheme();
@@ -167,6 +170,7 @@ const Index = () => {
     standardFetcher,
   );
   const { t } = useTranslation();
+  const router = useRouter();
 
   if (!data) {
     return null;
@@ -192,59 +196,81 @@ const Index = () => {
         >
           {t('Products.Products')} / {t('Products.Group')}
         </Typography>
-        <Box
-          display={'flex'}
-          maxWidth={'400px'}
-          width={'100%'}
-          justifyContent={'space-between'}
-        >
-          <Link
-            href={'/admin/products/import-export'}
-            sx={{
-              '&:hover': {
-                textDecoration: 'none',
-              },
-            }}
+        {data && data.length > 0 && (
+          <Box
+            display={'flex'}
+            maxWidth={'400px'}
+            width={'100%'}
+            justifyContent={'space-between'}
           >
-            <AppBaseButton
-              variant={'outlined'}
-              color={'secondary'}
+            <Link
+              href={'/admin/products/import-export'}
               sx={{
-                fontWeight: 700,
-                maxHeight: '2.75rem',
+                '&:hover': {
+                  textDecoration: 'none',
+                },
               }}
             >
-              {t('Products.Import/Export')}
-            </AppBaseButton>
-          </Link>
-          <Link
-            href={'/admin/products/create'}
-            sx={{
-              '&:hover': {
-                textDecoration: 'none',
-              },
-            }}
-          >
-            <AppBaseButton
-              variant={'contained'}
-              color={'primary'}
+              <AppBaseButton
+                variant={'outlined'}
+                color={'secondary'}
+                sx={{
+                  fontWeight: 700,
+                  maxHeight: '2.75rem',
+                }}
+              >
+                {t('Products.Import/Export')}
+              </AppBaseButton>
+            </Link>
+            <Link
+              href={'/admin/products/create'}
               sx={{
-                fontWeight: 700,
-                maxHeight: '2.75rem',
+                '&:hover': {
+                  textDecoration: 'none',
+                },
               }}
             >
-              {t('Products.CreateNewProduct')}
-            </AppBaseButton>
-          </Link>
-        </Box>
+              <AppBaseButton
+                variant={'contained'}
+                color={'primary'}
+                sx={{
+                  fontWeight: 700,
+                  maxHeight: '2.75rem',
+                }}
+              >
+                {t('Products.CreateNewProduct')}
+              </AppBaseButton>
+            </Link>
+          </Box>
+        )}
       </Box>
-      <Grid container spacing={2}>
-        {data.map((group, key) => (
-          <Grid item xs={10} lg={6} key={key}>
-            <GroupCard group={group} />
-          </Grid>
-        ))}
-      </Grid>
+      {data && data.length > 0 ? (
+        <Grid container spacing={2}>
+          {data.map((group, key) => (
+            <Grid item xs={10} lg={6} key={key}>
+              <GroupCard group={group} />
+            </Grid>
+          ))}
+        </Grid>
+      ) : (
+        <Box display={'flex'} flexDirection={'column'}>
+          <GroupInitialButton
+            text={'Import groups/products'}
+            onClick={() => router.push('/admin/products/import-export')}
+            icon={<ImportIcon viewBox={'0,0,125px,115px'} />}
+            disabled={false}
+            sx={{
+              marginBottom: '3rem',
+            }}
+          />
+          <GroupInitialButton
+            text={'Create product'}
+            onClick={() => router.push('/admin/products/create')}
+            icon={<ProductIcon transform={'scale(2.5)'} />}
+            disabled={data.length === 0}
+          />
+        </Box>
+      )}
     </Box>
   );
 };
