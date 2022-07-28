@@ -35,8 +35,27 @@ const models = [
   AlcoholProduct,
 ];
 
-const sequelizeOptions: SequelizeModuleOptions = !process.env.DATABASE_URL
-  ? {
+const herokuConfig: () => SequelizeModuleOptions = () => ({
+  dialect: 'postgres',
+  host: process.env.DATABASE_URL.split('@')[1].split(':')[0],
+  port: +process.env.DATABASE_URL.split('@')[1].split(':')[1].split('/')[0],
+  username: process.env.DATABASE_URL.split('//')[1].split(':')[0],
+  password: process.env.DATABASE_URL.split(':')[2].split('@')[0],
+  database: process.env.DATABASE_URL.split('/')[3],
+  models: models,
+  autoLoadModels: true,
+  dialectOptions: {
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  },
+});
+
+const isHeroku = !!process.env.DATABASE_URL;
+
+const sequelizeOptions: SequelizeModuleOptions = isHeroku
+  ? herokuConfig()
+  : {
       dialect: 'postgres',
       host: process.env.DB_HOST,
       port: +process.env.DB_PORT,
@@ -45,23 +64,16 @@ const sequelizeOptions: SequelizeModuleOptions = !process.env.DATABASE_URL
       database: process.env.DB_NAME,
       models: models,
       autoLoadModels: true,
+      logging: (sql, timing) => {
+        if (process.env.NODE_ENV === 'production') {
+          return;
+        }
+        console.error(sql, timing);
+        console.log(process.env.DATABASE_URL);
+      },
+      retryAttempts: 1,
       // synchronize: true,
       // sync: { force: true },
-    }
-  : {
-      dialect: 'postgres',
-      host: process.env.DATABASE_URL.split('@')[1].split(':')[0],
-      port: +process.env.DATABASE_URL.split('@')[1].split(':')[1].split('/')[0],
-      username: process.env.DATABASE_URL.split('//')[1].split(':')[0],
-      password: process.env.DATABASE_URL.split(':')[2].split('@')[0],
-      database: process.env.DATABASE_URL.split('/')[3],
-      models: models,
-      autoLoadModels: true,
-      dialectOptions: {
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      },
     };
 
 @Module({

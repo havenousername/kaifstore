@@ -13,7 +13,7 @@
     "start": "npm run start:prod -p $PORT",
     "start:dev": "dotenv -e .development.env -- nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "cross-env NODE_ENV=production node --optimize_for_size --max_old_space_size=2560 dist/main",
+    "start:prod": "dotenv -e .development.env node --optimize_for_size --max_old_space_size=2560 dist/main",
     "db:remigrate": "npm run db:migrate:undo && npm run db:migrate",
     "db:migrate": "dotenv -e .development.env node_modules/. bin/sequelize db:migrate",
     "db:create:dev": "dotenv -e .development.env node_modules/.bin/sequelize db:create",
