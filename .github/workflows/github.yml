@@ -1,0 +1,61 @@
+name: github
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  install:
+    name: install
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: npm ci
+      - name: Archive node_modules artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: node_modules
+          path: node_modules/
+          retention-days: 5
+  build:
+    name: build
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+      - name: Download install packages
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules
+      - name: Linting
+        run: npm run lint
+      - name: Remove previous build
+        run: npm run prebuild
+      - name: Build frontend files
+        run: npm run build:frontend
+      - name: Archive frontend
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend
+          path: .next/
+          retention-days: 5
+      - name: Build backend files
+        run: npm run build:backend
+      - name: Archive backend files
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend
+          path: dist/
+          retention-days: 5
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs:
+      - build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
