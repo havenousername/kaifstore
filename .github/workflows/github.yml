@@ -23,6 +23,8 @@ jobs:
   build:
     name: build
     runs-on: ${{matrix.os}}
+    needs:
+      - install
     strategy:
       matrix:
         os: [ ubuntu-latest ]
