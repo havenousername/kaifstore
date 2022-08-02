@@ -43,6 +43,8 @@ jobs:
           name: node_modules
       - name: Unzip install packages
         run: unzip -qq node_modules.zip -d node_modules
+      - name: Check directory
+        run: echo $(ls .)
       - name: Linting
         run: npm run lint
       - name: Remove previous build
