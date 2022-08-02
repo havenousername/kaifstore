@@ -7,8 +7,9 @@
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "nest build",
+    "build:backend": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "build:frontend": "cd src/client && next build && cd ../../",
     "start": "npm run start:prod -p $PORT",
     "start:dev": "dotenv -e .development.env -- nest start --watch",
     "start:debug": "nest start --debug --watch",
