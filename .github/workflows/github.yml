@@ -43,6 +43,8 @@ jobs:
       - name: Get cached file
         uses: actions/cache@v3
         id: cache-npm
+        env:
+          cache-name: cache-node-modules
         with:
             path: 'node_modules/'
             key:  ${{ runner.os }}-build-${{ env.cache-name }}-
