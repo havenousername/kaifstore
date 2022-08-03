@@ -16,13 +16,13 @@ jobs:
           else
           npm i
           fi
-      - name: Zip artifact for deployment
-        run: zip -qq -r node_modules.zip ./node_modules/
+#      - name: Zip artifact for deployment
+#        run: zip -qq -r node_modules.zip ./node_modules/
       - name: Archive node_modules artifacts
         uses: actions/upload-artifact@v3
         with:
           name: node_modules
-          path: node_modules.zip
+          path: node_modules/
           retention-days: 5
   build:
     name: build
@@ -35,14 +35,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
-      - name: Install zip
-        uses: montudor/action-zip@v1
+#      - name: Install zip
+#        uses: montudor/action-zip@v1
       - name: Download install packages
         uses: actions/download-artifact@v3
         with:
           name: node_modules
-      - name: Unzip install packages
-        run: unzip -qq node_modules.zip -d node_modules
+#      - name: Unzip install packages
+#        run: unzip -qq node_modules.zip -d node_modules
       - name: Check directory
         run: echo $(ls .)
       - name: Linting
