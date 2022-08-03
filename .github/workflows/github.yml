@@ -41,6 +41,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
+      - name: Get cached file
+        uses: actions/cache@v3
+        id: get-cache
+        with:
+            path: 'node_modules/'
+            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
       - name: Check directory
         run: echo $(ls .)
       - name: Linting
