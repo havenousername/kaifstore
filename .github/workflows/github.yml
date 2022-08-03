@@ -81,3 +81,45 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
+      - name: Get cached node_modules
+        uses: actions/cache@v3
+        id: cache-npm
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: 'node_modules/'
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-
+      - name: Get Backend files
+        uses: actions/download-artifact@v3
+        with:
+          name: backend
+          path: dist/
+      - name: Get Frontend files
+        uses: actions/download-artifact@v3
+        with:
+          name: frontend
+          path: .next/
+      - name: Release new version
+        uses: cycjimmy/semantic-release-action@v3
+        with:
+          extends: |
+            @semantic-release/apm-config
+        id: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN_FOR_GITHUB }}
+      - name: Generate deployment package
+        run: zip -r deploy.zip .next node_modules Procfile dist
+      - name: Deploy to AWS Elastic Beanstalk
+        if: steps.semantic.outputs.new_release_published == 'true'
+        uses: einaregilsson/beanstalk-deploy@v20
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: kaifstore
+          environment_name: Kaifstore-env-1
+          version_label: ${{ steps.semantic.outputs.new_release_version }}
+          region: eu-central-2
+          deployment_package: deploy.zip
+          version_description: ${{ steps.semantic.outputs.new_release_notes }}
+
+
