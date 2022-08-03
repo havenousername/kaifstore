@@ -103,21 +103,21 @@ jobs:
         uses: cycjimmy/semantic-release-action@v3
         with:
           branches: |
-          [
-            '+([0-9])?(.{+([0-9]),x}).x',
-            'master',
-            'main',
-            'next',
-            'next-major',
-            {
-              name: 'beta',
-              prerelease: true
-            },
-            {
-              name: 'alpha',
-              prerelease: true
-            }
-          ]
+            [
+              '+([0-9])?(.{+([0-9]),x}).x',
+              'master',
+              'main',
+              'next',
+              'next-major',
+              {
+                name: 'beta',
+                prerelease: true
+              },
+              {
+                name: 'alpha',
+                prerelease: true
+              }
+            ]
           extends: |
             @semantic-release/apm-config
         id: release
