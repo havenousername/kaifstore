@@ -126,7 +126,6 @@ jobs:
       - name: Generate deployment package
         run: zip -r deploy.zip .next node_modules Procfile dist
       - name: Deploy to AWS Elastic Beanstalk
-        if: steps.semantic.outputs.new_release_published == 'true'
         uses: einaregilsson/beanstalk-deploy@v20
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
