@@ -124,7 +124,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_FOR_GITHUB }}
       - name: Generate deployment package
-        run: zip -r -Z bzip2 deploy.zip .
+        uses: montudor/action-zip@v1
+        with:
+          args: zip -qq -r deploy.zip .next node_modules Procfile dist tsconfig.build.json package-lock.json package.json
       - name: Get Release files
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: actions/upload-artifact@v3
