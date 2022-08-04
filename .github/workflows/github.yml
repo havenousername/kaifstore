@@ -132,12 +132,7 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: kaifstore
           environment_name: Kaifstore-env-1
-          version_label: | 
-            if [ ${{ steps.release_info.outputs.new_release_version }} -ge 5 ]; then 
-            steps.release_info.outputs.new_release_version
-            else 
-              app-3c2c-220730_160736051376-6
-            if
+          version_label: v-kaifstore-${{ steps.release_info.outputs.new_release_version }}
           region: eu-central-1
           deployment_package: deploy.zip
           version_description: ${{ steps.semantic.outputs.new_release_notes }}
