@@ -126,7 +126,7 @@ jobs:
       - name: Generate deployment package
         uses: montudor/action-zip@v1
         with:
-          args: zip -qq -r deploy.zip .next node_modules Procfile dist tsconfig.build.json package-lock.json package.json
+          args: zip -qq -r deploy.zip .
       - name: Get Release files
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: actions/upload-artifact@v3
