@@ -124,7 +124,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_FOR_GITHUB }}
       - name: Generate deployment package
-        run: zip -r deploy.zip .next node_modules Procfile dist
+        run: zip -r deploy.zip .next node_modules Procfile dist tsconfig.build.json package-lock.json package.json
       - name: Deploy to AWS Elastic Beanstalk
         uses: einaregilsson/beanstalk-deploy@v20
         with:
@@ -136,5 +136,9 @@ jobs:
           region: eu-central-1
           deployment_package: deploy.zip
           version_description: ${{ steps.semantic.outputs.new_release_notes }}
-
+      - name: Get Release files
+        uses: actions/download-artifact@v3
+        with:
+          name: deploy
+          path: deploy.zip
 
