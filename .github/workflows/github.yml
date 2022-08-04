@@ -133,7 +133,7 @@ jobs:
           application_name: kaifstore
           environment_name: Kaifstore-env-1
           version_label: ${{ steps.semantic.outputs.new_release_version }}
-          region: eu-central-2
+          region: eu-central-1
           deployment_package: deploy.zip
           version_description: ${{ steps.semantic.outputs.new_release_notes }}
 
