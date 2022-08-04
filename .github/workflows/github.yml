@@ -120,7 +120,7 @@ jobs:
             ]
           extends: |
             @semantic-release/apm-config
-        id: release
+        id: release_info
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_FOR_GITHUB }}
       - name: Generate deployment package
@@ -132,7 +132,7 @@ jobs:
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           application_name: kaifstore
           environment_name: Kaifstore-env-1
-          version_label: ${{ steps.semantic.outputs.new_release_version }}
+          version_label: ${{ steps.release_info.outputs.new_release_version }}
           region: eu-central-1
           deployment_package: deploy.zip
           version_description: ${{ steps.semantic.outputs.new_release_notes }}
