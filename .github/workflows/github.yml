@@ -137,8 +137,10 @@ jobs:
           deployment_package: deploy.zip
           version_description: ${{ steps.semantic.outputs.new_release_notes }}
       - name: Get Release files
-        uses: actions/download-artifact@v3
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: actions/upload-artifact@v3
         with:
           name: deploy
           path: deploy.zip
+          retention-days: 5
 
