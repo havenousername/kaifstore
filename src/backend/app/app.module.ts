@@ -65,7 +65,10 @@ const sequelizeOptions: SequelizeModuleOptions = isHeroku
       models: models,
       autoLoadModels: true,
       logging: (sql, timing) => {
-        if (process.env.NODE_ENV === 'production') {
+        if (
+          process.env.NODE_ENV === 'production' ||
+          process.env.SHOW_DBLOGS === 'false'
+        ) {
           return;
         }
         console.error(sql, timing);
@@ -79,7 +82,7 @@ const sequelizeOptions: SequelizeModuleOptions = isHeroku
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `.${process.env.NODE_ENV}.env`,
+      envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
     SequelizeModule.forRoot(sequelizeOptions),
     AuthModule,

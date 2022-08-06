@@ -1,6 +1,5 @@
 import useSWRImmutable from 'swr/immutable';
 import { ProductGroup } from '../../backend/model/product-groups.model';
-import fetcher from '../api/root-fetcher';
 import { Discount } from '../../backend/model/discounts.model';
 import useProductSchema from './use-product-schema';
 import { useTranslation } from 'react-i18next';
@@ -10,9 +9,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { ProductMeasure, productMeasures } from '../interfaces/product-measure';
 import { useEffect, useState } from 'react';
 import { SelectValue } from '../interfaces/input-props';
+import useFetcher from './use-fetcher';
 
 const useProductFormData = () => {
   const { t } = useTranslation();
+  const fetcher = useFetcher();
   const { data: groups } = useSWRImmutable<ProductGroup[]>(
     'v1/product-groups',
     fetcher,
