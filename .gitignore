@@ -60,5 +60,5 @@ amplifytools.xcconfig
 #amplify-do-not-edit-end
 
 
-.development.env
+.env.development
 .env.production
