@@ -56,14 +56,18 @@ module.exports = function replaceEnum(
             { transaction: t },
           ),
         )
-        // Drop old ENUM
+        // // Drop old ENUM
         .then(() =>
-          queryInterface.sequelize.query(
-            `
+          queryInterface.sequelize
+            .query(
+              `
               DROP TYPE ${enumName}
             `,
-            { transaction: t },
-          ),
+              { transaction: t },
+            )
+            .catch(() =>
+              console.warn(`enum ${enumName} does not exist. not removing it`),
+            ),
         )
         // Rename new ENUM name
         .then(() =>
