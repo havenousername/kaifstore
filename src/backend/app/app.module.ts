@@ -67,7 +67,7 @@ const sequelizeOptions: SequelizeModuleOptions = isHeroku
       logging: (sql, timing) => {
         if (
           process.env.NODE_ENV === 'production' ||
-          process.env.ERROR_LOGS === 'true'
+          process.env.SHOW_DBLOGS === 'false'
         ) {
           return;
         }
