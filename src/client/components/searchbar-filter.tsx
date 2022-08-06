@@ -16,7 +16,7 @@ import { SearchFiltersState } from '../interfaces/searchbar';
 import OptionSelectFilter from './option-select-filter';
 import { ItemProp } from '../interfaces/labeled-prop';
 import useSWRImmutable from 'swr/immutable';
-import fetcher from '../api/root-fetcher';
+import useFetcher from '../hooks/use-fetcher';
 
 const CustomFilterButton = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -64,6 +64,7 @@ const SearchbarFilter = ({
     discountAmount: null,
   });
   const { t } = useTranslation();
+  const fetcher = useFetcher();
   const { data: maxRangeData } = useSWRImmutable<number>(
     `v1/products/max-price`,
     fetcher,

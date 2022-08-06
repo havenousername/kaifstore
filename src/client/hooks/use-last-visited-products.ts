@@ -24,7 +24,6 @@ const useLastVisitedProducts = (): [
 
   useEffect(() => {
     addProducts();
-    // console.log(products);
   }, []);
 
   const addToLastVisited = useCallback((id: number) => {

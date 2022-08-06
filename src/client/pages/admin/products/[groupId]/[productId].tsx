@@ -11,7 +11,6 @@ import AppLayout from '../../../../components/functional/app-layout';
 import { useTranslation } from 'react-i18next';
 import useSWRImmutable from 'swr/immutable';
 import { Product } from '../../../../../backend/model/products.model';
-import fetcher from '../../../../api/root-fetcher';
 import { NextPageWithLayout } from '../../../../interfaces/pages-layout';
 import { EditableProduct } from '../../../../interfaces/product-editable';
 import AppBaseButton from '../../../../components/common/app-base-button';
@@ -22,6 +21,7 @@ import useProductFormData from '../../../../hooks/use-product-form-data';
 import { SnackbarContext } from '../../../../context/snackbar.context';
 import useProductFetchRemove from '../../../../hooks/use-product-fetch-remove';
 import { useRouter } from 'next/router';
+import useFetcher from '../../../../hooks/use-fetcher';
 
 export const getStaticPaths = async () => {
   return {
@@ -43,6 +43,7 @@ const ProductDetails: NextPageWithLayout = (props: {
   children?: ReactNode;
 }) => {
   const { t } = useTranslation();
+  const fetcher = useFetcher();
   const { data: product } = useSWRImmutable<Product>(
     `v1/products/${props.productId}`,
     fetcher,

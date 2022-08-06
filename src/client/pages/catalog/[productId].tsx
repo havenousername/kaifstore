@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { Box, Typography } from '@mui/material';
 import useSWRImmutable from 'swr/immutable';
-import fetcher from '../../api/root-fetcher';
 import { Product } from '../../../backend/model/products.model';
 import ProductDetailsImages from '../../components/product-details-images';
 import AppTag from '../../components/common/app-tag';
@@ -16,6 +15,7 @@ import AppBaseButton from '../../components/common/app-base-button';
 import useLastVisitedProducts from '../../hooks/use-last-visited-products';
 import { MouseEvent } from 'react';
 import CarouselProducts from 'src/client/components/carousel-products';
+import useFetcher from '../../hooks/use-fetcher';
 
 export function getStaticProps(context) {
   return {
@@ -36,6 +36,7 @@ const CatalogSlug: NextPageWithLayout = (props: {
   productId: string;
   children?: ReactNode;
 }) => {
+  const fetcher = useFetcher();
   const { data: product } = useSWRImmutable<Product>(
     `v1/products/${props.productId}`,
     fetcher,

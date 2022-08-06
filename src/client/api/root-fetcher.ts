@@ -1,4 +1,4 @@
-const fetcher = (url) =>
-  fetch(`${process.env.NEXT_PUBLIC_ROOT_URL}/${url}`).then((r) => r.json());
+const fetcher = (baseUrl) => (url) =>
+  fetch(`${baseUrl}/${url}`).then((r) => r.json());
 
 export default fetcher;
