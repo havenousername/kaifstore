@@ -8,6 +8,7 @@ import {
 } from 'class-validator';
 import { ProductMeasure } from '../../interfaces/product-measure.enum';
 import { ProductType } from '../../interfaces/product-type.enum';
+import { Attributes } from '../../interfaces/attributes';
 
 export class CreateProductDto {
   @ApiProperty({
@@ -50,7 +51,7 @@ export class CreateProductDto {
     required: false,
   })
   @IsArray({ message: 'Should be array' })
-  readonly characteristics?: string[];
+  readonly tags?: string[];
 
   @ApiProperty({ example: 3, description: 'Quantity', required: false })
   @IsNumber({}, { message: 'Should be always number' })
@@ -118,4 +119,48 @@ export class CreateProductDto {
   })
   @IsNumber({}, { message: 'Should be always number' })
   readonly discounts: number[];
+
+  @ApiProperty({
+    description: 'Attributes {name, value} array',
+  })
+  @IsArray({ message: 'Should be an array' })
+  readonly attributes?: Attributes[];
+
+  @ApiProperty({
+    description: 'currency',
+    example: 'EUR',
+  })
+  @IsString({ message: 'Should be string' })
+  readonly currency: string;
+
+  @ApiProperty({
+    description: 'country',
+    example: 'Moldova',
+  })
+  @IsString({ message: 'Should be string' })
+  readonly country: string;
+
+  @ApiProperty({
+    example: false,
+    description: 'Allow to have discounts',
+    required: false,
+  })
+  @IsBoolean({ message: 'Should be boolean' })
+  readonly discountProhibited?: boolean;
+
+  @ApiProperty({
+    example: false,
+    description: 'Use parent vat',
+    required: false,
+  })
+  @IsBoolean({ message: 'Should be boolean' })
+  readonly useParentVat?: boolean;
+
+  @ApiProperty({
+    example: 1,
+    description: 'Variant count',
+    required: false,
+  })
+  @IsNumber({}, { message: 'Should be number' })
+  readonly variantsCount?: number;
 }

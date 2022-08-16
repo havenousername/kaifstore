@@ -1,11 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsUUID } from 'class-validator';
+import { CreateFromNameDto } from './create-from-name.dto';
 
-export class CreateGroupDto {
-  @ApiProperty({ example: 'Hookah', description: 'Group name' })
-  @IsString({ message: 'Should be always string' })
-  readonly name: string;
-
+export class CreateGroupDto extends CreateFromNameDto {
   @ApiProperty({
     example: '123e4567-e89b-12d3-a456-42661417400a',
     description: 'Uuid',
