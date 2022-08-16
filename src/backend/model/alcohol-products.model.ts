@@ -1,4 +1,4 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { Column, DataType, Default, Model, Table } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Table({ tableName: 'alcohol_products' })
@@ -13,6 +13,15 @@ export class AlcoholProduct extends Model<AlcoholProduct> {
   id: number;
 
   @ApiProperty({
+    example: false,
+    description: 'excise',
+  })
+  @ApiProperty({
+    type: DataType.BOOLEAN,
+  })
+  excise: boolean;
+
+  @ApiProperty({
     examples: [291, 303.9],
     description: 'Alcohol codes',
     required: false,
@@ -23,32 +32,33 @@ export class AlcoholProduct extends Model<AlcoholProduct> {
   alcoCodes: number[];
 
   @ApiProperty({
-    example: 0.5,
-    description: 'Alcohol by value',
-    required: false,
-  })
-  @Column({
-    type: DataType.INTEGER,
-  })
-  alcoholByValue: number;
-
-  @ApiProperty({
     example: 293,
-    description: 'Alcohol product kind code',
+    description: 'Alcohol product strength',
     required: false,
   })
   @Column({
-    type: DataType.SMALLINT,
+    type: DataType.FLOAT,
   })
-  alcoholProductKindCode: number;
+  strength: number;
 
   @ApiProperty({
     example: 2,
-    description: 'Tare value',
+    description: 'Product type',
     required: false,
   })
+  @Default(0)
   @Column({
     type: DataType.SMALLINT,
   })
-  tareVolume: number;
+  type: number;
+
+  @ApiProperty({
+    example: 2,
+    description: 'Tare volume',
+    required: false,
+  })
+  @Column({
+    type: DataType.FLOAT,
+  })
+  volume: number;
 }
