@@ -18,7 +18,7 @@ export class ProductPipe implements PipeTransform<unknown> {
       code: value.code ? String(value.code) : undefined,
       productType: value.code ? +value.productType : undefined,
       quantity: value.quantity ? +value.quantity : undefined,
-      characteristics: JSON.parse(value.characteristics),
+      tags: JSON.parse(value.tags),
       price: +value.price,
       costPrice: isNaN(+value.costPrice) ? 0 : +value.costPrice,
       discounts: value.discounts ? JSON.parse(value.discounts) : undefined,
@@ -27,6 +27,12 @@ export class ProductPipe implements PipeTransform<unknown> {
       measureName: String(value.measureName) as ProductMeasure,
       name: String(value.name),
       tax: value.tax,
+      discountProhibited: value.discountProhibited ?? false,
+      attributes: value.attributes ?? [],
+      country: value.country,
+      currency: value.currency,
+      variantsCount: value.variantsCount,
+      useParentVat: value.useParentVat,
     };
   }
 }

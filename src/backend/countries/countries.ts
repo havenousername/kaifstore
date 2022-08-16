@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   AF: 'Afghanistan',
   AL: 'Albania',
   DZ: 'Algeria',

@@ -1,10 +1,12 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ProductGroup } from '../model/product-groups.model';
-import { FindOptions } from 'sequelize';
+import { FindOptions, Includeable } from 'sequelize';
 import { OrderBy } from '../interfaces/query';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { ProductsService } from '../products/products.service';
+import { CreateFromNameDto } from './dto/create-from-name.dto';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class ProductGroupsService {
@@ -16,6 +18,41 @@ export class ProductGroupsService {
 
   async create(dto: CreateGroupDto) {
     return this.groupRepository.create(dto);
+  }
+
+  async createGroups(
+    dto: CreateFromNameDto,
+    separator = '/',
+  ): Promise<string[]> {
+    // can come something like dto.name = 'ParentParentGroup/Parent/ChildGroup'
+    const names = dto.name.split(separator);
+    const groups: string[] = [];
+    for (let i = 0; i < names.length; i++) {
+      const group = (await this.getByName(names[i], { all: true })).uuid;
+      if (group !== null) {
+        groups.push(group);
+      } else {
+        const uuid = v4();
+        const g = await this.create({
+          uuid,
+          name: names[i],
+          groupId: i !== 0 ? groups[i - 1] : undefined,
+        });
+        groups.push(g.uuid);
+      }
+    }
+
+    return groups;
+  }
+
+  async getByName(
+    name: string,
+    include: Includeable = { all: true, nested: true },
+  ): Promise<ProductGroup | null> {
+    return this.groupRepository.findOne({
+      where: { name },
+      include,
+    });
   }
 
   async getById(id: number, props?: { all: true; nested?: true }) {

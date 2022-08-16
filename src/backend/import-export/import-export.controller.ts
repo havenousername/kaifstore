@@ -7,6 +7,7 @@ import { ViewAuthFilter } from '../filters/view-auth.filter';
 import { ViewAdminFilter } from '../filters/view-admin.filter';
 import { MakeImportDto } from './dto/make-import.dto';
 import { ImportExportService } from './import-export.service';
+import { CreateFromNameDto } from '../product-groups/dto/create-from-name.dto';
 
 @Controller({
   path: 'import-export',
@@ -15,14 +16,25 @@ import { ImportExportService } from './import-export.service';
 export class ImportExportController {
   constructor(private service: ImportExportService) {}
 
-  @ApiOperation({ summary: 'Get products' })
+  @ApiOperation({ summary: 'Import products' })
+  @ApiResponse({ status: 200, type: [Array] })
+  @Roles(SUPER_USER_ROLE.name)
+  @UseGuards(JwtRolesGuard)
+  @UseFilters(new ViewAuthFilter())
+  @UseFilters(new ViewAdminFilter())
+  @Post('/groups')
+  public makeGroups(@Body() dto: CreateFromNameDto[]) {
+    return this.service.importGroups(dto);
+  }
+
+  @ApiOperation({ summary: 'Import products' })
   @ApiResponse({ status: 200, type: [Number] })
   @Roles(SUPER_USER_ROLE.name)
   @UseGuards(JwtRolesGuard)
   @UseFilters(new ViewAuthFilter())
   @UseFilters(new ViewAdminFilter())
-  @Post()
+  @Post('/products')
   public makeImport(@Body() dto: MakeImportDto[]) {
-    this.service.import(dto);
+    return this.service.import(dto);
   }
 }

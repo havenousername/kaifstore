@@ -19,7 +19,8 @@ const useLogin = (action: () => void) => {
     setLoading(false);
 
     if (res.status !== 201) {
-      setError(res.json());
+      const error = await res.json();
+      setError(error);
       return;
     }
 

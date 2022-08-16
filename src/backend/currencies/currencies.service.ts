@@ -4,7 +4,7 @@ type RequestInitCurrencies = {
   headers: HeadersInit;
 };
 
-type ResponseCurrenciesData = {
+export type ResponseCurrenciesData = {
   success: boolean;
   symbols: Record<string, string>;
 };
