@@ -70,7 +70,7 @@ const ProductDetails: NextPageWithLayout = (props: {
       setValue('price', product.price);
       setValue(
         'characteristics',
-        product.characteristics.map((i) => ({ content: i, value: i })),
+        product.attribs.map((a) => ({ value: a.name, content: a.value })),
       );
       setValue('productType', product.productType);
       setValue('hasBarcode', !!product.barCodes && product.barCodes.length > 0);
@@ -174,9 +174,9 @@ const ProductDetails: NextPageWithLayout = (props: {
         value: barCode,
         content: barCode,
       }))}
-      characteristics={product.characteristics.map((characteristic) => ({
-        value: characteristic,
-        content: characteristic,
+      characteristics={product.attribs.map((characteristic) => ({
+        value: characteristic.name,
+        content: characteristic.value,
       }))}
       images={images}
       setImages={setImages}
