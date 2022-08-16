@@ -4,13 +4,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 // const productTypes = require('../../interfaces/product-type.enum');
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const {
-  CurrenciesService,
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-} = require('../../../dist/currencies/currencies.service.js');
-const currencyService = new CurrenciesService();
-
 const ProductMeasure = {
   PIECE: 'щт',
   KG: 'кг',
@@ -19,9 +12,6 @@ const ProductMeasure = {
   CUBIC_METER: 'm3',
   KIT: 'компл',
 };
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const countries = require('../utils/countries');
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const replaceEnum = require('../utils/replaceEnum');
@@ -64,7 +54,7 @@ module.exports = {
           allowNull: false,
         },
         costPrice: {
-          type: Sequelize.INTEGER,
+          type: Sequelize.FLOAT,
           allowNull: false,
         },
         quantity: {
@@ -73,6 +63,9 @@ module.exports = {
         },
         // arrays
         tags: {
+          type: Sequelize.ARRAY(Sequelize.STRING),
+        },
+        attributes: {
           type: Sequelize.ARRAY(Sequelize.STRING),
         },
         discountProhibited: {
@@ -148,33 +141,13 @@ module.exports = {
         },
       })
       .then(async () => {
-        const currencies = await currencyService.getCurrencies();
-        const symbols = Object.keys(currencies.symbols);
         replaceEnum(
           'products',
-          'currency',
-          'RUB',
-          symbols,
+          'measurename',
+          'PIECE',
+          Object.keys(ProductMeasure),
           queryInterface,
-          'currencies',
-        ).then(() =>
-          replaceEnum(
-            'products',
-            'measurename',
-            'PIECE',
-            Object.keys(ProductMeasure),
-            queryInterface,
-            'product_measures',
-          ).then(() => {
-            replaceEnum(
-              'products',
-              'country',
-              countries.RU,
-              Object.values(countries),
-              queryInterface,
-              'countries',
-            );
-          }),
+          'product_measures',
         );
       });
   },
