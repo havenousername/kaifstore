@@ -7,7 +7,7 @@ export type ProductQuery =
   | 'priceRange'
   | 'q'
   | 'groupId'
-  | 'characteristics'
+  | 'attributes'
   | 'discount';
 
 export const productQuerySelect = (
@@ -17,7 +17,7 @@ export const productQuerySelect = (
     priceRange: query['priceRange'],
     q: query['q'],
     groupId: query['groupId'],
-    characteristics: query['characteristics'],
+    attributes: query['attributes'],
     discount: query['discount'],
   };
 };
@@ -45,8 +45,8 @@ export const productQueryToArray = (
     }
   }
 
-  if (value.characteristics) {
-    query.characteristics = value.characteristics.split(',');
+  if (value.attributes) {
+    query.attributes = value.attributes.split(',');
   }
 
   if (!isNaN(+value.discount)) {

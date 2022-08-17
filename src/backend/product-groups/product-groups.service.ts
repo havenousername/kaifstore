@@ -1,12 +1,14 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ProductGroup } from '../model/product-groups.model';
-import { FindOptions, Includeable } from 'sequelize';
+import { FindAndCountOptions, FindOptions, Includeable } from 'sequelize';
 import { OrderBy } from '../interfaces/query';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { ProductsService } from '../products/products.service';
 import { CreateFromNameDto } from './dto/create-from-name.dto';
 import { v4 } from 'uuid';
+import { PaginateOptions, PaginateService } from 'nestjs-sequelize-paginate';
+import { ModelCtor } from 'sequelize-typescript';
 
 @Injectable()
 export class ProductGroupsService {
@@ -14,6 +16,7 @@ export class ProductGroupsService {
     @InjectModel(ProductGroup) private groupRepository: typeof ProductGroup,
     @Inject(forwardRef(() => ProductsService))
     private productService: ProductsService,
+    private paginateService: PaginateService,
   ) {}
 
   async create(dto: CreateGroupDto) {
@@ -62,7 +65,9 @@ export class ProductGroupsService {
     });
   }
 
-  async getAll() {
+  async getAll(
+    paginateOptions: PaginateOptions,
+  ): Promise<FindAndCountOptions<ProductGroup[]>> {
     const options: FindOptions<ProductGroup> = {
       include: {
         all: true,
@@ -70,7 +75,17 @@ export class ProductGroupsService {
       },
       order: [['groupId', OrderBy.DESC]],
     };
-    return this.groupRepository.findAll(options);
+
+    return this.paginateService.findAllPaginate(
+      {
+        ...paginateOptions,
+        model: ProductGroup as ModelCtor,
+      },
+      {
+        ...options,
+      },
+    );
+    // return this.groupRepository.findAll(options);
   }
 
   async getAllRootImportant() {

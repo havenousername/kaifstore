@@ -3,9 +3,13 @@ import {
   DefaultValuePipe,
   Delete,
   Get,
+  HttpStatus,
   Param,
   ParseBoolPipe,
+  ParseIntPipe,
   Query,
+  Req,
+  Res,
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
@@ -19,6 +23,8 @@ import { SUPER_USER_ROLE } from '../app/contstants';
 import JwtRolesGuard from '../auth/guards/roles-auth.guard';
 import { ViewAuthFilter } from '../filters/view-auth.filter';
 import { ViewAdminFilter } from '../filters/view-admin.filter';
+import { Request, Response } from 'express';
+import { generatePaginationOptions } from '../utils';
 
 @Controller({
   path: 'product-groups',
@@ -33,8 +39,20 @@ export class ProductGroupsController {
   @ApiResponse({ status: 200, type: [ProductGroup] })
   @Public()
   @Get()
-  getAll() {
-    return this.service.getAll();
+  async getAll(
+    @Res() res: Response,
+    @Req() req: Request,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
+  ) {
+    const options = generatePaginationOptions({
+      page,
+      limit,
+      path: req.path,
+      url: req.url,
+    });
+    const data = await this.service.getAll(options);
+    return res.status(HttpStatus.OK).send(data);
   }
 
   @ApiOperation({

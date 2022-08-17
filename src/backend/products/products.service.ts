@@ -87,9 +87,9 @@ export class ProductsService {
       };
     }
 
-    if (queryOptions.characteristics) {
-      filters['characteristics'] = {
-        [Op.contains]: queryOptions.characteristics as string[],
+    if (queryOptions.attributes) {
+      filters['attributes'] = {
+        [Op.contains]: queryOptions.attributes as string[],
       };
     }
 
