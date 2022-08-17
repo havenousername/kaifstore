@@ -8,7 +8,6 @@ import {
 } from 'class-validator';
 import { ProductMeasure } from '../../interfaces/product-measure.enum';
 import { ProductType } from '../../interfaces/product-type.enum';
-import { Attributes } from '../../interfaces/attributes';
 
 export class CreateProductDto {
   @ApiProperty({
@@ -71,7 +70,7 @@ export class CreateProductDto {
     required: false,
   })
   @IsString({ message: 'Should be string' })
-  readonly measureName?: ProductMeasure;
+  readonly measurename?: keyof ProductMeasure;
 
   @ApiProperty({
     example: 1,
@@ -124,7 +123,7 @@ export class CreateProductDto {
     description: 'Attributes {name, value} array',
   })
   @IsArray({ message: 'Should be an array' })
-  readonly attributes?: Attributes[];
+  readonly attributes?: string[];
 
   @ApiProperty({
     description: 'currency',

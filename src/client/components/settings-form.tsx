@@ -19,6 +19,8 @@ import { ReactComponent as DontShowEyeIcon } from '../assets/icons/dont-show-eye
 import { ReactComponent as ShowEyeIcon } from '../assets/icons/show-eye.svg';
 import { Role } from '../../backend/model/roles.model';
 import AppInput from './input/app-input';
+import capitalize from 'lodash/capitalize';
+import AppBaseButton from './common/app-base-button';
 
 const SettingsForm = ({
   image,
@@ -26,6 +28,7 @@ const SettingsForm = ({
   getValues,
   isAdmin,
   role,
+  userSave,
 }: {
   image: string;
   control: Control<EditableUser>;
@@ -33,6 +36,7 @@ const SettingsForm = ({
   setImage?: Dispatch<SetStateAction<string>>;
   isAdmin: boolean;
   role: Role;
+  userSave: () => void;
 }) => {
   const { t, i18n } = useTranslation();
   const getHttpUrl = useGetHttpUrl();
@@ -129,9 +133,7 @@ const SettingsForm = ({
             selectProps={{
               values: [Gender.MALE, Gender.FEMALE].map((i) => ({
                 value: i,
-                content: Gender.MALE
-                  ? t('Placeholder.Male')
-                  : t('Placeholder.Female'),
+                content: t(`Placeholder.${capitalize(i)}`),
               })),
             }}
             helperProps={helperProps}
@@ -229,6 +231,16 @@ const SettingsForm = ({
             }}
             helperProps={helperProps}
           />
+        </FormGroup>
+        <FormGroup sx={{ gridColumn: 'span 12' }}>
+          <AppBaseButton
+            variant={'contained'}
+            color={'primary'}
+            type={'button'}
+            onClick={() => userSave()}
+          >
+            {t('Settings.UserSave')}
+          </AppBaseButton>
         </FormGroup>
       </Box>
     </FormControl>

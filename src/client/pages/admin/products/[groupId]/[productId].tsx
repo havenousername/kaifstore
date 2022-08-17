@@ -70,13 +70,16 @@ const ProductDetails: NextPageWithLayout = (props: {
       setValue('price', product.price);
       setValue(
         'characteristics',
-        product.attribs.map((a) => ({ value: a.name, content: a.value })),
+        (product.attribs ?? []).map((a) => ({
+          value: a.name,
+          content: a.value,
+        })),
       );
       setValue('productType', product.productType);
       setValue('hasBarcode', !!product.barCodes && product.barCodes.length > 0);
       setValue(
         'barCodes',
-        product.barCodes.map((i) => ({ content: i, value: i })),
+        (product.barCodes ?? []).map((i) => ({ content: i, value: i })),
       );
       setValue('quantity', product.quantity);
       setValue('code', product.code);
@@ -85,7 +88,7 @@ const ProductDetails: NextPageWithLayout = (props: {
       setValue('description', product.description);
       setValue(
         'discounts',
-        product.discounts.map((i) => ({
+        (product.discounts ?? []).map((i) => ({
           content: i.name,
           value: String(i.id),
         })),
@@ -170,11 +173,11 @@ const ProductDetails: NextPageWithLayout = (props: {
       selectableDiscounts={selectableDiscounts}
       productTypes={productTypes}
       productMeasureTypes={productMeasureTypes}
-      barCodes={product.barCodes.map((barCode) => ({
+      barCodes={(product.barCodes ?? []).map((barCode) => ({
         value: barCode,
         content: barCode,
       }))}
-      characteristics={product.attribs.map((characteristic) => ({
+      characteristics={(product.attribs ?? []).map((characteristic) => ({
         value: characteristic.name,
         content: characteristic.value,
       }))}

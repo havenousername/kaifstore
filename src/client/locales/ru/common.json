@@ -35,7 +35,8 @@
     "NewIconText": "Новинка"
   },
   "Settings": {
-    "Settings": "Настройки"
+    "Settings": "Настройки",
+    "UserSave":  "Сохранить"
   },
   "Catalog": {
     "Catalog": "Каталог"

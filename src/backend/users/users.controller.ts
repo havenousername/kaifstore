@@ -20,6 +20,7 @@ import JwtRolesGuard from '../auth/guards/roles-auth.guard';
 import AddRoleDto from './dto/add-role.dto';
 import { JwtParamAuthGuard } from '../auth/guards/jwt-param-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserPipe } from '../pipes/user.pipe';
 
 @ApiTags('Users')
 @Controller({
@@ -76,7 +77,10 @@ export class UsersController {
   @UseGuards(JwtParamAuthGuard)
   @UsePipes(ValidationPipe)
   @Put(':id')
-  selfUpdate(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+  selfUpdate(
+    @Body(new UserPipe()) updateUserDto: UpdateUserDto,
+    @Param('id') id: number,
+  ) {
     return this.userService.update(id, updateUserDto);
   }
 

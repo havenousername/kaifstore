@@ -8,9 +8,9 @@ import { DEFAULT_ROLE } from '../app/contstants';
 import * as bcrypt from 'bcryptjs';
 import { AddressesService } from '../addresses/addresses.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import omit from 'lodash/omit';
 import { Role } from '../model/roles.model';
 import { Address } from '../model/addresses.model';
+import { omit } from 'lodash';
 
 @Injectable()
 export class UsersService {
@@ -60,11 +60,15 @@ export class UsersService {
   }
 
   async update(id: number, dto: UpdateUserDto) {
-    const hashPassword = await bcrypt.hash(dto.password, 5);
-    await this.addressService.updateAddress(dto.addressId, dto.address);
-    const addDto = omit<Omit<UpdateUserDto, 'address'>>(dto, [
-      'address',
-    ]) as Omit<UpdateUserDto, 'address'>;
+    let hashPassword;
+    if (dto.password && dto?.password === dto?.confirmPassword) {
+      hashPassword = await bcrypt.hash(dto.password, 5);
+    }
+
+    if (dto.addressId && dto.address) {
+      await this.addressService.updateAddress(dto.addressId, dto.address);
+    }
+    const addDto = omit<Omit<UpdateUserDto, 'address'>>(dto, ['address']);
     await this.userRepository.update(
       { ...addDto, password: hashPassword },
       { where: { id } },

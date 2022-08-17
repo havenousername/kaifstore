@@ -19,8 +19,6 @@ import { isString } from '../utils/type-checkers';
 import { ProductGroupsService } from '../product-groups/product-groups.service';
 import { EditProductDto } from './dto/edit-product.dto';
 import { ProductDiscount } from '../model/product-discounts.model';
-import { ProductMeasure } from '../interfaces/product-measure.enum';
-import { Attributes } from '../interfaces/attributes';
 
 @Injectable()
 export class ProductsService {
@@ -33,18 +31,6 @@ export class ProductsService {
     @Inject(forwardRef(() => ProductGroupsService))
     private productGroupService: ProductGroupsService,
   ) {}
-
-  private static prepareAttributes(attribs: Attributes[]): string[] {
-    return attribs.map((a) => `${a.name}:${a.value}`);
-  }
-
-  private static prepareMeasureName(name: ProductMeasure) {
-    return (
-      Object.entries(ProductMeasure).find((j) => {
-        return name === j[1];
-      }) as [keyof ProductMeasure, string]
-    )[0];
-  }
 
   private handleQueryOrder(
     directions: (string | number)[] | undefined,
@@ -174,10 +160,8 @@ export class ProductsService {
         ...dto,
         uuid: uuid,
         images: filenames,
-        attributes: ProductsService.prepareAttributes(dto.attributes ?? []),
-        measurename: dto.measureName
-          ? ProductsService.prepareMeasureName(dto.measureName)
-          : undefined,
+        attributes: dto.attributes,
+        measurename: dto.measurename,
       });
 
       if (dto.discounts) {
@@ -269,8 +253,6 @@ export class ProductsService {
       {
         ...dto,
         discounts: undefined,
-        attributes: ProductsService.prepareAttributes(dto.attributes),
-        measurename: ProductsService.prepareMeasureName(dto.measureName),
       },
       { where: { id: dto.id } },
     );

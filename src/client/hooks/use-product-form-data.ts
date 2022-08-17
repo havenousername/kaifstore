@@ -14,10 +14,10 @@ import useFetcher from './use-fetcher';
 const useProductFormData = () => {
   const { t } = useTranslation();
   const fetcher = useFetcher();
-  const { data: groups } = useSWRImmutable<ProductGroup[]>(
-    'v1/product-groups',
-    fetcher,
-  );
+  const { data } = useSWRImmutable<{
+    items: ProductGroup[];
+    meta: any;
+  }>('v1/product-groups', fetcher);
 
   const { data: discounts } = useSWRImmutable<Discount[]>(
     'v1/discounts',
@@ -61,14 +61,14 @@ const useProductFormData = () => {
   );
 
   useEffect(() => {
-    if (groups) {
-      const selectable = groups.map((group) => ({
+    if (data) {
+      const selectable = data.items.map((group) => ({
         value: group.uuid,
         content: group.name,
       }));
       setSelectableGroups(selectable);
     }
-  }, [groups]);
+  }, [data]);
 
   useEffect(() => {
     if (discounts) {

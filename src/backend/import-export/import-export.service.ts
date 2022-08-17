@@ -8,6 +8,7 @@ import {
   CurrenciesService,
   ResponseCurrenciesData,
 } from '../currencies/currencies.service';
+import { ProductPipe } from '../pipes/product.pipe';
 
 @Injectable()
 export class ImportExportService {
@@ -54,10 +55,10 @@ export class ImportExportService {
               tags: [],
               quantity: product.quantity,
               barCodes: product.barCodes,
-              measureName: product.measureName,
+              measurename: ProductPipe.prepareMeasureName(product.measureName),
               articleNumber: product.articleNumber,
               discounts: [],
-              attributes: product.attributes,
+              attributes: ProductPipe.prepareAttributes(product.attributes),
               country: product.country ?? countries.RU,
               currency:
                 product.currency ?? Object.values(this.currencies.symbols)[0],
