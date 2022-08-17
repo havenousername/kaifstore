@@ -62,6 +62,7 @@ const Settings: NextPageWithLayout = () => {
         getValues={getValues}
         control={control}
         image={user.photo}
+        role={user.role}
         isAdmin={user.role.name === SUPER_USER_ROLE.name}
       />
     </Box>

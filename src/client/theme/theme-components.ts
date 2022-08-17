@@ -3,6 +3,7 @@ import { Theme } from '@mui/material/styles';
 import { SimplePaletteColorOptions } from '@mui/material/styles/createPalette';
 // eslint-disable-next-line
 import type {} from '@mui/lab/themeAugmentation';
+import darkScrollbar from '@mui/material/darkScrollbar';
 
 const components = (theme: Theme): Components => ({
   MuiCssBaseline: {
@@ -10,6 +11,7 @@ const components = (theme: Theme): Components => ({
       body: {
         height: '100vh',
         color: theme.palette.text.primary,
+        ...darkScrollbar(),
       },
       a: {
         color: theme.palette.text.primary,

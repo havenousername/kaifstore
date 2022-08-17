@@ -120,7 +120,7 @@ const Navbar = () => {
           padding: '0 1rem',
         }}
       >
-        <Box sx={{ overflowY: 'scroll' }}>
+        <Box sx={{ overflowY: 'auto' }}>
           <Typography variant={'h4'} component={'h3'} padding={'2rem 1rem'}>
             {t('Kaifstore')}
           </Typography>
@@ -156,7 +156,7 @@ const Navbar = () => {
           >
             {t('Navbar.Categories')}
           </Typography>
-          <Box sx={{ overflowY: 'scroll' }}>
+          <Box sx={{ overflowY: 'auto' }}>
             <AppAccordion
               data={groupAccordion}
               onChange={(data) => onGroupRoute(data)}
