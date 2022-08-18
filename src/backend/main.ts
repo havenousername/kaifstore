@@ -30,9 +30,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/docs', app, document);
 
-  await app.listen(PORT, host, () =>
-    console.log(`Server started at port: ${PORT}`),
-  );
+  await app.listen(PORT, host, async () => {
+    console.log(`Server started at port: ${PORT}`);
+  });
 }
 
 bootstrap().catch((ex: any) => {

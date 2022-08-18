@@ -35,7 +35,7 @@ const Settings: NextPageWithLayout = () => {
       setValue('lastName', user.lastName);
       setValue('gender', user.gender);
       setValue('birthDate', user.birthDate);
-      setValue('password', user.password);
+      setValue('gender', user.gender);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
@@ -43,6 +43,19 @@ const Settings: NextPageWithLayout = () => {
   if (!user) {
     return <></>;
   }
+
+  const onUserSave = async () => {
+    const editedUser = getValues();
+
+    await fetch(`/v1/users/${user.id}`, {
+      method: 'PUT',
+      headers: {
+        Accept: '*/*',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(editedUser),
+    });
+  };
 
   return (
     <Box
@@ -62,7 +75,9 @@ const Settings: NextPageWithLayout = () => {
         getValues={getValues}
         control={control}
         image={user.photo}
+        role={user.role}
         isAdmin={user.role.name === SUPER_USER_ROLE.name}
+        userSave={onUserSave}
       />
     </Box>
   );

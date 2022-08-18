@@ -73,9 +73,9 @@ export class ProductsService {
       };
     }
 
-    if (queryOptions.characteristics) {
-      filters['characteristics'] = {
-        [Op.contains]: queryOptions.characteristics as string[],
+    if (queryOptions.attributes) {
+      filters['attributes'] = {
+        [Op.contains]: queryOptions.attributes as string[],
       };
     }
 
@@ -160,6 +160,8 @@ export class ProductsService {
         ...dto,
         uuid: uuid,
         images: filenames,
+        attributes: dto.attributes,
+        measurename: dto.measurename,
       });
 
       if (dto.discounts) {
@@ -235,7 +237,7 @@ export class ProductsService {
       );
     }
 
-    if (dto.discounts) {
+    if (dto.discounts && !dto.discountProhibited) {
       const fiDiscounts = dto.discounts.filter(
         (discountId) =>
           oldProduct.discounts.filter((d) => d.id === discountId).length === 0,
@@ -248,7 +250,10 @@ export class ProductsService {
     }
 
     return await this.productRepository.update(
-      { ...dto, discounts: undefined },
+      {
+        ...dto,
+        discounts: undefined,
+      },
       { where: { id: dto.id } },
     );
   }

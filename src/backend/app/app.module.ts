@@ -21,7 +21,10 @@ import { ImportExportModule } from '../import-export/import-export.module';
 import { FilesModule } from '../files/files.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { PaginateModule } from 'nestjs-sequelize-paginate';
+import { CurrenciesModule } from '../currencies/currencies.module';
 import * as path from 'path';
+import { MoyskladModule } from '../moysklad/moysklad.module';
+import { AppSettingsModule } from '../app-settings/app-settings.module';
 
 const models = [
   User,
@@ -87,6 +90,7 @@ const sequelizeOptions: SequelizeModuleOptions = isHeroku
     SequelizeModule.forRoot(sequelizeOptions),
     AuthModule,
     ImportExportModule,
+    MoyskladModule,
     // data modules
     UsersModule,
     FavouriteModule,
@@ -96,10 +100,12 @@ const sequelizeOptions: SequelizeModuleOptions = isHeroku
     ProductsModule,
     DiscountsModule,
     FilesModule,
+    CurrenciesModule,
     ServeStaticModule.forRoot({
       rootPath: path.resolve(__dirname, '..', 'static'),
     }),
     PaginateModule.forRoot(),
+    AppSettingsModule,
   ],
   controllers: [],
 })

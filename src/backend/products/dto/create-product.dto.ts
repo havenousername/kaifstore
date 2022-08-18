@@ -50,7 +50,7 @@ export class CreateProductDto {
     required: false,
   })
   @IsArray({ message: 'Should be array' })
-  readonly characteristics?: string[];
+  readonly tags?: string[];
 
   @ApiProperty({ example: 3, description: 'Quantity', required: false })
   @IsNumber({}, { message: 'Should be always number' })
@@ -70,7 +70,7 @@ export class CreateProductDto {
     required: false,
   })
   @IsString({ message: 'Should be string' })
-  readonly measureName?: ProductMeasure;
+  readonly measurename?: keyof ProductMeasure;
 
   @ApiProperty({
     example: 1,
@@ -118,4 +118,48 @@ export class CreateProductDto {
   })
   @IsNumber({}, { message: 'Should be always number' })
   readonly discounts: number[];
+
+  @ApiProperty({
+    description: 'Attributes {name, value} array',
+  })
+  @IsArray({ message: 'Should be an array' })
+  readonly attributes?: string[];
+
+  @ApiProperty({
+    description: 'currency',
+    example: 'EUR',
+  })
+  @IsString({ message: 'Should be string' })
+  readonly currency: string;
+
+  @ApiProperty({
+    description: 'country',
+    example: 'Moldova',
+  })
+  @IsString({ message: 'Should be string' })
+  readonly country: string;
+
+  @ApiProperty({
+    example: false,
+    description: 'Allow to have discounts',
+    required: false,
+  })
+  @IsBoolean({ message: 'Should be boolean' })
+  readonly discountProhibited?: boolean;
+
+  @ApiProperty({
+    example: false,
+    description: 'Use parent vat',
+    required: false,
+  })
+  @IsBoolean({ message: 'Should be boolean' })
+  readonly useParentVat?: boolean;
+
+  @ApiProperty({
+    example: 1,
+    description: 'Variant count',
+    required: false,
+  })
+  @IsNumber({}, { message: 'Should be number' })
+  readonly variantsCount?: number;
 }

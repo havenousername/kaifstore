@@ -1,5 +1,11 @@
 import standardFetcher from '../../../api/standard-fetcher';
-import React, { ReactElement, useContext, useEffect } from 'react';
+import React, {
+  ReactElement,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import AdminTheme from '../../../components/functional/admin-theme';
 import AppLayout from '../../../components/functional/app-layout';
 import {
@@ -25,6 +31,7 @@ import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import useGroupFetchRemove from '../../../hooks/use-group-fetch-remove';
 import { SnackbarContext } from '../../../context/snackbar.context';
+import useDetectBottomScroll from '../../../hooks/use-detect-bottom-scroll';
 
 const GroupCard = ({
   group,
@@ -174,19 +181,48 @@ const GroupCard = ({
 };
 
 const Index = () => {
-  const { data, mutate } = useSWR<ProductGroup[]>(
-    '/v1/product-groups?desc=parentGroup&asc=childrenGroups',
+  const [currentPage, setCurrentPage] = useState(1);
+  const {
+    data,
+    error: groupError,
+    mutate,
+  } = useSWR<{
+    items: ProductGroup[];
+    meta: any;
+  }>(
+    `/v1/product-groups?desc=parentGroup&asc=childrenGroups&page=${currentPage}`,
     standardFetcher,
   );
+  const [groups, setGroups] = useState<ProductGroup[]>([]);
   const { t } = useTranslation();
   const router = useRouter();
   const snackbar = useContext(SnackbarContext);
 
   const { initialize, data: removeSuccess, error } = useGroupFetchRemove();
+  const groupsCollectionRef = useRef<HTMLDivElement>();
+  const [isBottom] = useDetectBottomScroll(groupsCollectionRef);
 
   const onRemoveGroup = (group: ProductGroup) => {
     initialize({ id: group.id });
   };
+
+  useEffect(() => {
+    if (data && !groupError) {
+      setGroups((groups) => [...groups, ...data.items]);
+    }
+  }, [data, groupError]);
+
+  useEffect(() => {
+    if (isBottom) {
+      getMoreGroups();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isBottom]);
+
+  function getMoreGroups() {
+    setCurrentPage((page) => page + 1);
+    mutate();
+  }
 
   useEffect(() => {
     if (!!removeSuccess) {
@@ -208,14 +244,7 @@ const Index = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
-  useEffect(() => {
-    if (router.pathname) {
-      mutate();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.pathname]);
-
-  if (!data) {
+  if (!groups) {
     return null;
   }
 
@@ -239,7 +268,7 @@ const Index = () => {
         >
           {t('Products.Products')} / {t('Products.Group')}
         </Typography>
-        {data && data.length > 0 && (
+        {groups && groups.length > 0 && (
           <Box
             display={'flex'}
             maxWidth={'400px'}
@@ -287,9 +316,9 @@ const Index = () => {
           </Box>
         )}
       </Box>
-      {data && data.length > 0 ? (
-        <Grid container spacing={2}>
-          {data.map((group, key) => (
+      {groups && groups.length > 0 ? (
+        <Grid ref={groupsCollectionRef} container spacing={2}>
+          {groups.map((group, key) => (
             <Grid item xs={10} lg={6} key={key}>
               <GroupCard group={group} onRemove={onRemoveGroup} />
             </Grid>
@@ -310,7 +339,7 @@ const Index = () => {
             text={t('Products.CreateNewProduct')}
             onClick={() => router.push('/admin/products/create')}
             icon={<ProductIcon transform={'scale(2.5)'} />}
-            disabled={data.length === 0}
+            disabled={groups.length === 0}
           />
         </Box>
       )}

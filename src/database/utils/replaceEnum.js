@@ -1,5 +1,7 @@
 'use strict';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { QueryTypes } = require('sequelize');
 /**
  * Since PostgreSQL still does not support remove values from an ENUM,
  * the workaround is to create a new ENUM with the new values and use it
@@ -56,15 +58,36 @@ module.exports = function replaceEnum(
             { transaction: t },
           ),
         )
-        // Drop old ENUM
-        .then(() =>
-          queryInterface.sequelize.query(
-            `
-              DROP TYPE ${enumName}
-            `,
-            { transaction: t },
-          ),
-        )
+        // // Drop old ENUM
+        .then(async () => {
+          const r = await queryInterface.sequelize.query(
+            `SELECT
+               T.typname,
+               E.enumlabel,
+               E.enumsortorder
+             FROM
+               pg_enum E
+               INNER JOIN pg_type T ON (E.enumtypid = T.oid)
+             WHERE
+               T.typname = ?`,
+            {
+              type: QueryTypes.SELECT,
+              replacements: [enumName],
+            },
+          );
+          if (r && r.length > 0) {
+            queryInterface.sequelize
+              .query(
+                `
+                  DROP TYPE ${enumName}
+                `,
+                { transaction: t },
+              )
+              .catch(() => {
+                console.error(`No need to drop enum ${enumName}. Exists: ${r}`);
+              });
+          }
+        })
         // Rename new ENUM name
         .then(() =>
           queryInterface.sequelize.query(

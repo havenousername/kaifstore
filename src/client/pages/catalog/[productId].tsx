@@ -116,7 +116,7 @@ const CatalogSlug: NextPageWithLayout = (props: {
           >
             {product.group.name}
           </Typography>
-          {product.characteristics && (
+          {product.tags && (
             <Box display={'flex'}>
               <Typography
                 variant={'subtitle1'}
@@ -125,7 +125,7 @@ const CatalogSlug: NextPageWithLayout = (props: {
               >
                 {t('ProductDetails.Tags')}
               </Typography>
-              {product.characteristics.map((tag, index) => (
+              {product.tags.map((tag, index) => (
                 <AppTag
                   key={index}
                   tag={tag}

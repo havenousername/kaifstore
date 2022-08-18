@@ -17,18 +17,26 @@ import FormDatePicker from './input/validation/form-date-picker';
 import AppIcon from './common/app-icon';
 import { ReactComponent as DontShowEyeIcon } from '../assets/icons/dont-show-eye.svg';
 import { ReactComponent as ShowEyeIcon } from '../assets/icons/show-eye.svg';
+import { Role } from '../../backend/model/roles.model';
+import AppInput from './input/app-input';
+import capitalize from 'lodash/capitalize';
+import AppBaseButton from './common/app-base-button';
 
 const SettingsForm = ({
   image,
   control,
   getValues,
   isAdmin,
+  role,
+  userSave,
 }: {
   image: string;
   control: Control<EditableUser>;
   getValues: UseFormGetValues<EditableUser>;
   setImage?: Dispatch<SetStateAction<string>>;
   isAdmin: boolean;
+  role: Role;
+  userSave: () => void;
 }) => {
   const { t, i18n } = useTranslation();
   const getHttpUrl = useGetHttpUrl();
@@ -86,6 +94,22 @@ const SettingsForm = ({
           <Typography variant={'h5'} component={'h5'} fontWeight={600}>
             {t('Placeholder.FirstName')}*
           </Typography>
+          <AppInput
+            inputProps={{
+              value: role.name,
+              placeholder: t('Placeholder.Role'),
+              sx: {
+                fontSize: '0.8rem',
+              },
+              disabled: true,
+              required: true,
+            }}
+          />
+        </FormGroup>
+        <FormGroup sx={{ gridColumn: 'span 6' }}>
+          <Typography variant={'h5'} component={'h5'} fontWeight={600}>
+            {t('Placeholder.FirstName')}*
+          </Typography>
           <FormInput<EditableUser>
             name={'firstName'}
             control={control}
@@ -109,9 +133,7 @@ const SettingsForm = ({
             selectProps={{
               values: [Gender.MALE, Gender.FEMALE].map((i) => ({
                 value: i,
-                content: Gender.MALE
-                  ? t('Placeholder.Male')
-                  : t('Placeholder.Female'),
+                content: t(`Placeholder.${capitalize(i)}`),
               })),
             }}
             helperProps={helperProps}
@@ -209,6 +231,16 @@ const SettingsForm = ({
             }}
             helperProps={helperProps}
           />
+        </FormGroup>
+        <FormGroup sx={{ gridColumn: 'span 12' }}>
+          <AppBaseButton
+            variant={'contained'}
+            color={'primary'}
+            type={'button'}
+            onClick={() => userSave()}
+          >
+            {t('Settings.UserSave')}
+          </AppBaseButton>
         </FormGroup>
       </Box>
     </FormControl>

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +14,7 @@ import { useRouter } from 'next/router';
 import useLogin from '../hooks/use-login';
 import { AuthenticationContext } from '../context/authenticated.context';
 import BoxedContainer from '../components/boxed-container';
+import { SnackbarContext } from '../context/snackbar.context';
 
 const Login = () => {
   const { t } = useTranslation();
@@ -28,7 +29,8 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [doLogin] = useLogin(goToPrivateRoute);
+  const [doLogin, , error] = useLogin(goToPrivateRoute);
+  const snackbar = useContext(SnackbarContext);
 
   const onEmailChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,6 +53,14 @@ const Login = () => {
   const onLoginTry = useCallback(async () => {
     await doLogin(email, password);
   }, [password, email, doLogin]);
+
+  useEffect(() => {
+    if (error) {
+      snackbar.changeSeverity('error');
+      snackbar.changeIsOpen(true);
+      snackbar.changeMessage(t('LoginPage.Unsuccessful'));
+    }
+  }, [error, snackbar, t]);
 
   return (
     <>

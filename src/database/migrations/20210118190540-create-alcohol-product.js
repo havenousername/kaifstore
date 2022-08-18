@@ -8,18 +8,21 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
+      excise: {
+        type: Sequelize.BOOLEAN,
+      },
       alcoCodes: {
         type: Sequelize.ARRAY(Sequelize.INTEGER),
       },
-      alcoholByValue: {
-        type: Sequelize.INTEGER,
+      strength: {
+        type: Sequelize.FLOAT,
       },
-      alcoholProductKindCode: {
+      type: {
         type: Sequelize.SMALLINT,
         default: 0,
       },
-      tareVolume: {
-        type: Sequelize.SMALLINT,
+      volume: {
+        type: Sequelize.FLOAT,
       },
       createdAt: {
         allowNull: false,

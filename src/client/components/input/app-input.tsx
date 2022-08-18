@@ -41,6 +41,10 @@ export const StandardInput = styled(InputBase, {
       'background-color',
       'box-shadow',
     ]),
+    '&:disabled': {
+      color: theme.palette.grey[200],
+      WebkitTextFillColor: 'initial',
+    },
   },
 }));
 
