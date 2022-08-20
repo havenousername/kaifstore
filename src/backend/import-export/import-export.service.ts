@@ -55,10 +55,14 @@ export class ImportExportService {
               tags: [],
               quantity: product.quantity,
               barCodes: product.barCodes,
-              measurename: ProductPipe.prepareMeasureName(product.measureName),
+              measurename: product.measureName
+                ? ProductPipe.prepareMeasureName(product.measureName)
+                : undefined,
               articleNumber: product.articleNumber,
               discounts: [],
-              attributes: ProductPipe.prepareAttributes(product.attributes),
+              attributes: product.attributes
+                ? ProductPipe.prepareAttributes(product.attributes)
+                : [],
               country: product.country ?? countries.RU,
               currency:
                 product.currency ?? Object.values(this.currencies.symbols)[0],

@@ -31,9 +31,9 @@ export class ProductGroupsService {
     const names = dto.name.split(separator);
     const groups: string[] = [];
     for (let i = 0; i < names.length; i++) {
-      const group = (await this.getByName(names[i], { all: true })).uuid;
+      const group = await this.getByName(names[i], { all: true });
       if (group !== null) {
-        groups.push(group);
+        groups.push(group.uuid);
       } else {
         const uuid = v4();
         const g = await this.create({
