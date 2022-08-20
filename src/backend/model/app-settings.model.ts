@@ -1,6 +1,7 @@
-import { Column, DataType, Default, Model } from 'sequelize-typescript';
+import { Column, DataType, Model, Table } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 
+@Table({ tableName: 'app-settings' })
 export class AppSettings extends Model<AppSettings> {
   @ApiProperty({ example: 1, description: 'Unique identifier' })
   @Column({
@@ -27,7 +28,6 @@ export class AppSettings extends Model<AppSettings> {
     type: DataType.BOOLEAN,
     allowNull: false,
   })
-  @Default(false)
   moyskladIntegration: boolean;
 
   @Column({
