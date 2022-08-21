@@ -46,6 +46,11 @@ export class AppSettings extends Model<AppSettings> {
     }
     return Buffer.from(
       `${this.moyskladEmail}:${this.moyskladPassword}`,
-    ).toString();
+    ).toString('base64');
   }
+
+  @Column({
+    type: DataType.BOOLEAN,
+  })
+  moyskladSync?: boolean;
 }
