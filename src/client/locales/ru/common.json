@@ -24,7 +24,15 @@
     "Characteristics": "Выберите характеристику (пример: белый, черный и тд)",
     "Barcodes": "Выберите или создайте баркоды (пример: 9781234567897, 978123456756 и тд)",
     "Discounts": "Выберите скидки из списка",
-    "Role": "Роль"
+    "Role": "Роль",
+    "AppLanguage": "Язык приложения",
+    "AppMoyskladIntegration": "Интеграция с \"Мой склад\"",
+    "AppMoyskladIntegrationTokenEmail": "Емайл от \"Мой склад\"",
+    "AppMoyskladIntegrationTokenPassword": "Пароль от \"Мой склад\""
+  },
+  "Choices": {
+    "Yes": "Да",
+    "No": "Нет"
   },
   "KaifStore": "KaifStore",
   "IndexPage": {
@@ -35,8 +43,12 @@
     "NewIconText": "Новинка"
   },
   "Settings": {
-    "Settings": "Настройки",
-    "UserSave":  "Сохранить"
+    "UserSettings": "Настройки пользователя",
+    "Save":  "Сохранить",
+    "AppSettings": "Настройки приложения",
+    "ChangeToken": "Изменить токен",
+    "Token": "Токен",
+    "AddToken": "Добавить токен"
   },
   "Catalog": {
     "Catalog": "Каталог"
@@ -113,7 +125,9 @@
     "NoIndexError": "Не было найдено предмета с названием {entity}",
     "DuplicatedItem": "Импотируемый файл имеет поля которые уже встречаются в приложении. Пожалуйта удалите их и сделайте повторную попытку",
     "GroupDeleted": "Группа была успешно удалена",
-    "BackendError": "Произошла ошибка. {error}. Пожалуйста попробуйте позже"
+    "BackendError": "Произошла ошибка. {error}. Пожалуйста попробуйте позже",
+    "UserUpdated": "Пользователь был обновлег",
+    "AppSettingsUpdated": "Настройки приложения были обновлены"
   },
   "Products": {
     "Products": "Продукты",

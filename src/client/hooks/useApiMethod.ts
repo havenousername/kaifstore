@@ -11,9 +11,9 @@ const useApiMethod = <Data, Params>(
   const [data, setData] = useState<Data>();
   const path = useGetHttpUrl();
 
-  const initialize = async (params: Params) => {
+  const initialize = async (params: Params, requestInit?: RequestInit) => {
     try {
-      const res = await fetch(path(getPath(params)), init);
+      const res = await fetch(path(getPath(params)), requestInit ?? init);
 
       if (res.status !== 201 && res.status !== 200) {
         const error = await res.json();

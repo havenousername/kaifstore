@@ -20,7 +20,7 @@ import FormSelect from '../components/input/validation/form-select';
 import { Gender } from '../interfaces/gender';
 import FormDatePicker from '../components/input/validation/form-date-picker';
 import FormCheckbox from '../components/input/validation/form-checkbox';
-import useRegisterSchema from '../hooks/use-register-schema';
+import useRegisterSchema from '../hooks/schemas/use-register-schema';
 import useRegister from '../hooks/use-register';
 import { AuthenticationContext } from '../context/authenticated.context';
 import { useRouter } from 'next/router';
