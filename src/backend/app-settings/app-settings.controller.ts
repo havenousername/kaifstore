@@ -1,4 +1,4 @@
-import { Body, Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Put, UseGuards } from '@nestjs/common';
 import { AppSettingsService } from './app-settings.service';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AppSettings } from '../model/app-settings.model';
@@ -31,7 +31,7 @@ export class AppSettingsController {
   @ApiResponse({ status: 200, type: AppSettings })
   @Roles(SUPER_USER_ROLE.name)
   @UseGuards(JwtRolesGuard)
-  @Get('')
+  @Put('')
   public updateSettings(@Body() dto: UpdateSettingsDto) {
     return this.appSettingsService.updateSettings(dto);
   }

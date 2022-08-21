@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { AppSettings } from '../model/app-settings.model';
 import { UpdateSettingsDto } from './dto/update-settings.dto';
+import { omit } from 'lodash';
 
 @Injectable()
 export class AppSettingsService {
@@ -10,10 +11,28 @@ export class AppSettingsService {
   ) {}
 
   async getSettings(): Promise<AppSettings> {
-    return this.appSettingsRepository.findOne({ where: { id: 1 } });
+    const settings = await this.appSettingsRepository.findOne({
+      where: { id: 1 },
+    });
+    return {
+      language: settings.getDataValue('language'),
+      moyskladIntegration: settings.getDataValue('moyskladIntegration'),
+      moyskladToken: settings.moyskladToken,
+      moyskladSync: settings.getDataValue('moyskladSync'),
+    } as unknown as AppSettings;
   }
 
   async updateSettings(dto: UpdateSettingsDto) {
-    return this.appSettingsRepository.update({ ...dto }, { where: { id: 1 } });
+    if (!dto.moyskladPassword) {
+      dto = omit(dto, 'moyskladPassword');
+    }
+
+    if (!dto.moyskladEmail) {
+      dto = omit(dto, 'moyskladEmail');
+    }
+    return await this.appSettingsRepository.update(
+      { ...dto },
+      { where: { id: 1 } },
+    );
   }
 }
