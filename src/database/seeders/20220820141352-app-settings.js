@@ -6,6 +6,8 @@ module.exports = {
       id: 1,
       language: 'ru',
       moyskladIntegration: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     return queryInterface.bulkInsert('app-settings', [settings]);
   },
