@@ -12,10 +12,7 @@ import { parse } from 'url';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from '../decorators/public.decorator';
 import { ViewAuthFilter } from '../filters/view-auth.filter';
-import {
-  PRIVATE_VIEW_REDIRECT_ROUTE,
-  SUPER_USER_ROLE,
-} from '../app/contstants';
+import { PRIVATE_VIEW_REDIRECT_ROUTE, SUPER_USER_ROLE } from '../app/constants';
 import { Roles } from '../decorators/role-auth.decorator';
 import JwtRolesGuard from '../auth/guards/roles-auth.guard';
 import { ViewAdminFilter } from '../filters/view-admin.filter';

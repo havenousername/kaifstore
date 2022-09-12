@@ -11,7 +11,7 @@ import useRegisterSchema from '../hooks/schemas/use-register-schema';
 import { EditableUser } from '../interfaces/settings-user';
 import { useTranslation } from 'react-i18next';
 import { AuthenticationContext } from '../context/authenticated.context';
-import { SUPER_USER_ROLE } from '../../backend/app/contstants';
+import { SUPER_USER_ROLE } from '../../backend/app/constants';
 import useSWR from 'swr';
 import { AppSettings as AppSettingsModel } from '../../backend/model/app-settings.model';
 import standardFetcher from '../api/standard-fetcher';
@@ -25,8 +25,11 @@ const Settings: NextPageWithLayout = () => {
   const registerSchema = useRegisterSchema(t);
   const appSettingsSchema = useAppSettingsSchema(t);
   const { user } = useContext(AuthenticationContext);
-  const { data: appSettings, error: appSettingsError } =
-    useSWR<AppSettingsModel>('/v1/app-settings', standardFetcher);
+  const {
+    data: appSettings,
+    error: appSettingsError,
+    mutate: appSettingsMutate,
+  } = useSWR<AppSettingsModel>('/v1/app-settings', standardFetcher);
   const snackbar = useContext(SnackbarContext);
 
   const {
@@ -44,9 +47,19 @@ const Settings: NextPageWithLayout = () => {
     data: updatedAppSettings,
     error: updateAppSettingsError,
   } = useApiMethod<number[], undefined>(
-    () => `v1/app-settings`,
+    () => 'v1/app-settings',
     (d: any) => d,
     { method: 'PUT' },
+  );
+
+  const {
+    initialize: syncMoysklad,
+    data: updatedSyncMoysklad,
+    error: updatedSyncMoyskladError,
+  } = useApiMethod<undefined, undefined>(
+    () => 'v1/app-settings/sync',
+    (d) => d,
+    { method: 'POST' },
   );
 
   const { control, setValue, getValues, watch } = useForm<EditableUser>({
@@ -77,6 +90,9 @@ const Settings: NextPageWithLayout = () => {
     },
   });
   const [token, setToken] = useState('');
+  const [sync, setSync] = useState(false);
+
+  const changeSynchronization = () => syncMoysklad(undefined);
 
   const initials =
     watch('lastName').toString().slice(0, 1) +
@@ -97,11 +113,21 @@ const Settings: NextPageWithLayout = () => {
     if (appSettings && !appSettingsError) {
       setSettingsValue('language', appSettings.language);
       setSettingsValue('moyskladIntegration', appSettings.moyskladIntegration);
-      console.log(appSettings.moyskladToken);
-      setToken(appSettings.moyskladToken);
+      setToken(appSettings.moyskladToken as unknown as string);
+      setSync(appSettings.moyskladSync);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appSettings, appSettingsError]);
+
+  useEffect(() => {
+    if (!!updatedSyncMoysklad) {
+      appSettingsMutate();
+      snackbar.changeIsOpen(true);
+      snackbar.changeSeverity('success');
+      snackbar.changeMessage(t('Alert.AppMoyskladSyncUpdated'));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updatedSyncMoysklad]);
 
   useEffect(() => {
     if (!!updatedUserSettings) {
@@ -114,6 +140,7 @@ const Settings: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (!!updatedAppSettings) {
+      appSettingsMutate();
       snackbar.changeIsOpen(true);
       snackbar.changeSeverity('success');
       snackbar.changeMessage(t('Alert.AppSettingsUpdated'));
@@ -122,7 +149,11 @@ const Settings: NextPageWithLayout = () => {
   }, [updatedAppSettings]);
 
   useEffect(() => {
-    if (!!updateSettingsError || !!updateAppSettingsError) {
+    if (
+      !!updateSettingsError ||
+      !!updateAppSettingsError ||
+      !!updatedSyncMoyskladError
+    ) {
       const error = updateSettingsError
         ? updateSettingsError
         : updateAppSettingsError;
@@ -132,7 +163,7 @@ const Settings: NextPageWithLayout = () => {
       console.error('An error occured', error);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateSettingsError, updateAppSettingsError]);
+  }, [updateSettingsError, updateAppSettingsError, updatedSyncMoyskladError]);
 
   if (!user) {
     return <></>;
@@ -202,6 +233,8 @@ const Settings: NextPageWithLayout = () => {
         control={settingsControl}
         token={token}
         settingsSave={onAppSettingsSave}
+        synchronized={sync}
+        synchronize={changeSynchronization}
       />
     </Box>
   );

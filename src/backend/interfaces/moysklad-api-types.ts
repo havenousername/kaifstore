@@ -138,3 +138,41 @@ export type MoyskladProduct = {
   volume: number;
   weight: number;
 };
+
+export type MoyskladEmployees = {
+  context: {
+    employee: MoyskladMeta;
+  };
+  meta: MoyskladMeta;
+  rows: MoyskladEmployee[];
+};
+
+export type MoyskladEmployee = {
+  meta: MoyskladMeta;
+  id: string;
+  accountId: string;
+  updated: string;
+  name: string;
+  externalCode: string;
+  archived: boolean;
+  uid: string;
+  email: string;
+  lastName: string;
+  fullName: string;
+  shortFio: string;
+  cashiers: { meta: MoyskladMeta }[];
+  retailStore: { meta: MoyskladMeta };
+  inn: string;
+  position: string;
+};
+
+export type MoyskladHookResponse = {
+  meta: MoyskladMeta;
+  id: string;
+  accountId: string;
+  entityType: string;
+  url: string;
+  method: string;
+  enabled: boolean;
+  action: string;
+};

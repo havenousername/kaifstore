@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AppSettingsService } from './app-settings.service';
 import { AppSettingsController } from './app-settings.controller';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AppSettings } from '../model/app-settings.model';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
+import { MoyskladModule } from '../moysklad/moysklad.module';
 
 @Module({
   providers: [AppSettingsService],
@@ -16,6 +17,8 @@ import { UsersModule } from '../users/users.module';
       secret: process.env.PRIVATE_KEY || 'PRIVATE_KEY',
       signOptions: { expiresIn: '24h' },
     }),
+    forwardRef(() => MoyskladModule),
   ],
+  exports: [AppSettingsService],
 })
 export class AppSettingsModule {}

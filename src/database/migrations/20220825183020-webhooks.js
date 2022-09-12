@@ -2,34 +2,24 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.createTable('app-settings', {
+    return queryInterface.createTable('webhooks', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
       },
-      language: {
+      uuid: {
         allowNull: false,
         type: Sequelize.STRING,
-        default: 'ru',
       },
-      moyskladIntegration: {
+      action: {
         allowNull: false,
-        type: Sequelize.BOOLEAN,
-        default: false,
-      },
-      moyskladAccessToken: {
         type: Sequelize.STRING,
       },
-      moyskladEmail: {
+      url: {
+        allowNull: false,
         type: Sequelize.STRING,
-      },
-      moyskladPassword: {
-        type: Sequelize.STRING,
-      },
-      moyskladSync: {
-        type: Sequelize.BOOLEAN,
       },
       createdAt: {
         allowNull: false,
@@ -43,6 +33,6 @@ module.exports = {
   },
 
   down: async (queryInterface) => {
-    return queryInterface.dropTable('app-settings');
+    return queryInterface.dropTable('webhooks');
   },
 };

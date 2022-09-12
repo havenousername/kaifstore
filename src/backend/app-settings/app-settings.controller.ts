@@ -1,9 +1,9 @@
-import { Body, Controller, Get, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { AppSettingsService } from './app-settings.service';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AppSettings } from '../model/app-settings.model';
 import { Roles } from '../decorators/role-auth.decorator';
-import { SUPER_USER_ROLE } from '../app/contstants';
+import { SUPER_USER_ROLE } from '../app/constants';
 import JwtRolesGuard from '../auth/guards/roles-auth.guard';
 import { UpdateSettingsDto } from './dto/update-settings.dto';
 
@@ -34,5 +34,16 @@ export class AppSettingsController {
   @Put('')
   public updateSettings(@Body() dto: UpdateSettingsDto) {
     return this.appSettingsService.updateSettings(dto);
+  }
+
+  @ApiOperation({
+    summary: 'Update app synchronization',
+  })
+  @ApiResponse({ status: 200 })
+  @Roles(SUPER_USER_ROLE.name)
+  @UseGuards(JwtRolesGuard)
+  @Post('/sync')
+  public synchronize() {
+    return this.appSettingsService.changeSync();
   }
 }

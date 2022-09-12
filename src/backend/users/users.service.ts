@@ -4,7 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import AddRoleDto from './dto/add-role.dto';
 import { RolesService } from '../roles/roles.service';
-import { DEFAULT_ROLE } from '../app/contstants';
+import { DEFAULT_ROLE } from '../app/constants';
 import * as bcrypt from 'bcryptjs';
 import { AddressesService } from '../addresses/addresses.service';
 import { UpdateUserDto } from './dto/update-user.dto';

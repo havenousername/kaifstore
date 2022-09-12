@@ -13,11 +13,15 @@ const AppSettings = ({
   settingsSave,
   token,
   watch,
+  synchronized,
+  synchronize,
 }: {
   control: Control<EditableAppSettings>;
   settingsSave: () => void;
   token?: string;
   watch: UseFormWatch<EditableAppSettings>;
+  synchronized?: boolean;
+  synchronize: () => void;
 }) => {
   const { t } = useTranslation();
   const [changeToken, setChangeToken] = useState(false);
@@ -80,10 +84,6 @@ const AppSettings = ({
                 {token}
               </Typography>
             </Box>
-          </>
-        )}
-        {token && (
-          <>
             <Box sx={{ gridColumn: 'span 6' }}>
               <Typography variant={'h5'} component={'h5'} fontWeight={600}>
                 {t('Settings.ChangeToken')}
@@ -103,14 +103,14 @@ const AppSettings = ({
             </Box>
           </>
         )}
-        {!token && watch('moyskladIntegration') && (
+        {watch('moyskladIntegration') && !token && (
           <Box sx={{ gridColumn: 'span 12' }}>
             <Typography variant={'h5'} component={'h5'} fontWeight={600}>
               {t('Settings.AddToken')}
             </Typography>
           </Box>
         )}
-        {watch('moyskladIntegration') && changeToken && (
+        {((watch('moyskladIntegration') && !token) || changeToken) && (
           <>
             <FormGroup sx={{ gridColumn: 'span 6' }}>
               <Typography variant={'h5'} component={'h5'} fontWeight={600}>
@@ -149,6 +149,27 @@ const AppSettings = ({
                 }}
               />
             </FormGroup>
+          </>
+        )}
+        {token && (
+          <>
+            <Box sx={{ gridColumn: 'span 6' }}>
+              <Typography variant={'h5'} component={'h5'} fontWeight={600}>
+                {t('Settings.Synchronized')}
+              </Typography>
+            </Box>
+            <Box sx={{ gridColumn: 'span 6' }}>
+              <FormControl sx={{ fontSize: '0.8rem' }}>
+                <InputSelect
+                  selected={synchronized}
+                  onChange={() => synchronize()}
+                  options={[
+                    { content: t('Choices.No'), value: false },
+                    { content: t('Choices.Yes'), value: true },
+                  ]}
+                />
+              </FormControl>
+            </Box>
           </>
         )}
         <FormGroup sx={{ gridColumn: 'span 12' }}>
