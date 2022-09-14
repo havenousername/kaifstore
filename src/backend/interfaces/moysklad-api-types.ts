@@ -1,4 +1,4 @@
-import { ProductType } from './product-type.enum';
+import { ProductMeasure } from './product-measure.enum';
 
 export type MoyskladResponse = {
   context: {
@@ -109,7 +109,7 @@ export type MoyskladProduct = {
   name: string;
   description: string;
   externalCode: string;
-  archived: string;
+  archived: boolean;
   pathName: string;
   vat: number;
   vatEnabled: boolean;
@@ -133,7 +133,7 @@ export type MoyskladProduct = {
   taxSystem: TaxSystem;
   things: string[];
   tnved: string;
-  trackingType: ProductType;
+  trackingType: string;
   variantsCount: number;
   volume: number;
   weight: number;
@@ -175,4 +175,86 @@ export type MoyskladHookResponse = {
   method: string;
   enabled: boolean;
   action: string;
+};
+
+export type MoyskladWebhook = {
+  auditContext: MoyskladAuditContext;
+  events: MoyskladEvent[];
+};
+
+type MoyskladWebhookMeta = {
+  type: string;
+  href: string;
+};
+
+type MoyskladAuditContext = {
+  meta: MoyskladWebhookMeta;
+  uid: string;
+  moment: string;
+};
+
+export type MoyskladEvent = {
+  meta: MoyskladWebhookMeta;
+  action: string;
+  accountId: string;
+};
+
+export enum WebhookAction {
+  CREATE = 'CREATE',
+  UPDATE = 'UPDATE',
+  DELETE = 'DELETE',
+  PROCESSED = 'PROCESSED',
+}
+
+export type UomMeasure = {
+  meta: MoyskladMeta;
+  id: string;
+  updated: string;
+  name: ProductMeasure;
+  description: string;
+  code: string;
+  externalCode: string;
+};
+
+export type MoyskladCurrency = {
+  meta: MoyskladMeta;
+  id: string;
+  system: false;
+  name: string;
+  fullName: string;
+  rate: number;
+  multiplicity: number;
+  indirect: boolean;
+  rateUpdateType: string;
+  code: string;
+  isoCode: string;
+  majorUnit: Record<string, string>;
+  minorUnit: Record<string, string>;
+  archived: boolean;
+  default: boolean;
+};
+
+export type MoyskladImageRow = {
+  meta: MoyskladMeta & { downloadHref: string };
+  title: string;
+  filename: string;
+  updated: string;
+  miniature: {
+    href: string;
+    type: string;
+    mediaType: string;
+  };
+  tiny: {
+    href: string;
+    type: string;
+    mediaType: string;
+  };
+};
+
+export type MoyskladImageResponse = {
+  context: {
+    employee: MoyskladMeta;
+  };
+  meta: MoyskladMeta;
+  rows: MoyskladImageRow[];
 };

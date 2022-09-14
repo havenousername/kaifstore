@@ -18,5 +18,6 @@ import { ProductGroupsModule } from '../product-groups/product-groups.module';
     ProductGroupsModule,
   ],
   controllers: [ImportExportController],
+  exports: [ImportExportService],
 })
 export class ImportExportModule {}

@@ -4,7 +4,7 @@ import { AppSettings } from '../model/app-settings.model';
 import { UpdateSettingsDto } from './dto/update-settings.dto';
 import { omit } from 'lodash';
 import { MoyskladService } from '../moysklad/moysklad.service';
-import { encrypt } from '../app/crypto';
+import { encrypt } from '../utils/crypto';
 
 @Injectable()
 export class AppSettingsService {

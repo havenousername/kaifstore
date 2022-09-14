@@ -1,6 +1,6 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
-import { decrypt } from '../app/crypto';
+import { decrypt } from '../utils/crypto';
 
 @Table({ tableName: 'app-settings' })
 export class AppSettings extends Model<AppSettings> {

@@ -133,7 +133,7 @@ export class ProductsController {
     @Body(new ProductPipe()) dto: CreateProductDto,
     @UploadedFiles() images: Express.Multer.File[],
   ) {
-    return this.productService.create(dto, images);
+    return this.productService.create(dto, images, []);
   }
 
   @ApiOperation({ summary: 'Product creation' })
@@ -144,7 +144,7 @@ export class ProductsController {
     @Body(new ProductPipe()) dto: EditProductDto,
     @UploadedFiles() images: Express.Multer.File[],
   ) {
-    return this.productService.update(dto, images);
+    return this.productService.update(dto, images, []);
   }
 
   @ApiOperation({ summary: 'Product deletion' })

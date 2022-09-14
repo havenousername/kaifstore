@@ -27,6 +27,14 @@ export class MoyskladApi {
     return this.rootUrl + '/1.2/entity/product';
   }
 
+  get uomUrl() {
+    return this.rootUrl + '/1.2/entity/uom';
+  }
+
+  get currencyUrl() {
+    return this.rootUrl + '/1.2/entity/currency';
+  }
+
   get authUrl() {
     return this.rootUrl + '/1.2/security/token';
   }

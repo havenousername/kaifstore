@@ -7,9 +7,12 @@ import {
 } from '@nestjs/common';
 import { MoyskladApi } from './moysklad.api';
 import {
+  MoyskladCurrency,
   MoyskladHookResponse,
+  MoyskladImageResponse,
   MoyskladProduct,
   MoyskladResponse,
+  UomMeasure,
 } from '../interfaces/moysklad-api-types';
 import { AppSettingsService } from '../app-settings/app-settings.service';
 import { InjectModel } from '@nestjs/sequelize';
@@ -148,9 +151,7 @@ export class MoyskladService {
   }
 
   async getProducts(): Promise<MoyskladProduct[]> {
-    if (!this.connected) {
-      return [];
-    }
+    await this.checkOnAuth();
     const data = await fetch(this.api.productUrl, {
       method: 'GET',
       redirect: 'follow',
@@ -161,6 +162,35 @@ export class MoyskladService {
 
     const jsonData: MoyskladResponse = await data.json();
     return jsonData.rows;
+  }
+
+  private async getItem<T>(
+    url: string,
+    id: string,
+    subGroup?: string,
+  ): Promise<T> {
+    await this.checkOnAuth();
+    return await this.makeRequest<T>({
+      url: subGroup ? `${url}/${id}/${subGroup}` : `${url}/${id}`,
+      method: 'GET',
+      headers: {},
+    });
+  }
+
+  async getProduct(id: string): Promise<MoyskladProduct> {
+    return this.getItem(this.api.productUrl, id);
+  }
+
+  async getUom(id: string): Promise<UomMeasure> {
+    return this.getItem(this.api.uomUrl, id);
+  }
+
+  async getCurrency(id: string): Promise<MoyskladCurrency> {
+    return this.getItem(this.api.currencyUrl, id);
+  }
+
+  async getImages(id: string): Promise<MoyskladImageResponse> {
+    return this.getItem(this.api.productUrl, id, 'images');
   }
 
   async createWebhooks() {
@@ -193,5 +223,10 @@ export class MoyskladService {
     for (const hook of hooks) {
       await this.deleteProductCreatedHook(hook.uuid);
     }
+  }
+
+  async getBearer() {
+    const settings = await this.appSettingsService.getSettings();
+    return settings.moyskladAccessToken;
   }
 }

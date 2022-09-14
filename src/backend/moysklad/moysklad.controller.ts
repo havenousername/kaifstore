@@ -5,6 +5,7 @@ import { Public } from '../decorators/public.decorator';
 import { MoyskladWebhookService } from './moysklad.webhook.service';
 import { WEBHOOK_PRODUCT } from '../app/constants';
 import { All } from '@nestjs/common/decorators/http/request-mapping.decorator';
+import { MoyskladWebhook } from '../interfaces/moysklad-api-types';
 
 @Controller({
   path: 'moysklad',
@@ -28,7 +29,7 @@ export class MoyskladController {
 
   @Public()
   @All(WEBHOOK_PRODUCT)
-  async onCreateProductFromMoysklad(@Body() product) {
+  async onCreateProductFromMoysklad(@Body() product: MoyskladWebhook) {
     return this.hooks.productChanged(product);
   }
 }
