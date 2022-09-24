@@ -19,6 +19,7 @@ import { isString } from '../utils/type-checkers';
 import { ProductGroupsService } from '../product-groups/product-groups.service';
 import { EditProductDto } from './dto/edit-product.dto';
 import { ProductDiscount } from '../model/product-discounts.model';
+import { ImportImageData } from '../import-export/dto/make-import.dto';
 
 @Injectable()
 export class ProductsService {
@@ -122,6 +123,13 @@ export class ProductsService {
     });
   }
 
+  public getByUUID(uuid: string) {
+    return this.productRepository.findOne({
+      include: { all: true },
+      where: { uuid },
+    });
+  }
+
   public getByIds(ids: number[]) {
     return this.productRepository.findAll({
       include: { all: true },
@@ -145,14 +153,36 @@ export class ProductsService {
     return this.productRepository.findAll({ include: { all: true } });
   }
 
+  public async getProducts(): Promise<Product[]> {
+    return this.productRepository.findAll({ include: { all: true } });
+  }
+
+  private async removeAllDiscounts() {
+    return this.productDiscountsRepository.destroy({
+      where: {},
+      truncate: true,
+    });
+  }
+
+  public async clear() {
+    await this.removeAllDiscounts();
+    await this.productRepository.destroy({});
+  }
+
   public async create(
     dto: CreateProductDto,
     images: never | Express.Multer.File[],
+    importImages: ImportImageData[],
   ): Promise<Product> {
     const filenames = images
-      ? await Promise.all(
-          images.map((image) => this.fileService.createFile(image, 'products')),
-        )
+      ? await Promise.all([
+          ...images.map((image) =>
+            this.fileService.createFile(image, 'products'),
+          ),
+          ...importImages.map((image) =>
+            this.fileService.createFile(image, 'products'),
+          ),
+        ])
       : [];
     const uuid = dto.uuid ? dto.uuid : v4();
     try {
@@ -201,19 +231,55 @@ export class ProductsService {
     });
   }
 
+  public async deleteMultiple(ids: number[]): Promise<number[]> {
+    return Promise.all(ids.map(async (id) => await this.delete(id)));
+  }
+
   public async delete(id: number): Promise<number> {
     await this.removeProductDiscounts(id);
     return this.productRepository.destroy({ where: { id } });
+  }
+
+  public async deleteFromUUID(uuid: string): Promise<number> {
+    const product = await this.getByUUID(uuid);
+    return this.delete(product.id);
   }
 
   public async deleteAllByGroup(uuid: string | string[]): Promise<number> {
     return this.productRepository.destroy({ where: { groupId: uuid } });
   }
 
+  private async updateImagesFromImport(
+    importImages: ImportImageData[],
+    oldProduct: Product,
+  ): Promise<string[]> {
+    let i = 0;
+    const imagePaths = [];
+    if (importImages.length > 0) {
+      return imagePaths;
+    }
+    for (const image of importImages) {
+      const oldImage = oldProduct.images[i]
+        ? oldProduct.images[i].split('/').at(-1)
+        : undefined;
+      if (
+        (oldImage && !this.fileService.hasFile(oldImage, 'products')) ||
+        !oldImage
+      ) {
+        imagePaths.push(await this.fileService.createFile(image, 'products'));
+      } else {
+        imagePaths.push(oldProduct.images[i]);
+      }
+      i++;
+    }
+    return imagePaths;
+  }
+
   public async update(
     dto: EditProductDto,
     images: never | Express.Multer.File[],
-  ): Promise<[number, Product[]]> {
+    importImages: ImportImageData[],
+  ): Promise<[number, Product[]] | [number]> {
     const oldProduct = await this.getById(dto.id);
     if (!oldProduct) {
       throw new HttpException(
@@ -222,14 +288,19 @@ export class ProductsService {
       );
     }
 
-    if (images.length > 0) {
-      const imagePaths = images.map((image) => {
-        const name = image.originalname;
-        if (!this.fileService.hasFile(name, 'products')) {
-          return this.fileService.createFile(image, 'products');
-        }
-        return 'products/' + image.originalname;
-      });
+    if (images.length > 0 || importImages.length > 0) {
+      const imagePaths = await Promise.all(
+        images.map(async (image) => {
+          const name = image.originalname;
+          if (!this.fileService.hasFile(name, 'products')) {
+            return await this.fileService.createFile(image, 'products');
+          }
+          return 'products/' + image.originalname;
+        }),
+      );
+      imagePaths.push(
+        ...(await this.updateImagesFromImport(importImages, oldProduct)),
+      );
 
       await this.productRepository.update(
         { images: imagePaths },

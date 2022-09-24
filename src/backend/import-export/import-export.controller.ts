@@ -1,7 +1,7 @@
 import { Body, Controller, Post, UseFilters, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Roles } from '../decorators/role-auth.decorator';
-import { SUPER_USER_ROLE } from '../app/contstants';
+import { SUPER_USER_ROLE } from '../app/constants';
 import JwtRolesGuard from '../auth/guards/roles-auth.guard';
 import { ViewAuthFilter } from '../filters/view-auth.filter';
 import { ViewAdminFilter } from '../filters/view-admin.filter';

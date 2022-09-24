@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { PRIVATE_VIEW_REDIRECT_ROUTE } from '../app/contstants';
+import { PRIVATE_VIEW_REDIRECT_ROUTE } from '../app/constants';
 
 @Catch(UnauthorizedException)
 export class ViewAuthFilter implements ExceptionFilter {

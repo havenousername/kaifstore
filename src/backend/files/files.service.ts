@@ -3,6 +3,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as uuid from 'uuid';
 import * as fs from 'fs';
 import * as path from 'path';
+import { ImportImageData } from '../import-export/dto/make-import.dto';
+import { https } from 'follow-redirects';
 
 @Injectable()
 export class FilesService {
@@ -10,21 +12,92 @@ export class FilesService {
    **
    * @throws {HttpException}
    */
-  createFile(file: Express.Multer.File, directory = 'default') {
+  async createFile(
+    file: Express.Multer.File,
+    directory?: string,
+  ): Promise<string>;
+  async createFile(file: ImportImageData, directory?: string): Promise<string>;
+  async createFile(
+    file: Express.Multer.File | ImportImageData,
+    directory = 'default',
+  ) {
     try {
-      const fileName = uuid.v4() + '.' + file.mimetype.split('/')[1];
-      const filePath = path.resolve(__dirname, '..', `static/${directory}`);
-      if (!fs.existsSync(filePath)) {
-        fs.mkdirSync(filePath, { recursive: true });
+      if ((file as ImportImageData).url) {
+        return await FilesService.fileCreation(
+          file as ImportImageData,
+          directory,
+        );
+      } else {
+        return FilesService.multerFileCreation(
+          file as Express.Multer.File,
+          directory,
+        );
       }
-      fs.writeFileSync(path.join(filePath, fileName), file.buffer);
-      return directory + '/' + fileName;
     } catch (error) {
-      throw new HttpException(
-        'There was some file writing error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private static async fileCreation(
+    file: ImportImageData,
+    directory = 'default',
+  ) {
+    const fileName = uuid.v4() + '.' + file.type.split('/')[1];
+    const filePath = path.resolve(__dirname, '..', `static/${directory}`);
+    if (!fs.existsSync(filePath)) {
+      fs.mkdirSync(filePath, { recursive: true });
+    }
+    return new Promise<string>((resolve, reject) => {
+      const url = new URL(file.url);
+      const options = {
+        method: 'GET',
+        hostname: url.hostname,
+        path: url.pathname,
+        headers: {
+          Authorization: `Bearer ${file.bearer}`,
+        },
+        maxRedirects: 20,
+      };
+
+      const req = https.request(options, function (response) {
+        if (response.statusCode !== 200) {
+          return reject('Error. Response status was ' + response.statusCode);
+        }
+
+        const chunks = [];
+
+        response.on('data', function (chunk) {
+          chunks.push(chunk);
+        });
+
+        response.on('end', function () {
+          const body = Buffer.concat(chunks);
+          fs.writeFileSync(path.join(filePath, fileName), body);
+        });
+
+        response.on('error', function (error) {
+          console.error(error);
+          fs.unlink(path.join(filePath, fileName), () => reject(error.message));
+        });
+      });
+
+      req.end(() => {
+        resolve(directory + '/' + fileName);
+      });
+    });
+  }
+
+  private static multerFileCreation(
+    file: Express.Multer.File,
+    directory,
+  ): string {
+    const fileName = uuid.v4() + '.' + file.mimetype.split('/')[1];
+    const filePath = path.resolve(__dirname, '..', `static/${directory}`);
+    if (!fs.existsSync(filePath)) {
+      fs.mkdirSync(filePath, { recursive: true });
+    }
+    fs.writeFileSync(path.join(filePath, fileName), file.buffer);
+    return directory + '/' + fileName;
   }
 
   /**

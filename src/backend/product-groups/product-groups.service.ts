@@ -31,9 +31,9 @@ export class ProductGroupsService {
     const names = dto.name.split(separator);
     const groups: string[] = [];
     for (let i = 0; i < names.length; i++) {
-      const group = (await this.getByName(names[i], { all: true })).uuid;
+      const group = await this.getByName(names[i], { all: true });
       if (group !== null) {
-        groups.push(group);
+        groups.push(group.uuid);
       } else {
         const uuid = v4();
         const g = await this.create({
@@ -103,12 +103,12 @@ export class ProductGroupsService {
     });
   }
 
-  async getByUuid(uuid: string): Promise<ProductGroup> {
+  getByUuid = async (uuid: string) => {
     return this.groupRepository.findOne({
       where: { uuid },
       include: { all: true },
     });
-  }
+  };
 
   private findAllNestedGroups(group: ProductGroup): ProductGroup[] {
     if (!group.childrenGroups) {
@@ -132,7 +132,6 @@ export class ProductGroupsService {
   public async delete(id: number) {
     const group = await this.getById(id, { all: true, nested: true });
     const groups = this.findAllNestedGroups(group);
-    console.log(groups);
     if (groups.length > 0) {
       // delete nested groups products
       await this.productService.deleteAllByGroup(groups.map((i) => i.uuid));

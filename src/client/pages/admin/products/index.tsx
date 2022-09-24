@@ -26,7 +26,7 @@ import { ReactComponent as ChildGroupIcon } from '../../../assets/icons/child-gr
 import { ReactComponent as ProductIcon } from '../../../assets/icons/products.svg';
 import { ReactComponent as ImportIcon } from '../../../assets/icons/import-icon.svg';
 import { TypographyLineEllipsis } from 'src/client/components/product-card-skeleton';
-import GroupInitialButton from '../../../components/GroupInitialButton';
+import GroupInitialButton from '../../../components/group-initial-button';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import useGroupFetchRemove from '../../../hooks/use-group-fetch-remove';

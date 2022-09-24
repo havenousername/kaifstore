@@ -9,3 +9,5 @@ export const SUPER_USER_ROLE = {
 };
 
 export const PRIVATE_VIEW_REDIRECT_ROUTE = '/login';
+
+export const WEBHOOK_PRODUCT = '/hooks/products';

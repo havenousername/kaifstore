@@ -19,7 +19,7 @@ import { Public } from '../decorators/public.decorator';
 import { ProductGroup } from '../model/product-groups.model';
 import { isString } from 'class-validator';
 import { Roles } from '../decorators/role-auth.decorator';
-import { SUPER_USER_ROLE } from '../app/contstants';
+import { SUPER_USER_ROLE } from '../app/constants';
 import JwtRolesGuard from '../auth/guards/roles-auth.guard';
 import { ViewAuthFilter } from '../filters/view-auth.filter';
 import { ViewAdminFilter } from '../filters/view-admin.filter';

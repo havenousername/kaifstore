@@ -1,6 +1,6 @@
 {
   "development": {
-    "username": "admin",
+    "username": "postgres",
     "password": "terminaluserpostgres1",
     "database": "kaifstore",
     "host": "localhost",

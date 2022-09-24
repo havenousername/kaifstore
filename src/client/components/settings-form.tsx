@@ -29,6 +29,7 @@ const SettingsForm = ({
   isAdmin,
   role,
   userSave,
+  initials,
 }: {
   image: string;
   control: Control<EditableUser>;
@@ -37,6 +38,7 @@ const SettingsForm = ({
   isAdmin: boolean;
   role: Role;
   userSave: () => void;
+  initials: string;
 }) => {
   const { t, i18n } = useTranslation();
   const getHttpUrl = useGetHttpUrl();
@@ -55,13 +57,6 @@ const SettingsForm = ({
 
   const fullName = useMemo(
     () => getValues('firstName') + ' ' + getValues('lastName'),
-    [getValues],
-  );
-
-  const initials = useMemo(
-    () =>
-      getValues('lastName').toString().slice(0, 1) +
-      getValues('firstName').toString().slice(0, 1),
     [getValues],
   );
 
@@ -239,7 +234,7 @@ const SettingsForm = ({
             type={'button'}
             onClick={() => userSave()}
           >
-            {t('Settings.UserSave')}
+            {t('Settings.Save')}
           </AppBaseButton>
         </FormGroup>
       </Box>

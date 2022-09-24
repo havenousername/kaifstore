@@ -10,6 +10,13 @@ import { ProductMeasure } from '../../interfaces/product-measure.enum';
 import { ProductType } from '../../interfaces/product-type.enum';
 import { Attributes } from '../../interfaces/attributes';
 
+export type ImportImageData = {
+  url: string;
+  name: string;
+  type: string;
+  bearer: string;
+};
+
 export class MakeImportDto {
   @ApiProperty({
     example: '123e4567-e89b-12d3-a456-42661417400a',
@@ -153,4 +160,10 @@ export class MakeImportDto {
   })
   @IsNumber({}, { message: 'Should be number' })
   readonly variantsCount?: number;
+
+  @ApiProperty({
+    description: 'Image download data',
+    required: false,
+  })
+  readonly images?: ImportImageData[];
 }

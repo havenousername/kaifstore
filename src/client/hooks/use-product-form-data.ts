@@ -1,7 +1,7 @@
 import useSWRImmutable from 'swr/immutable';
 import { ProductGroup } from '../../backend/model/product-groups.model';
 import { Discount } from '../../backend/model/discounts.model';
-import useProductSchema from './use-product-schema';
+import useProductSchema from './schemas/use-product-schema';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { EditableProduct } from '../interfaces/product-editable';

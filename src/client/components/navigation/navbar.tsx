@@ -17,7 +17,7 @@ import {
 import NavbarHeaderAuthenticated from './navbar-header-authenticated';
 import NavbarHeaderUnauthenticated from './navbar-header-unauthenticated';
 import { useRouter } from 'next/router';
-import { SUPER_USER_ROLE } from '../../../backend/app/contstants';
+import { SUPER_USER_ROLE } from '../../../backend/app/constants';
 
 const Navbar = () => {
   const { t } = useTranslation();

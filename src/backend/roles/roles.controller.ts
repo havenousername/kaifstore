@@ -13,7 +13,7 @@ import CreateRoleDto from './dto/create-role.dto';
 import { Role } from '../model/roles.model';
 import { Roles } from '../decorators/role-auth.decorator';
 import JwtRolesGuard from '../auth/guards/roles-auth.guard';
-import { SUPER_USER_ROLE } from '../app/contstants';
+import { SUPER_USER_ROLE } from '../app/constants';
 import { ValidationPipe } from '../pipes/validation.pipe';
 
 @Controller({

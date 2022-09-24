@@ -1,11 +1,11 @@
-import { ProductType } from './product-type.enum';
+import { ProductMeasure } from './product-measure.enum';
 
-export type MoyskladResponse = {
+export type MoyskladResponse<T = MoyskladProduct> = {
   context: {
     employee: MoyskladMeta;
   };
   meta: MoyskladMeta;
-  rows: MoyskladProduct[];
+  rows: T[];
 };
 
 type MoyskladMeta = {
@@ -100,7 +100,7 @@ export type MoyskladProduct = {
   barcodes: Array<MoyskladBarcodeObject>;
   buyPrice: MoyskladBuyPrice;
   code: string;
-  country: string;
+  country: MoyskladMeta & { uuidHref: string };
   owner: MoyskladObject;
   shared: boolean;
   group: MoyskladObject;
@@ -109,7 +109,7 @@ export type MoyskladProduct = {
   name: string;
   description: string;
   externalCode: string;
-  archived: string;
+  archived: boolean;
   pathName: string;
   vat: number;
   vatEnabled: boolean;
@@ -133,8 +133,142 @@ export type MoyskladProduct = {
   taxSystem: TaxSystem;
   things: string[];
   tnved: string;
-  trackingType: ProductType;
+  trackingType: string;
   variantsCount: number;
   volume: number;
   weight: number;
+};
+
+export type MoyskladEmployees = {
+  context: {
+    employee: MoyskladMeta;
+  };
+  meta: MoyskladMeta;
+  rows: MoyskladEmployee[];
+};
+
+export type MoyskladEmployee = {
+  meta: MoyskladMeta;
+  id: string;
+  accountId: string;
+  updated: string;
+  name: string;
+  externalCode: string;
+  archived: boolean;
+  uid: string;
+  email: string;
+  lastName: string;
+  fullName: string;
+  shortFio: string;
+  cashiers: { meta: MoyskladMeta }[];
+  retailStore: { meta: MoyskladMeta };
+  inn: string;
+  position: string;
+};
+
+export type MoyskladHookResponse = {
+  meta: MoyskladMeta;
+  id: string;
+  accountId: string;
+  entityType: string;
+  url: string;
+  method: string;
+  enabled: boolean;
+  action: string;
+};
+
+export type MoyskladWebhook = {
+  auditContext: MoyskladAuditContext;
+  events: MoyskladEvent[];
+};
+
+type MoyskladWebhookMeta = {
+  type: string;
+  href: string;
+};
+
+type MoyskladAuditContext = {
+  meta: MoyskladWebhookMeta;
+  uid: string;
+  moment: string;
+};
+
+export type MoyskladEvent = {
+  meta: MoyskladWebhookMeta;
+  action: string;
+  accountId: string;
+};
+
+export enum WebhookAction {
+  CREATE = 'CREATE',
+  UPDATE = 'UPDATE',
+  DELETE = 'DELETE',
+  PROCESSED = 'PROCESSED',
+}
+
+export type UomMeasure = {
+  meta: MoyskladMeta;
+  id: string;
+  updated: string;
+  name: ProductMeasure;
+  description: string;
+  code: string;
+  externalCode: string;
+};
+
+export type MoyskladCurrency = {
+  meta: MoyskladMeta;
+  id: string;
+  system: false;
+  name: string;
+  fullName: string;
+  rate: number;
+  multiplicity: number;
+  indirect: boolean;
+  rateUpdateType: string;
+  code: string;
+  isoCode: string;
+  majorUnit: Record<string, string>;
+  minorUnit: Record<string, string>;
+  archived: boolean;
+  default: boolean;
+};
+
+export type MoyskladCountry = {
+  accountId: string;
+  code: string;
+  description: string;
+  externalCode: string;
+  group: MoyskladMeta;
+  id: string;
+  meta: MoyskladMeta;
+  name: string;
+  owner: MoyskladMeta;
+  shared: boolean;
+  updated: string;
+};
+
+export type MoyskladImageRow = {
+  meta: MoyskladMeta & { downloadHref: string };
+  title: string;
+  filename: string;
+  updated: string;
+  miniature: {
+    href: string;
+    type: string;
+    mediaType: string;
+  };
+  tiny: {
+    href: string;
+    type: string;
+    mediaType: string;
+  };
+};
+
+export type MoyskladImageResponse = {
+  context: {
+    employee: MoyskladMeta;
+  };
+  meta: MoyskladMeta;
+  rows: MoyskladImageRow[];
 };

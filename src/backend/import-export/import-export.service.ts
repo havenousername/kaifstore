@@ -9,6 +9,10 @@ import {
   ResponseCurrenciesData,
 } from '../currencies/currencies.service';
 import { ProductPipe } from '../pipes/product.pipe';
+import { CreateProductDto } from '../products/dto/create-product.dto';
+import { ProductGroup } from '../model/product-groups.model';
+import { Product } from '../model/products.model';
+import { differenceWith } from 'lodash';
 
 @Injectable()
 export class ImportExportService {
@@ -29,52 +33,111 @@ export class ImportExportService {
     return results;
   }
 
+  private prepareProduct(
+    product: MakeImportDto,
+    groupId: string,
+  ): CreateProductDto {
+    return {
+      uuid: product.uuid,
+      name: product.name,
+      price: product.price ?? 1000,
+      costPrice: product.costPrice ?? 1000,
+      groupId: groupId,
+      description: product.description,
+      code: product.code?.toString(),
+      productType: product.productType,
+      tax: product.tax,
+      allowToSell: product.allowToSell,
+      tags: [],
+      quantity: product.quantity,
+      barCodes: product.barCodes,
+      measurename: product.measureName
+        ? ProductPipe.prepareMeasureName(product.measureName)
+        : undefined,
+      articleNumber: product.articleNumber,
+      discounts: [],
+      attributes: product.attributes
+        ? ProductPipe.prepareAttributes(product.attributes)
+        : [],
+      country: product.country ?? countries.RU,
+      currency: product.currency ?? Object.values(this.currencies.symbols)[0],
+      discountProhibited: product.discountProhibited,
+      useParentVat: product.useParentVat,
+      variantsCount: product.variantsCount,
+    };
+  }
+
+  async update(dto: MakeImportDto) {
+    const group = await this.productGroupsService.getByName(dto.group);
+    if (group.uuid === null) {
+      console.error(group);
+      throw new Error('No group for product');
+    }
+    const oldProduct = await this.productService.getByUUID(dto.uuid);
+    return await this.productService.update(
+      { ...this.prepareProduct(dto, group.uuid), id: oldProduct.id },
+      [],
+      dto.images,
+    );
+  }
+
+  async synchronize(
+    toImportDto: (
+      importGroups: (dto: CreateFromNameDto[]) => Promise<string[]>,
+      getByUuid: (str: string) => Promise<ProductGroup>,
+    ) => Promise<MakeImportDto[]>,
+  ): Promise<Product[]> {
+    const existingProducts = await this.productService.getProducts();
+    const dto = await toImportDto(
+      this.importGroups.bind(this),
+      this.productGroupsService.getByUuid,
+    );
+    const unSyncProducts = differenceWith(
+      existingProducts,
+      dto,
+      (p1, p2) => p1.uuid !== p2.uuid,
+    );
+    await this.productService.deleteMultiple(unSyncProducts.map((p) => p.id));
+    return Promise.all(
+      dto.map(async (product) => {
+        const existingProduct = await this.productService.getByUUID(
+          product.uuid,
+        );
+        if (existingProduct) {
+          const updated = await this.update(product);
+          if (updated.length === 1) {
+            return existingProduct;
+          } else {
+            return updated[1][0];
+          }
+        } else {
+          return this.importSingleProduct(product);
+        }
+      }),
+    );
+  }
+
+  private async importSingleProduct(product: MakeImportDto): Promise<Product> {
+    const group = await this.productGroupsService.getByName(product.group);
+    if (group.uuid === null) {
+      console.error(group);
+      throw new Error('No group for product');
+    }
+    return await this.productService.create(
+      this.prepareProduct(product, group.uuid),
+      [],
+      product.images,
+    );
+  }
+
   async import(dto: MakeImportDto[]): Promise<boolean> {
     try {
-      await Promise.all(
-        dto.map(async (product) => {
-          const group = await this.productGroupsService.getByName(
-            product.group,
-          );
-          if (group.uuid === null) {
-            console.error(group);
-            throw new Error('No group for product');
-          }
-          return await this.productService.create(
-            {
-              uuid: product.uuid,
-              name: product.name,
-              price: product.price ?? 1000,
-              costPrice: product.costPrice ?? 1000,
-              groupId: group.uuid,
-              description: product.description,
-              code: product.code?.toString(),
-              productType: product.productType,
-              tax: product.tax,
-              allowToSell: product.allowToSell,
-              tags: [],
-              quantity: product.quantity,
-              barCodes: product.barCodes,
-              measurename: ProductPipe.prepareMeasureName(product.measureName),
-              articleNumber: product.articleNumber,
-              discounts: [],
-              attributes: ProductPipe.prepareAttributes(product.attributes),
-              country: product.country ?? countries.RU,
-              currency:
-                product.currency ?? Object.values(this.currencies.symbols)[0],
-              discountProhibited: product.discountProhibited,
-              useParentVat: product.useParentVat,
-              variantsCount: product.variantsCount,
-            },
-            [],
-          );
-        }),
-      );
+      await Promise.all(dto.map(this.importSingleProduct));
       return true;
     } catch (e) {
       console.error(e);
       throw new HttpException(
-        'Products and groups provided, have either wrong order, or do not have acceptable type. ' +
+        'Products and groups provided, have either wrong order, or do not have acceptable type.' +
           e.message,
         HttpStatus.NOT_ACCEPTABLE,
       );

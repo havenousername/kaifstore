@@ -1,6 +1,8 @@
-import { Column, DataType, Default, Model } from 'sequelize-typescript';
+import { Column, DataType, Model, Table } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
+import { decrypt } from '../utils/crypto';
 
+@Table({ tableName: 'app-settings' })
 export class AppSettings extends Model<AppSettings> {
   @ApiProperty({ example: 1, description: 'Unique identifier' })
   @Column({
@@ -27,25 +29,40 @@ export class AppSettings extends Model<AppSettings> {
     type: DataType.BOOLEAN,
     allowNull: false,
   })
-  @Default(false)
   moyskladIntegration: boolean;
 
   @Column({
     type: DataType.STRING,
   })
-  private moyskladEmail?: string;
+  moyskladEmail?: string;
 
   @Column({
     type: DataType.STRING,
   })
-  private moyskladPassword?: string;
+  moyskladPassword?: string;
 
-  get moyskladToken(): string | undefined {
+  @Column({
+    type: DataType.STRING,
+  })
+  moyskladAccessToken?: string;
+
+  moyskladToken(): Promise<string | undefined> {
     if (!this.moyskladEmail || !this.moyskladPassword) {
       return;
     }
-    return Buffer.from(
-      `${this.moyskladEmail}:${this.moyskladPassword}`,
-    ).toString();
+    return new Promise<string | undefined>((resolve, reject) => {
+      return decrypt(this.moyskladPassword)
+        .then((password) => {
+          return resolve(
+            Buffer.from(`${this.moyskladEmail}:${password}`).toString('base64'),
+          );
+        })
+        .catch((e) => reject(e));
+    });
   }
+
+  @Column({
+    type: DataType.BOOLEAN,
+  })
+  moyskladSync?: boolean;
 }
