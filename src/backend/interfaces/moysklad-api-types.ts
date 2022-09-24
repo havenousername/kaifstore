@@ -1,11 +1,11 @@
 import { ProductMeasure } from './product-measure.enum';
 
-export type MoyskladResponse = {
+export type MoyskladResponse<T = MoyskladProduct> = {
   context: {
     employee: MoyskladMeta;
   };
   meta: MoyskladMeta;
-  rows: MoyskladProduct[];
+  rows: T[];
 };
 
 type MoyskladMeta = {
@@ -100,7 +100,7 @@ export type MoyskladProduct = {
   barcodes: Array<MoyskladBarcodeObject>;
   buyPrice: MoyskladBuyPrice;
   code: string;
-  country: string;
+  country: MoyskladMeta & { uuidHref: string };
   owner: MoyskladObject;
   shared: boolean;
   group: MoyskladObject;
@@ -232,6 +232,20 @@ export type MoyskladCurrency = {
   minorUnit: Record<string, string>;
   archived: boolean;
   default: boolean;
+};
+
+export type MoyskladCountry = {
+  accountId: string;
+  code: string;
+  description: string;
+  externalCode: string;
+  group: MoyskladMeta;
+  id: string;
+  meta: MoyskladMeta;
+  name: string;
+  owner: MoyskladMeta;
+  shared: boolean;
+  updated: string;
 };
 
 export type MoyskladImageRow = {

@@ -5,6 +5,12 @@ import { UpdateSettingsDto } from './dto/update-settings.dto';
 import { omit } from 'lodash';
 import { MoyskladService } from '../moysklad/moysklad.service';
 import { encrypt } from '../utils/crypto';
+import { ImportExportService } from '../import-export/import-export.service';
+import { MoyskladProduct } from '../interfaces/moysklad-api-types';
+import { CreateFromNameDto } from '../product-groups/dto/create-from-name.dto';
+import { ProductGroup } from '../model/product-groups.model';
+import { Product } from '../model/products.model';
+import { MakeImportDto } from '../import-export/dto/make-import.dto';
 
 @Injectable()
 export class AppSettingsService {
@@ -12,6 +18,8 @@ export class AppSettingsService {
     @InjectModel(AppSettings) private appSettingsRepository: typeof AppSettings,
     @Inject(forwardRef(() => MoyskladService))
     private readonly moyskladService: MoyskladService,
+    @Inject(ImportExportService)
+    private importExportService: ImportExportService,
   ) {}
 
   async getSettings(): Promise<
@@ -82,16 +90,42 @@ export class AppSettingsService {
     return data;
   }
 
+  private async syncData(): Promise<Product[]> {
+    const products = await this.moyskladService.getProducts();
+    const prepareProducts =
+      (products: MoyskladProduct[]) =>
+      async (
+        importGroups: (dto: CreateFromNameDto[]) => Promise<string[]>,
+        getByUuid: (str: string) => Promise<ProductGroup>,
+      ) => {
+        const result: MakeImportDto[] = [];
+        for (const product of products) {
+          result.push(
+            await this.moyskladService.toImportDto(
+              product,
+              importGroups,
+              getByUuid,
+            ),
+          );
+        }
+        return result;
+      };
+    return this.importExportService.synchronize(prepareProducts(products));
+  }
+
   async changeSync() {
     const sync = await this.getSettings();
     if (sync.moyskladSync) {
       await this.moyskladService.deleteWebhooks();
     } else {
+      await this.syncData();
       await this.moyskladService.createWebhooks();
     }
     await this.appSettingsRepository.update(
       { ...sync, moyskladSync: !sync.moyskladSync },
       { where: { id: 1 } },
     );
+
+    return !sync.moyskladSync;
   }
 }

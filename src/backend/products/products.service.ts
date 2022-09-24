@@ -153,6 +153,22 @@ export class ProductsService {
     return this.productRepository.findAll({ include: { all: true } });
   }
 
+  public async getProducts(): Promise<Product[]> {
+    return this.productRepository.findAll({ include: { all: true } });
+  }
+
+  private async removeAllDiscounts() {
+    return this.productDiscountsRepository.destroy({
+      where: {},
+      truncate: true,
+    });
+  }
+
+  public async clear() {
+    await this.removeAllDiscounts();
+    await this.productRepository.destroy({});
+  }
+
   public async create(
     dto: CreateProductDto,
     images: never | Express.Multer.File[],
@@ -215,6 +231,10 @@ export class ProductsService {
     });
   }
 
+  public async deleteMultiple(ids: number[]): Promise<number[]> {
+    return Promise.all(ids.map(async (id) => await this.delete(id)));
+  }
+
   public async delete(id: number): Promise<number> {
     await this.removeProductDiscounts(id);
     return this.productRepository.destroy({ where: { id } });
@@ -259,7 +279,7 @@ export class ProductsService {
     dto: EditProductDto,
     images: never | Express.Multer.File[],
     importImages: ImportImageData[],
-  ): Promise<[number, Product[]]> {
+  ): Promise<[number, Product[]] | [number]> {
     const oldProduct = await this.getById(dto.id);
     if (!oldProduct) {
       throw new HttpException(

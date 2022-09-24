@@ -35,6 +35,10 @@ export class MoyskladApi {
     return this.rootUrl + '/1.2/entity/currency';
   }
 
+  get countryUrl() {
+    return this.rootUrl + '/1.2/entity/country';
+  }
+
   get authUrl() {
     return this.rootUrl + '/1.2/security/token';
   }

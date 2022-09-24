@@ -23,8 +23,12 @@ const useApiMethod = <Data, Params>(
 
       setError(undefined);
       setLoading(false);
-      const data = await res.json();
-      setData(changeData(data));
+      try {
+        const data = await res.json();
+        setData(changeData(data));
+      } catch (e) {
+        setData(changeData(true));
+      }
     } catch (e) {
       setError(e);
     }

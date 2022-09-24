@@ -21,7 +21,7 @@ const AppSettings = ({
   token?: string;
   watch: UseFormWatch<EditableAppSettings>;
   synchronized?: boolean;
-  synchronize: () => void;
+  synchronize: (current: boolean) => void;
 }) => {
   const { t } = useTranslation();
   const [changeToken, setChangeToken] = useState(false);
@@ -162,7 +162,7 @@ const AppSettings = ({
               <FormControl sx={{ fontSize: '0.8rem' }}>
                 <InputSelect
                   selected={synchronized}
-                  onChange={() => synchronize()}
+                  onChange={() => synchronize(synchronized)}
                   options={[
                     { content: t('Choices.No'), value: false },
                     { content: t('Choices.Yes'), value: true },

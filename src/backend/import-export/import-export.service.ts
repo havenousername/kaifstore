@@ -10,6 +10,9 @@ import {
 } from '../currencies/currencies.service';
 import { ProductPipe } from '../pipes/product.pipe';
 import { CreateProductDto } from '../products/dto/create-product.dto';
+import { ProductGroup } from '../model/product-groups.model';
+import { Product } from '../model/products.model';
+import { differenceWith } from 'lodash';
 
 @Injectable()
 export class ImportExportService {
@@ -78,24 +81,58 @@ export class ImportExportService {
     );
   }
 
+  async synchronize(
+    toImportDto: (
+      importGroups: (dto: CreateFromNameDto[]) => Promise<string[]>,
+      getByUuid: (str: string) => Promise<ProductGroup>,
+    ) => Promise<MakeImportDto[]>,
+  ): Promise<Product[]> {
+    const existingProducts = await this.productService.getProducts();
+    const dto = await toImportDto(
+      this.importGroups.bind(this),
+      this.productGroupsService.getByUuid,
+    );
+    const unSyncProducts = differenceWith(
+      existingProducts,
+      dto,
+      (p1, p2) => p1.uuid !== p2.uuid,
+    );
+    await this.productService.deleteMultiple(unSyncProducts.map((p) => p.id));
+    return Promise.all(
+      dto.map(async (product) => {
+        const existingProduct = await this.productService.getByUUID(
+          product.uuid,
+        );
+        if (existingProduct) {
+          const updated = await this.update(product);
+          if (updated.length === 1) {
+            return existingProduct;
+          } else {
+            return updated[1][0];
+          }
+        } else {
+          return this.importSingleProduct(product);
+        }
+      }),
+    );
+  }
+
+  private async importSingleProduct(product: MakeImportDto): Promise<Product> {
+    const group = await this.productGroupsService.getByName(product.group);
+    if (group.uuid === null) {
+      console.error(group);
+      throw new Error('No group for product');
+    }
+    return await this.productService.create(
+      this.prepareProduct(product, group.uuid),
+      [],
+      product.images,
+    );
+  }
+
   async import(dto: MakeImportDto[]): Promise<boolean> {
     try {
-      await Promise.all(
-        dto.map(async (product) => {
-          const group = await this.productGroupsService.getByName(
-            product.group,
-          );
-          if (group.uuid === null) {
-            console.error(group);
-            throw new Error('No group for product');
-          }
-          return await this.productService.create(
-            this.prepareProduct(product, group.uuid),
-            [],
-            product.images,
-          );
-        }),
-      );
+      await Promise.all(dto.map(this.importSingleProduct));
       return true;
     } catch (e) {
       console.error(e);

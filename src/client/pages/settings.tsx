@@ -19,6 +19,7 @@ import { EditableAppSettings } from '../interfaces/app-settings';
 import useAppSettingsSchema from '../hooks/schemas/use-app-settings-schema';
 import useApiMethod from '../hooks/useApiMethod';
 import { SnackbarContext } from '../context/snackbar.context';
+import AppDialog from '../components/common/app-dialog';
 
 const Settings: NextPageWithLayout = () => {
   const { t } = useTranslation();
@@ -91,6 +92,7 @@ const Settings: NextPageWithLayout = () => {
   });
   const [token, setToken] = useState('');
   const [sync, setSync] = useState(false);
+  const [openSyncWarning, setOpenSyncWarning] = useState(false);
 
   const changeSynchronization = () => syncMoysklad(undefined);
 
@@ -122,6 +124,7 @@ const Settings: NextPageWithLayout = () => {
   useEffect(() => {
     if (!!updatedSyncMoysklad) {
       appSettingsMutate();
+      setSync(!sync);
       snackbar.changeIsOpen(true);
       snackbar.changeSeverity('success');
       snackbar.changeMessage(t('Alert.AppMoyskladSyncUpdated'));
@@ -154,6 +157,7 @@ const Settings: NextPageWithLayout = () => {
       !!updateAppSettingsError ||
       !!updatedSyncMoyskladError
     ) {
+      console.log(updatedSyncMoyskladError);
       const error = updateSettingsError
         ? updateSettingsError
         : updateAppSettingsError;
@@ -198,45 +202,61 @@ const Settings: NextPageWithLayout = () => {
   };
 
   return (
-    <Box
-      sx={{
-        padding: '2rem 8rem 4rem',
-      }}
-    >
-      <Typography
-        variant={'h4'}
-        component={'h4'}
-        padding={(theme) => theme.spacing(2, 3)}
-        fontWeight={600}
+    <>
+      <Box
+        sx={{
+          padding: '2rem 8rem 4rem',
+        }}
       >
-        {t('Settings.UserSettings')}
-      </Typography>
-      <SettingsForm
-        getValues={getValues}
-        control={control}
-        image={user.photo}
-        role={user.role}
-        initials={initials}
-        isAdmin={user.role.name === SUPER_USER_ROLE.name}
-        userSave={onUserSave}
+        <Typography
+          variant={'h4'}
+          component={'h4'}
+          padding={(theme) => theme.spacing(2, 3)}
+          fontWeight={600}
+        >
+          {t('Settings.UserSettings')}
+        </Typography>
+        <SettingsForm
+          getValues={getValues}
+          control={control}
+          image={user.photo}
+          role={user.role}
+          initials={initials}
+          isAdmin={user.role.name === SUPER_USER_ROLE.name}
+          userSave={onUserSave}
+        />
+        <Typography
+          variant={'h4'}
+          component={'h4'}
+          padding={(theme) => theme.spacing(2, 3)}
+          fontWeight={600}
+        >
+          {t('Settings.AppSettings')}
+        </Typography>
+        <AppSettings
+          watch={settingsWatch}
+          control={settingsControl}
+          token={token}
+          settingsSave={onAppSettingsSave}
+          synchronized={sync}
+          synchronize={(sync) =>
+            sync ? changeSynchronization() : setOpenSyncWarning(true)
+          }
+        />
+      </Box>
+      <AppDialog
+        open={openSyncWarning}
+        title={t('Settings.SyncWarningTitle')}
+        content={t('Settings.SyncWarningText')}
+        onAgree={() => {
+          setOpenSyncWarning(false);
+          changeSynchronization();
+        }}
+        handleClose={() => setOpenSyncWarning(false)}
+        agreeText={t('Dialog.Agree')}
+        cancelText={t('Dialog.Disagree')}
       />
-      <Typography
-        variant={'h4'}
-        component={'h4'}
-        padding={(theme) => theme.spacing(2, 3)}
-        fontWeight={600}
-      >
-        {t('Settings.AppSettings')}
-      </Typography>
-      <AppSettings
-        watch={settingsWatch}
-        control={settingsControl}
-        token={token}
-        settingsSave={onAppSettingsSave}
-        synchronized={sync}
-        synchronize={changeSynchronization}
-      />
-    </Box>
+    </>
   );
 };
 

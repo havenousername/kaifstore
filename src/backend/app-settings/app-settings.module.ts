@@ -6,6 +6,7 @@ import { AppSettings } from '../model/app-settings.model';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
 import { MoyskladModule } from '../moysklad/moysklad.module';
+import { ImportExportModule } from '../import-export/import-export.module';
 
 @Module({
   providers: [AppSettingsService],
@@ -18,6 +19,7 @@ import { MoyskladModule } from '../moysklad/moysklad.module';
       signOptions: { expiresIn: '24h' },
     }),
     forwardRef(() => MoyskladModule),
+    ImportExportModule,
   ],
   exports: [AppSettingsService],
 })

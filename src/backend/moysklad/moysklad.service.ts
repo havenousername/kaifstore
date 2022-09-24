@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { MoyskladApi } from './moysklad.api';
 import {
+  MoyskladCountry,
   MoyskladCurrency,
   MoyskladHookResponse,
   MoyskladImageResponse,
@@ -18,11 +19,19 @@ import { AppSettingsService } from '../app-settings/app-settings.service';
 import { InjectModel } from '@nestjs/sequelize';
 import { MoyskladWebhook } from '../model/moysklad-webhook.model';
 import { WEBHOOK_PRODUCT } from '../app/constants';
+import { MakeImportDto } from '../import-export/dto/make-import.dto';
+import { ProductType } from '../interfaces/product-type.enum';
+import { CreateFromNameDto } from '../product-groups/dto/create-from-name.dto';
+import { ProductGroup } from '../model/product-groups.model';
+import strLast from '../utils/last';
 
 @Injectable()
 export class MoyskladService {
   private api: MoyskladApi;
   private connected = false;
+  private static uoms: UomMeasure[] = [];
+  private static currencies: MoyskladCurrency[] = [];
+  private static countries: MoyskladCountry[] = [];
   // private employee: MoyskladEmployee;
   constructor(
     @InjectModel(MoyskladWebhook)
@@ -91,14 +100,17 @@ export class MoyskladService {
     headers: Record<string, string>;
     body?: Record<string, any>;
   }) {
-    const data = await fetch(props.url, {
+    const initOptions: RequestInit = {
       method: props.method,
       headers: {
         Authorization: this.api.auth,
         ...props.headers,
       },
-      body: props.body ? JSON.stringify(props.body) : undefined,
-    });
+    };
+    if (props.body) {
+      initOptions.body = JSON.stringify(props.body);
+    }
+    const data = await fetch(props.url, initOptions);
     if (data.status === HttpStatus.NOT_FOUND) {
       throw new HttpException(JSON.stringify(data), data.status);
     }
@@ -182,11 +194,57 @@ export class MoyskladService {
   }
 
   async getUom(id: string): Promise<UomMeasure> {
-    return this.getItem(this.api.uomUrl, id);
+    const uoms = await this.getUoms();
+    return uoms.find((i) => i.id === id);
+  }
+
+  async getUoms() {
+    if (MoyskladService.uoms.length === 0) {
+      MoyskladService.uoms = (
+        await this.makeRequest<MoyskladResponse<UomMeasure>>({
+          url: this.api.uomUrl,
+          method: 'GET',
+          headers: {},
+        })
+      ).rows;
+    }
+    return MoyskladService.uoms;
+  }
+
+  async getCurrencies() {
+    if (MoyskladService.currencies.length === 0) {
+      MoyskladService.currencies = (
+        await this.makeRequest<MoyskladResponse<MoyskladCurrency>>({
+          url: this.api.currencyUrl,
+          method: 'GET',
+          headers: {},
+        })
+      ).rows;
+    }
+    return MoyskladService.currencies;
+  }
+
+  async getCountries() {
+    if (MoyskladService.countries.length === 0) {
+      MoyskladService.countries = (
+        await this.makeRequest<MoyskladResponse<MoyskladCountry>>({
+          url: this.api.countryUrl,
+          method: 'GET',
+          headers: {},
+        })
+      ).rows;
+    }
+    return MoyskladService.countries;
+  }
+
+  async getCountry(id: string) {
+    const countries = await this.getCountries();
+    return countries.find((i) => i.id === id);
   }
 
   async getCurrency(id: string): Promise<MoyskladCurrency> {
-    return this.getItem(this.api.currencyUrl, id);
+    const currencies = await this.getCurrencies();
+    return currencies.find((i) => i.id === id);
   }
 
   async getImages(id: string): Promise<MoyskladImageResponse> {
@@ -221,12 +279,78 @@ export class MoyskladService {
     await this.checkOnAuth();
     const hooks = await this.moyskladWebhookRepository.findAll();
     for (const hook of hooks) {
-      await this.deleteProductCreatedHook(hook.uuid);
+      try {
+        await this.deleteProductCreatedHook(hook.uuid);
+      } catch (e) {
+        if (e instanceof HttpException) {
+          throw e;
+        }
+      }
+      await this.moyskladWebhookRepository.destroy({
+        where: { uuid: hook.uuid },
+      });
     }
   }
 
   async getBearer() {
     const settings = await this.appSettingsService.getSettings();
     return settings.moyskladAccessToken;
+  }
+
+  async toImportDto(
+    product: MoyskladProduct,
+    importGroups: (dto: CreateFromNameDto[]) => Promise<string[]>,
+    getByUuid: (str: string) => Promise<ProductGroup>,
+  ): Promise<MakeImportDto> {
+    const groupUUID = await importGroups([{ name: product.pathName }]);
+    const groupName = (await getByUuid(groupUUID[0])).name;
+
+    const uomId = strLast(product.uom.meta.href);
+    const uomMeasure = await this.getUom(uomId);
+
+    const currencyId = strLast(product.salePrices[0].currency.meta.href);
+    const currency = await this.getCurrency(currencyId);
+
+    let country: MoyskladCountry | undefined;
+    if (product.country && product.country.href) {
+      const countryId = strLast(product.country.href);
+      country = await this.getCountry(countryId);
+    }
+
+    const imageId = product.images.meta.href.split('/').at(-2);
+    const imageResponse = await this.getImages(imageId);
+    const bearer = await this.getBearer();
+
+    return {
+      uuid: product.id,
+      name: product.name,
+      group: groupName,
+      price:
+        product.salePrices.length > 0 ? product.salePrices[0].value / 100 : 0,
+      costPrice: product.buyPrice.value / 100,
+      description: product.description,
+      code: !isNaN(+product.code) ? +product.code : 0,
+      productType: ProductType[product.trackingType],
+      tax: product?.taxSystem,
+      allowToSell: !product.archived,
+      quantity: product.volume,
+      barCodes: product.barcodes ? product.barcodes.map((b) => b.ean13) : [],
+      measureName: uomMeasure.name,
+      articleNumber: !isNaN(+product.article) ? +product.article : 0,
+      attributes: product.attributes
+        ? product.attributes.map((a) => ({ name: a.type, value: a.name }))
+        : [],
+      country: country?.name,
+      currency: currency.name,
+      discountProhibited: product.discountProhibited,
+      useParentVat: product.useParentVat,
+      variantsCount: product.variantsCount,
+      images: imageResponse.rows.map((r) => ({
+        url: r.miniature.href,
+        name: r.filename,
+        type: r.miniature.mediaType,
+        bearer,
+      })),
+    };
   }
 }
