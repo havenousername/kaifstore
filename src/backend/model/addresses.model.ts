@@ -22,42 +22,42 @@ export class Address extends Model<Address, AddressCreateAttributes> {
     primaryKey: true,
     allowNull: false,
   })
-  id: number;
+  id!: number;
 
   @ApiProperty({ example: 'Moldova', description: 'Country name' })
   @Column({
     type: DataType.STRING(200),
     allowNull: false,
   })
-  country: string;
+  country!: string;
 
   @ApiProperty({ example: 'Chisinau', description: 'Cities name' })
   @Column({
     type: DataType.STRING(256),
     allowNull: false,
   })
-  city: string;
+  city!: string;
 
   @ApiProperty({ example: 'bd. Stefan cel Mare', description: 'Street name' })
   @Column({
     type: DataType.STRING(200),
     allowNull: false,
   })
-  street: string;
+  street!: string;
 
   @ApiProperty({ example: '45', description: 'Street number' })
   @Column({
     type: DataType.SMALLINT,
     allowNull: false,
   })
-  streetNumber: number;
+  streetNumber!: number;
 
   @ApiProperty({ example: 'MD-4500', description: 'Post number' })
   @Column({
     type: DataType.STRING(20),
     allowNull: false,
   })
-  postNumber: string;
+  postNumber!: string;
 
   @ApiProperty({
     example: '4',

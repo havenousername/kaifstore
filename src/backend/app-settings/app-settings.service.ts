@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { AppSettings } from '../model/app-settings.model';
 import { UpdateSettingsDto } from './dto/update-settings.dto';
@@ -8,12 +8,13 @@ import { encrypt } from '../utils/crypto';
 import { ImportExportService } from '../import-export/import-export.service';
 import { MoyskladProduct } from '../interfaces/moysklad-api-types';
 import { CreateFromNameDto } from '../product-groups/dto/create-from-name.dto';
-import { ProductGroup } from '../model/product-groups.model';
 import { Product } from '../model/products.model';
 import { MakeImportDto } from '../import-export/dto/make-import.dto';
+import throwExceptionIfNull from '../utils/throw-exception-if-null';
 
 @Injectable()
 export class AppSettingsService {
+  private readonly logger = new Logger(AppSettings.name);
   constructor(
     @InjectModel(AppSettings) private appSettingsRepository: typeof AppSettings,
     @Inject(forwardRef(() => MoyskladService))
@@ -25,7 +26,10 @@ export class AppSettingsService {
   async getSettings(): Promise<
     AppSettings & { moyskladToken: string | undefined }
   > {
-    const settings: AppSettings = await this.appSettingsRepository.findOne();
+    const settings: AppSettings = throwExceptionIfNull(
+      await this.appSettingsRepository.findOne(),
+      'settings',
+    );
     const token = await settings.moyskladToken();
     return {
       language: settings.getDataValue('language'),
@@ -94,18 +98,18 @@ export class AppSettingsService {
     const products = await this.moyskladService.getProducts();
     const prepareProducts =
       (products: MoyskladProduct[]) =>
-      async (
-        importGroups: (dto: CreateFromNameDto[]) => Promise<string[]>,
-        getByUuid: (str: string) => Promise<ProductGroup>,
-      ) => {
+      async (importGroups: (dto: CreateFromNameDto[]) => Promise<string[]>) => {
         const result: MakeImportDto[] = [];
         for (const product of products) {
+          const d1 = new Date();
+          this.logger.log(`Product with id ${product.id} will be imported now`);
           result.push(
-            await this.moyskladService.toImportDto(
-              product,
-              importGroups,
-              getByUuid,
-            ),
+            await this.moyskladService.toImportDto(product, importGroups),
+          );
+          const d2 = new Date();
+          this.logger.log(
+            `Product with id ${product.id} had been imported now`,
+            [`Duration: ${d2.getTime() - d1.getTime()}`, AppSettings.name],
           );
         }
         return result;

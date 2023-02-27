@@ -10,7 +10,7 @@ export class AlcoholProduct extends Model<AlcoholProduct> {
     unique: true,
     autoIncrement: true,
   })
-  id: number;
+  id!: number;
 
   @ApiProperty({
     example: false,
@@ -19,7 +19,7 @@ export class AlcoholProduct extends Model<AlcoholProduct> {
   @ApiProperty({
     type: DataType.BOOLEAN,
   })
-  excise: boolean;
+  excise!: boolean;
 
   @ApiProperty({
     examples: [291, 303.9],
@@ -29,7 +29,7 @@ export class AlcoholProduct extends Model<AlcoholProduct> {
   @Column({
     type: DataType.ARRAY(DataType.INTEGER),
   })
-  alcoCodes: number[];
+  alcoCodes!: number[];
 
   @ApiProperty({
     example: 293,
@@ -39,7 +39,7 @@ export class AlcoholProduct extends Model<AlcoholProduct> {
   @Column({
     type: DataType.FLOAT,
   })
-  strength: number;
+  strength!: number;
 
   @ApiProperty({
     example: 2,
@@ -50,7 +50,7 @@ export class AlcoholProduct extends Model<AlcoholProduct> {
   @Column({
     type: DataType.SMALLINT,
   })
-  type: number;
+  type!: number;
 
   @ApiProperty({
     example: 2,
@@ -60,5 +60,5 @@ export class AlcoholProduct extends Model<AlcoholProduct> {
   @Column({
     type: DataType.FLOAT,
   })
-  volume: number;
+  volume!: number;
 }

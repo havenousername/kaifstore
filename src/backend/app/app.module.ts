@@ -40,11 +40,13 @@ const models = [
 
 const herokuConfig: () => SequelizeModuleOptions = () => ({
   dialect: 'postgres',
-  host: process.env.DATABASE_URL.split('@')[1].split(':')[0],
-  port: +process.env.DATABASE_URL.split('@')[1].split(':')[1].split('/')[0],
-  username: process.env.DATABASE_URL.split('//')[1].split(':')[0],
-  password: process.env.DATABASE_URL.split(':')[2].split('@')[0],
-  database: process.env.DATABASE_URL.split('/')[3],
+  host: process.env.DATABASE_URL?.split('@')[1].split(':')[0],
+  port: process.env.DATABASE_URL
+    ? +process.env.DATABASE_URL.split('@')[1].split(':')[1].split('/')[0]
+    : 5000,
+  username: process.env.DATABASE_URL?.split('//')[1].split(':')[0],
+  password: process.env.DATABASE_URL?.split(':')[2].split('@')[0],
+  database: process.env.DATABASE_URL?.split('/')[3],
   models: models,
   autoLoadModels: true,
   dialectOptions: {
@@ -61,7 +63,7 @@ const sequelizeOptions: SequelizeModuleOptions = isHeroku
   : {
       dialect: 'postgres',
       host: process.env.DB_HOST,
-      port: +process.env.DB_PORT,
+      port: +(process.env.DB_PORT ?? 5432),
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
@@ -77,7 +79,10 @@ const sequelizeOptions: SequelizeModuleOptions = isHeroku
         console.error(sql, timing);
         console.log(process.env.DATABASE_URL);
       },
-      retryAttempts: 1,
+      retry: {
+        match: [/Deadlock/i, /ConnectionError/i],
+        max: 3, // Maximum retry 3 times
+      },
       // synchronize: true,
       // sync: { force: true },
     };

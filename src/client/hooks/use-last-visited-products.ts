@@ -36,7 +36,6 @@ const useLastVisitedProducts = (): [
         prevState.shift();
       }
       prevState.push(id);
-      console.log(prevState);
       window.localStorage.setItem(
         'lastVisitedProducts',
         JSON.stringify(prevState),

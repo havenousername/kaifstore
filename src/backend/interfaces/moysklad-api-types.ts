@@ -1,4 +1,5 @@
 import { ProductMeasure } from './product-measure.enum';
+import { ProductType } from './product-type.enum';
 
 export type MoyskladResponse<T = MoyskladProduct> = {
   context: {
@@ -65,7 +66,7 @@ type MoyskladBuyPrice = {
 };
 
 type MoyskladObject = {
-  meta: MoyskladMeta;
+  meta?: MoyskladMeta;
 };
 
 type MoyskladFile = {
@@ -118,7 +119,7 @@ export type MoyskladProduct = {
   effectiveVatEnabled: boolean;
   discountProhibited: boolean;
   isSerialTrackable: boolean;
-  uom: MoyskladObject;
+  uom?: MoyskladObject;
   images: MoyskladObject;
   minPrice: MoyskladBuyPrice;
   minimumBalance: number;
@@ -133,7 +134,7 @@ export type MoyskladProduct = {
   taxSystem: TaxSystem;
   things: string[];
   tnved: string;
-  trackingType: string;
+  trackingType: ProductType;
   variantsCount: number;
   volume: number;
   weight: number;
@@ -195,7 +196,7 @@ type MoyskladAuditContext = {
 
 export type MoyskladEvent = {
   meta: MoyskladWebhookMeta;
-  action: string;
+  action: WebhookAction;
   accountId: string;
 };
 

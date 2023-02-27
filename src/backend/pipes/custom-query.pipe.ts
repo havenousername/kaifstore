@@ -21,7 +21,7 @@ export class ParseCustomQuery<T extends string>
   }
 
   private static toStringArray(key: unknown): string[] {
-    let arr = [];
+    let arr: string[] = [];
     if (isArray(key)) {
       arr = key as string[];
     } else if (isPrimitive(key)) {

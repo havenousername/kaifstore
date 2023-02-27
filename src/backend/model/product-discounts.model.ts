@@ -20,18 +20,18 @@ export class ProductDiscount extends Model<
   ProductDiscountAttributes
 > {
   @BelongsTo(() => Product)
-  product: Product;
+  product!: Product;
 
   @ForeignKey(() => Product)
   @PrimaryKey
   @Column
-  productId: number;
+  productId!: number;
 
   @BelongsTo(() => Discount)
-  discount: Discount;
+  discount!: Discount;
 
   @ForeignKey(() => Discount)
   @PrimaryKey
   @Column
-  discountId: number;
+  discountId!: number;
 }

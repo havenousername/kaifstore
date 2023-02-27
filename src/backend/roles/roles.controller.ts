@@ -6,6 +6,7 @@ import {
   Post,
   UseGuards,
   UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -14,7 +15,6 @@ import { Role } from '../model/roles.model';
 import { Roles } from '../decorators/role-auth.decorator';
 import JwtRolesGuard from '../auth/guards/roles-auth.guard';
 import { SUPER_USER_ROLE } from '../app/constants';
-import { ValidationPipe } from '../pipes/validation.pipe';
 
 @Controller({
   path: 'roles',

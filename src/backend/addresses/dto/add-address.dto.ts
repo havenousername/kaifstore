@@ -4,23 +4,23 @@ import { IsNumber, IsString } from 'class-validator';
 export class AddAddressDto {
   @ApiProperty({ example: 'Moldova', description: 'Country name' })
   @IsString({ message: 'Should be always string' })
-  readonly country: string;
+  readonly country!: string;
 
   @ApiProperty({ example: 'Chisinau', description: 'Cities name' })
   @IsString({ message: 'Should be always string' })
-  readonly city: string;
+  readonly city!: string;
 
   @ApiProperty({ example: 'bd. Stefan cel Mare', description: 'Street name' })
   @IsString({ message: 'Should be always string' })
-  readonly street: string;
+  readonly street!: string;
 
   @ApiProperty({ example: 45, description: 'Street number' })
   @IsNumber({}, { message: 'Should be number' })
-  readonly streetNumber: number;
+  readonly streetNumber!: number;
 
   @ApiProperty({ example: 'MD-4500', description: 'Post number' })
   @IsString({ message: 'Should be always string' })
-  readonly postNumber: string;
+  readonly postNumber!: string;
 
   @ApiProperty({
     example: 4,

@@ -34,7 +34,10 @@ export class FilesService {
         );
       }
     } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        error as string,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -64,7 +67,7 @@ export class FilesService {
           return reject('Error. Response status was ' + response.statusCode);
         }
 
-        const chunks = [];
+        const chunks: Uint8Array[] = [];
 
         response.on('data', function (chunk) {
           chunks.push(chunk);
@@ -89,7 +92,7 @@ export class FilesService {
 
   private static multerFileCreation(
     file: Express.Multer.File,
-    directory,
+    directory: string,
   ): string {
     const fileName = uuid.v4() + '.' + file.mimetype.split('/')[1];
     const filePath = path.resolve(__dirname, '..', `static/${directory}`);
@@ -117,7 +120,14 @@ export class FilesService {
         fs.rmSync(path.join(filePath, fileName));
       }
     } catch (e) {
-      throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      if (e instanceof HttpException) {
+        throw e;
+      } else {
+        throw new HttpException(
+          'Unknown error while removing the file',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     }
   }
 

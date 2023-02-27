@@ -12,14 +12,14 @@ export class AppSettings extends Model<AppSettings> {
     primaryKey: true,
     allowNull: false,
   })
-  id: number;
+  id!: number;
 
   @ApiProperty({ example: 'ru', description: 'Language of application' })
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  language: string;
+  language!: string;
 
   @ApiProperty({
     example: true,
@@ -29,7 +29,7 @@ export class AppSettings extends Model<AppSettings> {
     type: DataType.BOOLEAN,
     allowNull: false,
   })
-  moyskladIntegration: boolean;
+  moyskladIntegration!: boolean;
 
   @Column({
     type: DataType.STRING,
@@ -48,10 +48,10 @@ export class AppSettings extends Model<AppSettings> {
 
   moyskladToken(): Promise<string | undefined> {
     if (!this.moyskladEmail || !this.moyskladPassword) {
-      return;
+      return new Promise(() => undefined);
     }
-    return new Promise<string | undefined>((resolve, reject) => {
-      return decrypt(this.moyskladPassword)
+    return new Promise((resolve, reject) => {
+      return decrypt(this.moyskladPassword ?? '')
         .then((password) => {
           return resolve(
             Buffer.from(`${this.moyskladEmail}:${password}`).toString('base64'),

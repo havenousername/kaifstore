@@ -43,7 +43,7 @@ export class JwtParamAuthGuard implements CanActivate {
       req.user = this.jwtService.verify(token);
 
       const user = await this.userService.getUserByEmail(req.user.email);
-      return user.id === idParam;
+      return user?.id === idParam;
     } catch (e) {
       throw new UnauthorizedException({ message: 'User is not authorized.' });
     }

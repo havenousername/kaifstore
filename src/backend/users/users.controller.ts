@@ -8,12 +8,12 @@ import {
   Put,
   UseGuards,
   UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '../model/users.model';
-import { ValidationPipe } from '../pipes/validation.pipe';
 import { Roles } from '../decorators/role-auth.decorator';
 import { SUPER_USER_ROLE } from '../app/constants';
 import JwtRolesGuard from '../auth/guards/roles-auth.guard';

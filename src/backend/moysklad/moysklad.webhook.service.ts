@@ -35,11 +35,10 @@ export class MoyskladWebhookService {
 
   private async prepareProduct(event: MoyskladEvent): Promise<MakeImportDto> {
     const eventId = MoyskladWebhookService.strLast(event.meta.href);
-    const product = await this.moyskladService.getProduct(eventId);
+    const product = await this.moyskladService.getProduct(eventId ?? '');
     return await this.moyskladService.toImportDto(
       product,
       this.importExport.importGroups,
-      this.groupsService.getByUuid,
     );
   }
 
@@ -54,7 +53,13 @@ export class MoyskladWebhookService {
   }
 
   public async [WebhookAction.DELETE](event: MoyskladEvent) {
-    const eventId = MoyskladWebhookService.strLast(event.meta.href);
+    let eventId = MoyskladWebhookService.strLast(event.meta.href);
+    if (!eventId) {
+      eventId = '';
+    }
     return await this.productsService.deleteFromUUID(eventId);
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public async [WebhookAction.PROCESSED]() {}
 }

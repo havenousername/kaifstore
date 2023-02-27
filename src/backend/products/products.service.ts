@@ -52,11 +52,11 @@ export class ProductsService {
   ): Promise<FindAndCountOptions<Product[]>> {
     let order: [string, string][] | undefined = undefined;
     const filters: WhereOptions = {};
-    if (Array.isArray(queryOptions.desc)) {
+    if (queryOptions && Array.isArray(queryOptions.desc)) {
       order = this.handleQueryOrder(queryOptions.desc, OrderBy.DESC);
     }
 
-    if (Array.isArray(queryOptions.asc)) {
+    if (queryOptions && Array.isArray(queryOptions.asc)) {
       if (!order) {
         order = this.handleQueryOrder(queryOptions.asc, OrderBy.ASC);
       } else {
@@ -64,28 +64,28 @@ export class ProductsService {
       }
     }
 
-    if (queryOptions.q && isString(queryOptions.q)) {
+    if (queryOptions && queryOptions.q && isString(queryOptions.q)) {
       filters['name'] = { [Op.like]: `%${queryOptions.q}%` };
     }
 
-    if (queryOptions.priceRange) {
+    if (queryOptions && queryOptions.priceRange) {
       filters['price'] = {
         [Op.between]: queryOptions.priceRange as [number, number],
       };
     }
 
-    if (queryOptions.attributes) {
+    if (queryOptions && queryOptions.attributes) {
       filters['attributes'] = {
         [Op.contains]: queryOptions.attributes as string[],
       };
     }
 
-    if (queryOptions.discount) {
+    if (queryOptions && queryOptions.discount) {
       const productDiscounts = await this.productDiscountsRepository.findAll({
         include: { all: true },
       });
       const discounts = productDiscounts.filter(
-        (discount) => discount.discount.amount > queryOptions.discount,
+        (discount) => discount.discount.amount > (queryOptions.discount ?? 0),
       );
       const productIds = discounts.map((i) => i.productId);
       filters['id'] = {
@@ -93,8 +93,12 @@ export class ProductsService {
       };
     }
 
-    if (queryOptions.groupId && isString(queryOptions.groupId)) {
-      const groupId: undefined = queryOptions.groupId as undefined;
+    if (
+      queryOptions &&
+      queryOptions.groupId &&
+      isString(queryOptions.groupId)
+    ) {
+      const groupId = queryOptions.groupId;
       const groups =
         await this.productGroupService.getGroupNestedGroupWithProduct(groupId);
       groups.push(groupId);
@@ -242,7 +246,13 @@ export class ProductsService {
 
   public async deleteFromUUID(uuid: string): Promise<number> {
     const product = await this.getByUUID(uuid);
-    return this.delete(product.id);
+    if (product) {
+      return this.delete(product.id);
+    }
+    throw new HttpException(
+      `Product with UUID ${uuid} does not exist in the database`,
+      HttpStatus.NOT_FOUND,
+    );
   }
 
   public async deleteAllByGroup(uuid: string | string[]): Promise<number> {
@@ -254,7 +264,7 @@ export class ProductsService {
     oldProduct: Product,
   ): Promise<string[]> {
     let i = 0;
-    const imagePaths = [];
+    const imagePaths: string[] = [];
     if (importImages.length > 0) {
       return imagePaths;
     }

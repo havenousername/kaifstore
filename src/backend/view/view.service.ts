@@ -1,10 +1,15 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  OnModuleInit,
+} from '@nestjs/common';
 import createServer from 'next';
 import { NextServer } from 'next/dist/server/next';
 
 @Injectable()
 export class ViewService implements OnModuleInit {
-  private server: NextServer;
+  private server: NextServer | null = null;
 
   async onModuleInit(): Promise<void> {
     try {
@@ -19,6 +24,12 @@ export class ViewService implements OnModuleInit {
   }
 
   getNextServer(): NextServer {
+    if (!this.server) {
+      throw new HttpException(
+        'Next server is not initialized.',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
     return this.server;
   }
 }

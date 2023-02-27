@@ -30,7 +30,7 @@ export class ProductGroup extends Model<
     autoIncrement: true,
     primaryKey: true,
   })
-  id: number;
+  id!: number;
 
   @ApiProperty({
     example: '123e4567-e89b-12d3-a456-426614174000',
@@ -41,7 +41,7 @@ export class ProductGroup extends Model<
     unique: true,
     allowNull: false,
   })
-  uuid: string;
+  uuid!: string;
 
   @ApiProperty({
     example: '199',
@@ -56,14 +56,14 @@ export class ProductGroup extends Model<
     description: 'Groceries group can only contain apples, bananas etc.',
   })
   @Column({ type: DataType.STRING, unique: true, allowNull: false })
-  name: string;
+  name!: string;
 
   @ApiProperty({
     example: 'Groceries group can only contain apples, bananas etc.',
     description: 'Description of description',
   })
   @Column({ type: DataType.TEXT })
-  description: string;
+  description!: string;
 
   @ApiProperty({
     example: '123e4563-e89b-12d3-a456-426614174000',
@@ -71,14 +71,14 @@ export class ProductGroup extends Model<
   })
   @Column({ type: DataType.UUID, allowNull: true })
   @ForeignKey(() => ProductGroup)
-  groupId: string | null;
+  groupId!: string | null;
 
   @BelongsTo(() => ProductGroup, { targetKey: 'uuid', foreignKey: 'groupId' })
-  parentGroup: ProductGroup;
+  parentGroup!: ProductGroup;
 
   @HasMany(() => ProductGroup, { sourceKey: 'uuid' })
-  childrenGroups: ProductGroup[];
+  childrenGroups!: ProductGroup[];
 
   @HasMany(() => Product, { sourceKey: 'uuid' })
-  products: Product[];
+  products!: Product[];
 }

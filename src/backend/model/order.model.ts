@@ -16,12 +16,12 @@ export class Order extends Model<Order> {
   @ApiProperty({ example: 1, description: 'Unique identifier' })
   @PrimaryKey
   @Column
-  id: number;
+  id!: number;
 
   @ApiProperty({ example: false, description: 'Delivered' })
   @AllowNull(false)
   @Column({ type: DataType.BOOLEAN })
-  delivered: boolean;
+  delivered!: boolean;
 
   @ApiProperty({
     example:
@@ -37,7 +37,7 @@ export class Order extends Model<Order> {
     description: 'Promocode',
   })
   @Column({ type: DataType.STRING })
-  promocode: string;
+  promocode!: string;
 
   @ApiProperty({
     example: 'Ordered',
@@ -45,7 +45,7 @@ export class Order extends Model<Order> {
   })
   @AllowNull(false)
   @Column({ type: DataType.ENUM, values: stages })
-  stage: Stage;
+  stage!: Stage;
 
   @ApiProperty({
     example: 1,
@@ -54,10 +54,10 @@ export class Order extends Model<Order> {
   @ForeignKey(() => Bag)
   @AllowNull(false)
   @Column
-  bagId: number;
+  bagId!: number;
 
   @BelongsTo(() => Bag)
-  bag: Bag;
+  bag!: Bag;
 
   @ApiProperty({
     example: 1,
@@ -66,8 +66,8 @@ export class Order extends Model<Order> {
   @ForeignKey(() => User)
   @AllowNull(false)
   @Column
-  userId: number;
+  userId!: number;
 
   @BelongsTo(() => User)
-  user: User;
+  user!: User;
 }

@@ -26,7 +26,7 @@ export class ViewController {
     const parsedUrl = parse(req.url, true);
     await this.viewService
       .getNextServer()
-      .render(req, res, parsedUrl.pathname, parsedUrl.query);
+      .render(req, res, parsedUrl.pathname ?? '', parsedUrl.query);
   }
 
   @Public()

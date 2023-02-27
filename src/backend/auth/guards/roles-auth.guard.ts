@@ -35,12 +35,12 @@ export default class JwtRolesGuard implements CanActivate {
     const userEmail = this.jwtService.verify(token).email;
     const user = await this.userService.getUserByEmail(userEmail);
     req.user = user;
-    const valid = requiredRoles.some((role) => role === user.role.name);
+    const valid = requiredRoles.some((role) => role === user?.role.name);
     if (!valid) {
       throw new ForbiddenException([
         `User does not have required privileges. Required ${requiredRoles.join(
           ',',
-        )}, got ${user.role.name}`,
+        )}, got ${user?.role.name}`,
       ]);
     }
     return valid;

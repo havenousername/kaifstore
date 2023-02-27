@@ -20,7 +20,7 @@ export class MoyskladWebhook extends Model<
     primaryKey: true,
     allowNull: false,
   })
-  id: number;
+  id!: number;
 
   @ApiProperty({
     example: '7944ef04-f831-11e5-7a69-971500188b19',
@@ -29,17 +29,17 @@ export class MoyskladWebhook extends Model<
   @Column({
     type: DataType.STRING,
   })
-  uuid: string;
+  uuid!: string;
 
   @ApiProperty({ example: 'UPDATE', description: 'action of webhook' })
   @Column({
     type: DataType.STRING,
   })
-  action: string;
+  action!: string;
 
   @ApiProperty({ example: 'https://google.com', description: 'url of webhook' })
   @Column({
     type: DataType.STRING,
   })
-  url: string;
+  url!: string;
 }

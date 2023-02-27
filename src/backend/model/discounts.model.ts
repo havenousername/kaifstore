@@ -25,7 +25,7 @@ export class Discount extends Model<Discount, DiscountCreationAttribute> {
     autoIncrement: true,
     primaryKey: true,
   })
-  id: number;
+  id!: number;
 
   @ApiProperty({
     example: 20,
@@ -34,7 +34,7 @@ export class Discount extends Model<Discount, DiscountCreationAttribute> {
   @Column({
     type: DataType.SMALLINT,
   })
-  amount: number;
+  amount!: number;
 
   @ApiProperty({
     example: 'Winter discount',
@@ -44,7 +44,7 @@ export class Discount extends Model<Discount, DiscountCreationAttribute> {
   @Column({
     type: DataType.STRING,
   })
-  name: string;
+  name!: string;
 
   @ApiProperty({
     example: 'https://github.com/havenousername/kaifstore',
@@ -54,8 +54,8 @@ export class Discount extends Model<Discount, DiscountCreationAttribute> {
   @Column({
     type: DataType.STRING,
   })
-  image: string;
+  image!: string;
 
   @BelongsToMany(() => Product, () => ProductDiscount)
-  products: Product[];
+  products!: Product[];
 }

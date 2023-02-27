@@ -23,21 +23,21 @@ export class MakeImportDto {
     description: 'Uuid',
   })
   @IsUUID('all', { message: 'Should be always string' })
-  readonly uuid: string;
+  readonly uuid!: string;
 
   @ApiProperty({
     example: 'Product',
     description: 'Name',
   })
   @IsString()
-  readonly name: string;
+  readonly name!: string;
 
   @ApiProperty({
     example: 'Group',
     description: 'Is group or product',
   })
   @IsString()
-  readonly group: string;
+  readonly group!: string;
 
   @ApiProperty({
     example: 34,

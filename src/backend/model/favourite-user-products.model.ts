@@ -14,7 +14,7 @@ export class FavouriteUserProduct extends Model<FavouriteUserProduct> {
   @ApiProperty({ example: 1, description: 'Unique identifier' })
   @PrimaryKey
   @Column
-  id: number;
+  id!: number;
 
   @ApiProperty({
     example: 1,
@@ -23,11 +23,11 @@ export class FavouriteUserProduct extends Model<FavouriteUserProduct> {
   @ForeignKey(() => User)
   @AllowNull(false)
   @Column
-  userId: number;
+  userId!: number;
 
   @BelongsTo(() => User)
   @Column
-  user: User;
+  user!: User;
 
   @ApiProperty({
     example: 1,
@@ -36,8 +36,8 @@ export class FavouriteUserProduct extends Model<FavouriteUserProduct> {
   @ForeignKey(() => Product)
   @AllowNull(false)
   @Column
-  productId: number;
+  productId!: number;
 
   @BelongsTo(() => Product)
-  product: Product;
+  product!: Product;
 }

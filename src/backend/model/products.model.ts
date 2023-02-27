@@ -13,7 +13,7 @@ import {
   ProductMeasure,
   productMeasures,
 } from '../interfaces/product-measure.enum';
-import { ProductType } from '../interfaces/product-type.enum';
+import { ProductType, ProductTypes } from '../interfaces/product-type.enum';
 import { ProductGroup } from './product-groups.model';
 import { AlcoholProduct } from './alcohol-products.model';
 import { ProductDiscount } from './product-discounts.model';
@@ -30,7 +30,7 @@ interface ProductCreationAttributes {
   tags?: string[];
   quantity?: number;
   barcodes?: string[];
-  measurename?: keyof ProductMeasure;
+  measurename?: keyof typeof ProductMeasure;
   productType?: ProductType;
   alcoholId?: number;
   code?: string;
@@ -57,7 +57,7 @@ export class Product extends Model<Product, ProductCreationAttributes> {
     primaryKey: true,
     allowNull: false,
   })
-  id: number;
+  id!: number;
 
   @ApiProperty({
     example: '123e4567-e89b-12d3-a456-426614174000',
@@ -68,7 +68,7 @@ export class Product extends Model<Product, ProductCreationAttributes> {
     unique: true,
     allowNull: false,
   })
-  uuid: string;
+  uuid!: string;
 
   @ApiProperty({
     example: 'Tutus Mac Barren Absolute Choice',
@@ -78,7 +78,7 @@ export class Product extends Model<Product, ProductCreationAttributes> {
     type: DataType.STRING,
     allowNull: false,
   })
-  name: string;
+  name!: string;
 
   @ApiProperty({
     example: false,
@@ -89,7 +89,7 @@ export class Product extends Model<Product, ProductCreationAttributes> {
     type: DataType.BOOLEAN,
     allowNull: false,
   })
-  allowToSell: boolean;
+  allowToSell!: boolean;
 
   @ApiProperty({
     example: 456,
@@ -99,7 +99,7 @@ export class Product extends Model<Product, ProductCreationAttributes> {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  price: number;
+  price!: number;
 
   @ApiProperty({
     example: 'RUB',
@@ -109,7 +109,7 @@ export class Product extends Model<Product, ProductCreationAttributes> {
     type: DataType.STRING,
     allowNull: false,
   })
-  currency: string;
+  currency!: string;
 
   @ApiProperty({
     example: 'Russia',
@@ -119,7 +119,7 @@ export class Product extends Model<Product, ProductCreationAttributes> {
     type: DataType.STRING,
     allowNull: false,
   })
-  country: string;
+  country!: string;
 
   @ApiProperty({
     example: 100,
@@ -129,7 +129,7 @@ export class Product extends Model<Product, ProductCreationAttributes> {
     type: DataType.FLOAT,
     allowNull: false,
   })
-  costPrice: number;
+  costPrice!: number;
 
   @ApiProperty({
     examples: ['Black', 'White'],
@@ -144,7 +144,7 @@ export class Product extends Model<Product, ProductCreationAttributes> {
   @Column({
     type: DataType.ARRAY(DataType.STRING),
   })
-  images: string[];
+  images!: string[];
 
   @ApiProperty({
     example: 1,
@@ -155,7 +155,7 @@ export class Product extends Model<Product, ProductCreationAttributes> {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  quantity: number;
+  quantity!: number;
 
   @ApiProperty({
     example: false,
@@ -166,7 +166,7 @@ export class Product extends Model<Product, ProductCreationAttributes> {
     type: DataType.BOOLEAN,
     allowNull: false,
   })
-  discountProhibited: boolean;
+  discountProhibited!: boolean;
 
   @ApiProperty({
     example: false,
@@ -177,7 +177,7 @@ export class Product extends Model<Product, ProductCreationAttributes> {
     type: DataType.BOOLEAN,
     allowNull: false,
   })
-  useParentVat: boolean;
+  useParentVat!: boolean;
 
   @ApiProperty({
     example: 2,
@@ -188,7 +188,7 @@ export class Product extends Model<Product, ProductCreationAttributes> {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  variantsCount: number;
+  variantsCount!: number;
 
   @ApiProperty({
     examples: ['ABC-abc-1234', '0123-4567'],
@@ -221,18 +221,18 @@ export class Product extends Model<Product, ProductCreationAttributes> {
     type: DataType.ENUM,
     values: productMeasures,
   })
-  measurename?: keyof ProductMeasure;
+  measurename?: keyof typeof ProductMeasure;
 
   @ApiProperty({
     example: 1,
     description: 'Product Type',
     required: false,
   })
-  @Default(ProductType.NORMAL)
+  @Default(ProductTypes.NORMAL)
   @Column({
     type: DataType.NUMBER,
   })
-  productType: ProductType;
+  productType!: ProductType;
 
   @ApiProperty({
     example: '123e4567-e89b-12d3-a456-42661417400a',
@@ -240,10 +240,10 @@ export class Product extends Model<Product, ProductCreationAttributes> {
   })
   @Column({ type: DataType.UUID, allowNull: false })
   @ForeignKey(() => ProductGroup)
-  groupId: string;
+  groupId!: string;
 
   @BelongsTo(() => ProductGroup, { targetKey: 'uuid', foreignKey: 'groupId' })
-  group: ProductGroup;
+  group!: ProductGroup;
 
   @ApiProperty({
     example: 34,
@@ -288,25 +288,27 @@ export class Product extends Model<Product, ProductCreationAttributes> {
   })
   @Default('NO_VAT')
   @Column({ type: DataType.STRING(20), allowNull: false })
-  tax: string;
+  tax!: string;
 
   @BelongsToMany(() => Discount, () => ProductDiscount)
-  discounts: Discount[];
+  discounts!: Discount[];
 
   get measureName(): ProductMeasure {
-    return ProductMeasure[this.measurename];
+    return ProductMeasure[this.measurename ?? 'PIECE'];
   }
 
   get attribs(): Attributes[] {
     return this.attributes
-      .map((i) => {
-        const attribs = i.split(':');
-        if (attribs.length === 2) {
-          return { name: attribs[0], value: attribs[1] };
-        } else {
-          return;
-        }
-      })
-      .filter((i) => !!i);
+      ? this.attributes
+          .map((i) => {
+            const attribs = i.split(':');
+            if (attribs.length === 2) {
+              return { name: attribs[0], value: attribs[1] };
+            } else {
+              return { name: attribs[0], value: attribs[0] };
+            }
+          })
+          .filter((i) => !!i)
+      : ([] as Attributes[]);
   }
 }

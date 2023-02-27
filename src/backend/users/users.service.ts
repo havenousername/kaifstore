@@ -30,14 +30,14 @@ export class UsersService {
   }
 
   async create(dto: CreateUserDto) {
-    let address: Address;
+    let address: Address | null = null;
     if (dto.address) {
       address = await this.addressService.create(dto.address);
     }
 
     return await this.userRepository.create({
       ...dto,
-      addressId: address ? address.id : undefined,
+      addressId: address?.id ?? 0,
       roleId: dto.roleId ?? (await this.getDefaultRole()).id,
     });
   }

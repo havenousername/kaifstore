@@ -33,21 +33,21 @@ export class User extends Model<User, UserCreationAttributes> {
     unique: true,
     autoIncrement: true,
   })
-  id: number;
+  id!: number;
 
   @ApiProperty({ example: 'john.doe@example.com', description: 'Email' })
   @Column({
     type: DataType.STRING,
     unique: true,
   })
-  email: string;
+  email!: string;
 
   @ApiProperty({ example: '1234568', description: 'Password' })
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  password: string;
+  password!: string;
 
   @ApiProperty({
     example: 'John',
@@ -57,7 +57,7 @@ export class User extends Model<User, UserCreationAttributes> {
     type: DataType.STRING,
     allowNull: false,
   })
-  firstName: string;
+  firstName!: string;
 
   @ApiProperty({
     example: 'Doe',
@@ -67,7 +67,7 @@ export class User extends Model<User, UserCreationAttributes> {
     type: DataType.STRING,
     allowNull: false,
   })
-  lastName: string;
+  lastName!: string;
 
   @ApiProperty({
     example: Gender.FEMALE,
@@ -77,7 +77,7 @@ export class User extends Model<User, UserCreationAttributes> {
     type: DataType.ENUM(Gender.MALE, Gender.FEMALE),
     allowNull: false,
   })
-  gender: Gender;
+  gender!: Gender;
 
   @ApiProperty({
     example: 'Sun Sep 12 2000 21:45:11 GMT+0200 (Copenhagen Daylight Time)',
@@ -87,7 +87,7 @@ export class User extends Model<User, UserCreationAttributes> {
     type: DataType.DATE,
     allowNull: false,
   })
-  birthDate: Date;
+  birthDate!: Date;
 
   @ApiProperty({
     example:
@@ -97,7 +97,7 @@ export class User extends Model<User, UserCreationAttributes> {
   @Column({
     type: DataType.STRING,
   })
-  photo: string;
+  photo!: string;
 
   @ApiProperty({
     example: 'Sun Sep 10 2021 21:45:11 GMT+0200 (Copenhagen Daylight Time)',
@@ -106,7 +106,7 @@ export class User extends Model<User, UserCreationAttributes> {
   @Column({
     type: DataType.DATE,
   })
-  createdAt: Date;
+  createdAt!: Date;
 
   @ApiProperty({
     example: 'Sun Sep 12 2021 21:45:11 GMT+0200 (Copenhagen Daylight Time)',
@@ -115,7 +115,7 @@ export class User extends Model<User, UserCreationAttributes> {
   @Column({
     type: DataType.DATE,
   })
-  updatedAt: Date;
+  updatedAt!: Date;
 
   @ApiProperty({
     example: '1',
@@ -124,10 +124,10 @@ export class User extends Model<User, UserCreationAttributes> {
   @AllowNull(false)
   @ForeignKey(() => Role)
   @Column
-  roleId: number;
+  roleId!: number;
 
   @BelongsTo(() => Role)
-  role: Role;
+  role!: Role;
 
   @ApiProperty({
     example: 1,
@@ -136,8 +136,8 @@ export class User extends Model<User, UserCreationAttributes> {
   @ForeignKey(() => Address)
   @Unique
   @Column
-  addressId: number;
+  addressId!: number;
 
   @BelongsTo(() => Address)
-  address: Address;
+  address!: Address;
 }

@@ -1,4 +1,10 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ProductGroup } from '../model/product-groups.model';
 import { FindAndCountOptions, FindOptions, Includeable } from 'sequelize';
@@ -23,6 +29,10 @@ export class ProductGroupsService {
     return this.groupRepository.create(dto);
   }
 
+  async createMultiple(dto: CreateGroupDto[]) {
+    return this.groupRepository.bulkCreate(dto);
+  }
+
   async createGroups(
     dto: CreateFromNameDto,
     separator = '/',
@@ -30,20 +40,20 @@ export class ProductGroupsService {
     // can come something like dto.name = 'ParentParentGroup/Parent/ChildGroup'
     const names = dto.name.split(separator);
     const groups: string[] = [];
+    const groupsToCreate: CreateGroupDto[] = [];
     for (let i = 0; i < names.length; i++) {
       const group = await this.getByName(names[i], { all: true });
-      if (group !== null) {
-        groups.push(group.uuid);
-      } else {
+      if (group === null) {
         const uuid = v4();
-        const g = await this.create({
+        groupsToCreate.push({
           uuid,
           name: names[i],
           groupId: i !== 0 ? groups[i - 1] : undefined,
         });
-        groups.push(g.uuid);
       }
+      groups.push(names[i]);
     }
+    await this.createMultiple(groupsToCreate);
 
     return groups;
   }
@@ -122,6 +132,12 @@ export class ProductGroupsService {
 
   public async getGroupNestedGroupWithProduct(uuid: string): Promise<string[]> {
     const group = await this.getByUuid(uuid);
+    if (!group) {
+      throw new HttpException(
+        `No group with UUID ${uuid} was found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
     return this.findAllNestedGroups(group).map((i) => i.uuid);
   }
 
@@ -131,6 +147,12 @@ export class ProductGroupsService {
 
   public async delete(id: number) {
     const group = await this.getById(id, { all: true, nested: true });
+    if (!group) {
+      throw new HttpException(
+        `No group with id ${id} was found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
     const groups = this.findAllNestedGroups(group);
     if (groups.length > 0) {
       // delete nested groups products

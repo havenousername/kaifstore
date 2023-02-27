@@ -8,7 +8,7 @@ export class CreateGroupDto extends CreateFromNameDto {
     description: 'Uuid',
   })
   @IsUUID('all', { message: 'Should be always string' })
-  uuid: string;
+  uuid!: string;
 
   @ApiProperty({
     example: '123e4567-e89b-12d3-a456-426614174000',

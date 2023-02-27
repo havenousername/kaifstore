@@ -7,14 +7,14 @@ export class UpdateSettingsDto {
     description: 'Language of the application',
   })
   @IsString({ message: 'Should be always string' })
-  readonly language: string;
+  readonly language!: string;
 
   @ApiProperty({
     example: 'josh.doe@moysklad.com',
     description: 'Moysklad integration email',
   })
   @IsOptional({ message: 'Has the application an integration with moysklad' })
-  readonly moyskladIntegration: boolean;
+  readonly moyskladIntegration!: boolean;
 
   @ApiProperty({
     example: 'josh.doe@moysklad.com',

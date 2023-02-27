@@ -8,7 +8,7 @@ export class AuthUserDto {
   })
   @IsString({ message: 'Should be always string' })
   @IsEmail({}, { message: 'Incorrect email structure' })
-  readonly email: string;
+  readonly email!: string;
 
   @ApiProperty({
     example: '1234568',
@@ -18,5 +18,5 @@ export class AuthUserDto {
   @Length(8, 16, {
     message: 'Password should contain more than 8 but less than 16 words',
   })
-  readonly password: string;
+  readonly password!: string;
 }

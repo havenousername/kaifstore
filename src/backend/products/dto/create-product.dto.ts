@@ -19,22 +19,22 @@ export class CreateProductDto {
 
   @ApiProperty({ example: 'Big hookah plate', description: 'Product name' })
   @IsString({ message: 'Should be always string' })
-  readonly name: string;
+  readonly name!: string;
 
   @ApiProperty({ example: 140, description: 'Product price' })
   @IsNumber({}, { message: 'Should be always number' })
-  readonly price: number;
+  readonly price!: number;
 
   @ApiProperty({ example: 30, description: 'Product cost price' })
   @IsNumber({}, { message: 'Should be always number' })
-  readonly costPrice: number;
+  readonly costPrice!: number;
 
   @ApiProperty({
     example: '123e4567-e89b-12d3-a456-426614174000',
     description: 'Group id',
   })
   @IsUUID('all', { message: 'Should be always uuid' })
-  readonly groupId: string;
+  readonly groupId!: string;
 
   @ApiProperty({
     example: false,
@@ -70,7 +70,7 @@ export class CreateProductDto {
     required: false,
   })
   @IsString({ message: 'Should be string' })
-  readonly measurename?: keyof ProductMeasure;
+  readonly measurename?: keyof typeof ProductMeasure;
 
   @ApiProperty({
     example: 1,
@@ -110,14 +110,14 @@ export class CreateProductDto {
     required: false,
   })
   @IsString({ message: 'Should be string' })
-  tax: string;
+  tax!: string;
 
   @ApiProperty({
     example: 1,
     description: 'Discount id',
   })
   @IsNumber({}, { message: 'Should be always number' })
-  readonly discounts: number[];
+  readonly discounts!: number[];
 
   @ApiProperty({
     description: 'Attributes {name, value} array',
@@ -130,14 +130,14 @@ export class CreateProductDto {
     example: 'EUR',
   })
   @IsString({ message: 'Should be string' })
-  readonly currency: string;
+  readonly currency!: string;
 
   @ApiProperty({
     description: 'country',
     example: 'Moldova',
   })
   @IsString({ message: 'Should be string' })
-  readonly country: string;
+  readonly country!: string;
 
   @ApiProperty({
     example: false,

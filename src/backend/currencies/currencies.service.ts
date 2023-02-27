@@ -9,8 +9,6 @@ export type ResponseCurrenciesData = {
   symbols: Record<string, string>;
 };
 
-import fetch, { Headers } from 'node-fetch';
-
 export class CurrenciesService {
   constructor(private apiUrl: string = 'https://api.apilayer.com') {}
 

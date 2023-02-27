@@ -3,16 +3,17 @@ import { CustomQueries, CustomQueryKey } from '../interfaces/query';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { isString } from './type-checkers';
 
-export type ProductQuery =
-  | 'priceRange'
-  | 'q'
-  | 'groupId'
-  | 'attributes'
-  | 'discount';
+type ProductQueryObj = {
+  priceRange?: string[];
+  q?: string;
+  groupId?: string;
+  attributes?: string[];
+  discount?: number;
+};
 
-export const productQuerySelect = (
-  query: unknown,
-): Record<ProductQuery, any> => {
+export type ProductQuery = keyof ProductQueryObj;
+
+export const productQuerySelect = (query: ProductQueryObj): ProductQueryObj => {
   return {
     priceRange: query['priceRange'],
     q: query['q'],
@@ -36,7 +37,9 @@ export const productQueryToArray = (
   }
 
   if (value.priceRange) {
-    query.priceRange = value.priceRange.split('-').map((i) => +decodeURI(i));
+    query.priceRange = (value.priceRange as string)
+      .split('-')
+      .map((i) => +decodeURI(i));
     if (!isNumber(query.priceRange[0])) {
       throw new HttpException(
         'Price range values should be a numbers',

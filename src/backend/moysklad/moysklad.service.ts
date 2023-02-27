@@ -4,6 +4,7 @@ import {
   HttpStatus,
   Inject,
   Injectable,
+  Logger,
 } from '@nestjs/common';
 import { MoyskladApi } from './moysklad.api';
 import {
@@ -20,10 +21,11 @@ import { InjectModel } from '@nestjs/sequelize';
 import { MoyskladWebhook } from '../model/moysklad-webhook.model';
 import { WEBHOOK_PRODUCT } from '../app/constants';
 import { MakeImportDto } from '../import-export/dto/make-import.dto';
-import { ProductType } from '../interfaces/product-type.enum';
 import { CreateFromNameDto } from '../product-groups/dto/create-from-name.dto';
-import { ProductGroup } from '../model/product-groups.model';
+import throwExceptionIfNull from '../utils/throw-exception-if-null';
+import fetchTimeout from '../utils/fetchTimeout';
 import strLast from '../utils/last';
+import nullIfException from '../utils/null-if-exception';
 
 @Injectable()
 export class MoyskladService {
@@ -32,6 +34,10 @@ export class MoyskladService {
   private static uoms: UomMeasure[] = [];
   private static currencies: MoyskladCurrency[] = [];
   private static countries: MoyskladCountry[] = [];
+  private readonly logger = new Logger(MoyskladService.name, {
+    timestamp: true,
+  });
+  private static readonly TIMEOUT = 1000;
   // private employee: MoyskladEmployee;
   constructor(
     @InjectModel(MoyskladWebhook)
@@ -54,7 +60,7 @@ export class MoyskladService {
     }
   }
 
-  async generateBearer(): Promise<string> {
+  async generateBearer(): Promise<string | undefined> {
     if (this.api.unauthorized) {
       const auth = await this.authorize();
       if (!auth) {
@@ -63,6 +69,7 @@ export class MoyskladService {
           HttpStatus.UNAUTHORIZED,
         );
       }
+
       const data = await fetch(this.api.authUrl, {
         method: 'POST',
         headers: {
@@ -85,7 +92,7 @@ export class MoyskladService {
   private async checkOnAuth() {
     const settings = await this.appSettingsService.getSettings();
     this.api.authorization = settings.moyskladToken;
-    this.api.bearer = settings.moyskladAccessToken;
+    this.api.bearer = settings.moyskladAccessToken ?? '';
     if (this.api.unauthorized) {
       throw new HttpException(
         'Application does not have access rights for the moysklad api',
@@ -110,7 +117,28 @@ export class MoyskladService {
     if (props.body) {
       initOptions.body = JSON.stringify(props.body);
     }
-    const data = await fetch(props.url, initOptions);
+    this.logger.log(
+      `Sending request to ${props.url} with method ${props.method}`,
+    );
+    let data!: Response;
+    try {
+      data = await fetchTimeout(
+        props.url,
+        MoyskladService.TIMEOUT,
+        initOptions,
+      );
+    } catch (e) {
+      if ((e as { name: string }).name === 'AbortError') {
+        this.logger.error(
+          `Fetch aborted with timeout ${MoyskladService.TIMEOUT} and ${e}`,
+        );
+      }
+      throw new HttpException(
+        `Unknown error occurred ${e}`,
+        HttpStatus.SERVICE_UNAVAILABLE,
+      );
+    }
+
     if (data.status === HttpStatus.NOT_FOUND) {
       throw new HttpException(JSON.stringify(data), data.status);
     }
@@ -124,7 +152,9 @@ export class MoyskladService {
   }
 
   private static get rootUrl(): string {
-    return process.env.NGROK_URL ?? process.env.NEXT_PUBLIC_ROOT_URL;
+    return process.env.NGROK_URL
+      ? process.env.NGROK_URL
+      : process.env.NEXT_PUBLIC_ROOT_URL ?? '';
   }
 
   private async makeHookRequest(entity: string, action: string) {
@@ -164,6 +194,7 @@ export class MoyskladService {
 
   async getProducts(): Promise<MoyskladProduct[]> {
     await this.checkOnAuth();
+    this.logger.log(`Getting products from ${this.api.auth}`);
     const data = await fetch(this.api.productUrl, {
       method: 'GET',
       redirect: 'follow',
@@ -171,6 +202,7 @@ export class MoyskladService {
         Authorization: this.api.auth,
       },
     });
+    this.logger.log(`Got products from ${this.api.auth}`);
 
     const jsonData: MoyskladResponse = await data.json();
     return jsonData.rows;
@@ -195,7 +227,8 @@ export class MoyskladService {
 
   async getUom(id: string): Promise<UomMeasure> {
     const uoms = await this.getUoms();
-    return uoms.find((i) => i.id === id);
+    const idUom = uoms.find((i) => i.id === id);
+    return throwExceptionIfNull<UomMeasure>(idUom, 'idUom');
   }
 
   async getUoms() {
@@ -244,7 +277,7 @@ export class MoyskladService {
 
   async getCurrency(id: string): Promise<MoyskladCurrency> {
     const currencies = await this.getCurrencies();
-    return currencies.find((i) => i.id === id);
+    return throwExceptionIfNull(currencies.find((i) => i.id === id));
   }
 
   async getImages(id: string): Promise<MoyskladImageResponse> {
@@ -300,57 +333,59 @@ export class MoyskladService {
   async toImportDto(
     product: MoyskladProduct,
     importGroups: (dto: CreateFromNameDto[]) => Promise<string[]>,
-    getByUuid: (str: string) => Promise<ProductGroup>,
   ): Promise<MakeImportDto> {
-    const groupUUID = await importGroups([{ name: product.pathName }]);
-    const groupName = (await getByUuid(groupUUID[0])).name;
+    const groupNames = await importGroups([{ name: product.pathName }]);
 
-    const uomId = strLast(product.uom.meta.href);
-    const uomMeasure = await this.getUom(uomId);
+    const uomId = strLast(product.uom?.meta?.href ?? '');
+    const uomMeasure = uomId
+      ? await nullIfException(this.getUom(uomId), this.logger)
+      : null;
 
-    const currencyId = strLast(product.salePrices[0].currency.meta.href);
-    const currency = await this.getCurrency(currencyId);
+    const currencyId = strLast(product.salePrices[0].currency.meta?.href ?? '');
+    const currency = currencyId
+      ? await nullIfException(this.getCurrency(currencyId), this.logger)
+      : null;
 
-    let country: MoyskladCountry | undefined;
+    let country: MoyskladCountry | null | undefined = null;
     if (product.country && product.country.href) {
       const countryId = strLast(product.country.href);
-      country = await this.getCountry(countryId);
+      country = countryId
+        ? await nullIfException(this.getCountry(countryId), this.logger)
+        : null;
     }
 
-    const imageId = product.images.meta.href.split('/').at(-2);
-    const imageResponse = await this.getImages(imageId);
-    const bearer = await this.getBearer();
+    const imageId = product.images.meta?.href.split('/').at(-2);
+    this.logger.log(`Start image load ${imageId}`);
+    // const imageResponse = null;
+    // ? await nullIfException(this.getImages(imageId), this.logger)
+    // : null;
+    // const bearer = await this.getBearer();
 
     return {
       uuid: product.id,
       name: product.name,
-      group: groupName,
+      group: groupNames[0],
       price:
         product.salePrices.length > 0 ? product.salePrices[0].value / 100 : 0,
       costPrice: product.buyPrice.value / 100,
       description: product.description,
       code: !isNaN(+product.code) ? +product.code : 0,
-      productType: ProductType[product.trackingType],
+      productType: product.trackingType,
       tax: product?.taxSystem,
       allowToSell: !product.archived,
       quantity: product.volume,
       barCodes: product.barcodes ? product.barcodes.map((b) => b.ean13) : [],
-      measureName: uomMeasure.name,
+      measureName: uomMeasure?.name,
       articleNumber: !isNaN(+product.article) ? +product.article : 0,
       attributes: product.attributes
         ? product.attributes.map((a) => ({ name: a.type, value: a.name }))
         : [],
       country: country?.name,
-      currency: currency.name,
+      currency: currency?.name,
       discountProhibited: product.discountProhibited,
       useParentVat: product.useParentVat,
       variantsCount: product.variantsCount,
-      images: imageResponse.rows.map((r) => ({
-        url: r.miniature.href,
-        name: r.filename,
-        type: r.miniature.mediaType,
-        bearer,
-      })),
+      images: undefined,
     };
   }
 }

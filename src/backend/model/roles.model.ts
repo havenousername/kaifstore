@@ -16,11 +16,11 @@ export class Role extends Model<Role, RoleCreationAttributes> {
     autoIncrement: true,
     primaryKey: true,
   })
-  id: number;
+  id!: number;
 
   @ApiProperty({ example: 'Admin', description: 'Value' })
   @Column({ type: DataType.STRING, unique: true, allowNull: false })
-  name: string;
+  name!: string;
 
   @ApiProperty({
     example:
@@ -28,8 +28,8 @@ export class Role extends Model<Role, RoleCreationAttributes> {
     description: 'Description of description',
   })
   @Column({ type: DataType.STRING })
-  description: string;
+  description!: string;
 
   @HasMany(() => User)
-  users: User[];
+  users!: User[];
 }

@@ -16,12 +16,12 @@ export class Review extends Model<Review> {
   @ApiProperty({ example: 1, description: 'Unique identifier' })
   @PrimaryKey
   @Column
-  id: number;
+  id!: number;
 
   @ApiProperty({ example: 5, description: 'Rate' })
   @AllowNull(false)
   @Column({ type: DataType.INTEGER })
-  rate: number;
+  rate!: number;
 
   @ApiProperty({ example: 'Good product', description: 'Title' })
   @AllowNull(true)
@@ -42,9 +42,9 @@ export class Review extends Model<Review> {
   })
   @ForeignKey(() => User)
   @Column
-  userId: number;
+  userId!: number;
 
   @BelongsTo(() => User)
   @Column
-  user: User;
+  user!: User;
 }

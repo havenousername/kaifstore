@@ -13,10 +13,11 @@ import { CreateProductDto } from '../products/dto/create-product.dto';
 import { ProductGroup } from '../model/product-groups.model';
 import { Product } from '../model/products.model';
 import { differenceWith } from 'lodash';
+import throwExceptionIfNull from '../utils/throw-exception-if-null';
 
 @Injectable()
 export class ImportExportService {
-  private currencies: ResponseCurrenciesData;
+  private currencies!: ResponseCurrenciesData;
   constructor(
     private productService: ProductsService,
     private productGroupsService: ProductGroupsService,
@@ -46,7 +47,7 @@ export class ImportExportService {
       description: product.description,
       code: product.code?.toString(),
       productType: product.productType,
-      tax: product.tax,
+      tax: product.tax ?? '',
       allowToSell: product.allowToSell,
       tags: [],
       quantity: product.quantity,
@@ -67,44 +68,66 @@ export class ImportExportService {
     };
   }
 
-  async update(dto: MakeImportDto) {
-    const group = await this.productGroupsService.getByName(dto.group);
-    if (group.uuid === null) {
-      console.error(group);
-      throw new Error('No group for product');
+  async update(dto: MakeImportDto, groups?: Map<string, ProductGroup>) {
+    const getGroup = async () =>
+      throwExceptionIfNull(
+        await this.productGroupsService.getByName(dto.group),
+      );
+    const hasCached = groups && groups.has(dto.name);
+
+    const group: ProductGroup = hasCached
+      ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        (groups!.get(dto.name) as ProductGroup)
+      : await getGroup();
+
+    if (groups && !hasCached) {
+      groups.set(dto.name, group);
     }
-    const oldProduct = await this.productService.getByUUID(dto.uuid);
+
+    if (groups && group.uuid === null) {
+      throw new HttpException('No group for product', HttpStatus.NOT_FOUND);
+    }
+    const oldProduct = throwExceptionIfNull(
+      await this.productService.getByUUID(dto.uuid),
+    );
     return await this.productService.update(
       { ...this.prepareProduct(dto, group.uuid), id: oldProduct.id },
       [],
-      dto.images,
+      dto.images ?? [],
     );
   }
 
   async synchronize(
     toImportDto: (
       importGroups: (dto: CreateFromNameDto[]) => Promise<string[]>,
-      getByUuid: (str: string) => Promise<ProductGroup>,
     ) => Promise<MakeImportDto[]>,
   ): Promise<Product[]> {
     const existingProducts = await this.productService.getProducts();
-    const dto = await toImportDto(
-      this.importGroups.bind(this),
-      this.productGroupsService.getByUuid,
-    );
+    const dto = await toImportDto(this.importGroups.bind(this));
     const unSyncProducts = differenceWith(
       existingProducts,
       dto,
       (p1, p2) => p1.uuid !== p2.uuid,
     );
-    await this.productService.deleteMultiple(unSyncProducts.map((p) => p.id));
+    try {
+      await this.productService.deleteMultiple(unSyncProducts.map((p) => p.id));
+    } catch (e) {
+      throw new HttpException(
+        `Can not delete some of the unSync products, ${unSyncProducts.map(
+          (i) => i.id,
+        )}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    const groups: Map<string, ProductGroup> = new Map<string, ProductGroup>();
     return Promise.all(
       dto.map(async (product) => {
         const existingProduct = await this.productService.getByUUID(
           product.uuid,
         );
         if (existingProduct) {
-          const updated = await this.update(product);
+          const updated = await this.update(product, groups);
           if (updated.length === 1) {
             return existingProduct;
           } else {
@@ -119,14 +142,16 @@ export class ImportExportService {
 
   private async importSingleProduct(product: MakeImportDto): Promise<Product> {
     const group = await this.productGroupsService.getByName(product.group);
-    if (group.uuid === null) {
+    if (group && group.uuid === null) {
       console.error(group);
-      throw new Error('No group for product');
+      throw new HttpException('No group for product', HttpStatus.NOT_FOUND);
     }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const uuid = group!.uuid;
     return await this.productService.create(
-      this.prepareProduct(product, group.uuid),
+      this.prepareProduct(product, uuid),
       [],
-      product.images,
+      product.images ?? [],
     );
   }
 
@@ -138,7 +163,9 @@ export class ImportExportService {
       console.error(e);
       throw new HttpException(
         'Products and groups provided, have either wrong order, or do not have acceptable type.' +
-          e.message,
+        (e as { message: string }).message
+          ? (e as { message: string }).message
+          : '',
         HttpStatus.NOT_ACCEPTABLE,
       );
     }

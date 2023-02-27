@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Product } from '../../backend/model/products.model';
 
-const useCalculateDiscount = (product: Product) => {
+const useCalculateDiscount = (product?: Product) => {
   const [discountPrice, setDiscountPrice] = useState(
     product ? product.price : 0,
   );
@@ -16,15 +16,18 @@ const useCalculateDiscount = (product: Product) => {
       : 0;
   }, []);
 
-  const calculatePrice = useCallback(() => {
-    const newPrice =
-      product.price - (product.price * discountPercent(product)) / 100;
-    setDiscountPrice(newPrice);
-  }, [discountPercent, product]);
+  const calculatePrice = useCallback(
+    (product: Product) => {
+      const newPrice =
+        product.price - (product.price * discountPercent(product)) / 100;
+      setDiscountPrice(newPrice);
+    },
+    [discountPercent],
+  );
 
   useEffect(() => {
     if (product) {
-      calculatePrice();
+      calculatePrice(product);
     }
   }, [calculatePrice, product]);
 

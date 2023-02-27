@@ -8,5 +8,5 @@ export class EditProductDto extends CreateProductDto {
     description: 'Product name',
   })
   @IsNumber({}, { message: 'Should be always number' })
-  readonly id: number;
+  readonly id!: number;
 }

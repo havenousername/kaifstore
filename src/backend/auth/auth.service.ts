@@ -5,6 +5,7 @@ import { User } from '../model/users.model';
 import { AuthUserDto } from './dto/auth-user.dto';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import * as bcrypt from 'bcryptjs';
+import throwExceptionIfNull from '../utils/throw-exception-if-null';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +31,7 @@ export class AuthService {
     return null;
   }
 
-  async getBearerUser(bearerToken: string | undefined): Promise<User> {
+  async getBearerUser(bearerToken: string | undefined): Promise<User | null> {
     if (!bearerToken) {
       return null;
     }
@@ -44,7 +45,10 @@ export class AuthService {
   }
 
   async login(authDto: AuthUserDto) {
-    const user = await this.validateUser(authDto.email, authDto.password);
+    const user = throwExceptionIfNull(
+      await this.validateUser(authDto.email, authDto.password),
+      'user',
+    );
     return this.generateToken(user);
   }
 

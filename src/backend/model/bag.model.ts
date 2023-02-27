@@ -16,17 +16,17 @@ export class Bag extends Model<Bag> {
   @ApiProperty({ example: 1, description: 'Unique identifier' })
   @PrimaryKey
   @Column
-  id: number;
+  id!: number;
 
   @ApiProperty({ example: 1, description: 'Product count' })
   @AllowNull(false)
   @Column({ type: DataType.SMALLINT })
-  productCount: number;
+  productCount!: number;
 
   @ApiProperty({ example: true, description: 'Delivery' })
   @AllowNull(false)
   @Column({ type: DataType.BOOLEAN })
-  delivery: number;
+  delivery!: number;
 
   @ApiProperty({
     example: 'Some characteristic',
@@ -34,7 +34,7 @@ export class Bag extends Model<Bag> {
   })
   @AllowNull(true)
   @Column({ type: DataType.STRING(300) })
-  characteristic: number;
+  characteristic!: number;
 
   @ApiProperty({
     example: 'Some characteristic',
@@ -42,9 +42,9 @@ export class Bag extends Model<Bag> {
   })
   @ForeignKey(() => Product)
   @Column
-  productId: number;
+  productId!: number;
 
   @BelongsTo(() => Product)
   @Column
-  product: Product;
+  product!: Product;
 }
