@@ -1,5 +1,11 @@
-import { NextPageWithLayout } from '../../interfaces/pages-layout';
-import React, { ReactElement, ReactNode, useEffect, useState } from 'react';
+import React, {
+  ReactElement,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import AppLayout from '../../components/functional/app-layout';
 import BackButton from '../../components/common/back-button';
 import { useRouter } from 'next/router';
@@ -16,6 +22,8 @@ import useLastVisitedProducts from '../../hooks/use-last-visited-products';
 import { MouseEvent } from 'react';
 import CarouselProducts from 'src/client/components/carousel-products';
 import useFetcher from '../../hooks/use-fetcher';
+import { AuthenticationContext } from '../../context/authenticated.context';
+import { SUPER_USER_ROLE } from '../../../backend/app/constants';
 
 export function getStaticProps(context) {
   return {
@@ -32,10 +40,7 @@ export const getStaticPaths = async () => {
   };
 };
 
-const CatalogSlug: NextPageWithLayout = (props: {
-  productId: string;
-  children?: ReactNode;
-}) => {
+const CatalogSlug = (props: { productId: string; children?: ReactNode }) => {
   const fetcher = useFetcher();
   const { data: product } = useSWRImmutable<Product>(
     `v1/products/${props.productId}`,
@@ -46,6 +51,12 @@ const CatalogSlug: NextPageWithLayout = (props: {
   const router = useRouter();
   const { t } = useTranslation();
   const [quantity, setQuantity] = useState<number | undefined>();
+  const { user } = useContext(AuthenticationContext);
+
+  const isAdmin = useMemo(
+    () => user && user.role.name === SUPER_USER_ROLE.name,
+    [user],
+  );
 
   useEffect(() => {
     if (product && product.quantity) {
@@ -56,8 +67,8 @@ const CatalogSlug: NextPageWithLayout = (props: {
     }
   }, [addLastVisited, product]);
 
-  const onChangeRange = (range: number) => {
-    setQuantity(range);
+  const onChangeRange = (range: number | [number, number]) => {
+    setQuantity(Array.isArray(range) ? range[0] : range);
   };
 
   const onOtherProductClick = (e: MouseEvent, pr: Product) => {
@@ -111,7 +122,7 @@ const CatalogSlug: NextPageWithLayout = (props: {
               },
             }}
             onClick={() =>
-              router.push(`/catalog?groupId=${product.group.groupId}`)
+              router.push(`/catalog?groupId=${product.group.uuid}`)
             }
           >
             {product.group.name}
@@ -184,7 +195,12 @@ const CatalogSlug: NextPageWithLayout = (props: {
               {t('ProductDetails.NotAvailable')}
             </Typography>
           )}
-          <Box display={'flex'} justifyContent={'center'} marginY={'2rem'}>
+          <Box
+            display={'flex'}
+            flexDirection={'column'}
+            alignItems={'center'}
+            marginY={'2rem'}
+          >
             <AppBaseButton
               variant={'outlined'}
               color={'secondary'}
@@ -197,6 +213,23 @@ const CatalogSlug: NextPageWithLayout = (props: {
             >
               {t('ProductDetails.AddToBin')}
             </AppBaseButton>
+            {isAdmin && (
+              <AppBaseButton
+                variant={'contained'}
+                color={'primary'}
+                type={'button'}
+                sx={{
+                  marginTop: '2rem',
+                }}
+                onClick={() =>
+                  router.push(
+                    `/admin/products/${product.group.uuid}/${product.id}`,
+                  )
+                }
+              >
+                {t('ProductDetails.Edit')}
+              </AppBaseButton>
+            )}
           </Box>
         </Box>
       </Box>
