@@ -1,4 +1,4 @@
-import { CssBaseline } from '@mui/material';
+import { CssBaseline, GlobalStyles } from '@mui/material';
 import Head from 'next/head';
 import '../styles/app.css';
 import '../i18n';
@@ -25,6 +25,19 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
       </Head>
       <AppTheme>
         <CssBaseline />
+        <GlobalStyles
+          styles={{
+            '#__next': {
+              height: '100%',
+            },
+            '#__next > div': {
+              height: '100%',
+            },
+            '*, *:after, *:before': {
+              boxSizing: 'border-box',
+            },
+          }}
+        />
         <GlobalSnackbar>
           <BaseUrlContext.Provider value={{ baseUrl: pageProps.baseUrl }}>
             <AuthenticationContext.Provider
@@ -42,6 +55,12 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 MyApp.getInitialProps = async ({ Component, ctx }: AppContext) => {
   // calls page's `getInitialProps` and fills `appProps.pageProps`
   let pageProps: Record<string, string> = {};
+  if (!process.env.NEXT_PUBLIC_ROOT_URL) {
+    throw new Error(
+      `No NEXT_PUBLIC_ROOT_URL, got ${process.env.NEXT_PUBLIC_ROOT_URL}`,
+    );
+  }
+
   pageProps.baseUrl = process.env.NEXT_PUBLIC_ROOT_URL;
   if (Component.getInitialProps) {
     pageProps = await Component.getInitialProps(ctx);

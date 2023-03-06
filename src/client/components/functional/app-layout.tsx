@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactNode, useState } from 'react';
+import { ReactNode, SyntheticEvent, useState } from 'react';
 import Navbar from '../navigation/navbar';
 import { Box } from '@mui/material';
 import HeaderSearchbar from '../navigation/header-searchbar';
@@ -14,13 +14,11 @@ const AppLayout = ({
   const [searchValue, setSearchValue] = useState<string>('');
   const { t } = useTranslation();
 
-  const changeSearchValue = (
-    e: (ChangeEvent & { target: HTMLInputElement }) | string,
-  ) => {
+  const changeSearchValue = (e: string | SyntheticEvent<Element, Event>) => {
     if (typeof e === 'string') {
       setSearchValue(e);
     } else {
-      setSearchValue(e.target.value);
+      setSearchValue((e.target as unknown as { value: string }).value);
     }
   };
 
