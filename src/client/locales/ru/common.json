@@ -48,6 +48,8 @@
     "AppSettings": "Настройки приложения",
     "ChangeToken": "Изменить токен",
     "Token": "Токен",
+    "TokenTaken": "Токен получен",
+    "TokenNotTaken": "Токен не получен",
     "AddToken": "Добавить токен",
     "Synchronized": "Сихронизованно",
     "SyncWarningTitle": "Замечание по синхронизации",

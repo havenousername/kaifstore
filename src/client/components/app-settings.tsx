@@ -11,14 +11,14 @@ import InputSelect from './input/input-select';
 const AppSettings = ({
   control,
   settingsSave,
-  token,
+  hasToken,
   watch,
   synchronized,
   synchronize,
 }: {
   control: Control<EditableAppSettings>;
   settingsSave: () => void;
-  token?: string;
+  hasToken: boolean;
   watch: UseFormWatch<EditableAppSettings>;
   synchronized?: boolean;
   synchronize: (current: boolean) => void;
@@ -72,7 +72,7 @@ const AppSettings = ({
             helperProps={helperProps}
           />
         </FormGroup>
-        {token && (
+        {hasToken && (
           <>
             <Box sx={{ gridColumn: 'span 6' }}>
               <Typography variant={'h5'} component={'h5'} fontWeight={600}>
@@ -81,7 +81,9 @@ const AppSettings = ({
             </Box>
             <Box sx={{ gridColumn: 'span 6' }}>
               <Typography variant={'h5'} component={'h5'} fontWeight={600}>
-                {token}
+                {hasToken
+                  ? t('Settings.TokenTaken')
+                  : t('Settings.TokenNotTaken')}
               </Typography>
             </Box>
             <Box sx={{ gridColumn: 'span 6' }}>
@@ -103,14 +105,14 @@ const AppSettings = ({
             </Box>
           </>
         )}
-        {watch('moyskladIntegration') && !token && (
+        {watch('moyskladIntegration') && !hasToken && (
           <Box sx={{ gridColumn: 'span 12' }}>
             <Typography variant={'h5'} component={'h5'} fontWeight={600}>
               {t('Settings.AddToken')}
             </Typography>
           </Box>
         )}
-        {((watch('moyskladIntegration') && !token) || changeToken) && (
+        {((watch('moyskladIntegration') && !hasToken) || changeToken) && (
           <>
             <FormGroup sx={{ gridColumn: 'span 6' }}>
               <Typography variant={'h5'} component={'h5'} fontWeight={600}>
@@ -151,7 +153,7 @@ const AppSettings = ({
             </FormGroup>
           </>
         )}
-        {token && (
+        {hasToken && (
           <>
             <Box sx={{ gridColumn: 'span 6' }}>
               <Typography variant={'h5'} component={'h5'} fontWeight={600}>
@@ -162,7 +164,7 @@ const AppSettings = ({
               <FormControl sx={{ fontSize: '0.8rem' }}>
                 <InputSelect
                   selected={synchronized}
-                  onChange={() => synchronize(synchronized)}
+                  onChange={() => synchronize(!!synchronized)}
                   options={[
                     { content: t('Choices.No'), value: false },
                     { content: t('Choices.Yes'), value: true },

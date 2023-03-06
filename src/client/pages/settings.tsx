@@ -90,7 +90,7 @@ const Settings: NextPageWithLayout = () => {
       moyskladPassword: '',
     },
   });
-  const [token, setToken] = useState('');
+  const [hasAccessToken, setHasAccessToken] = useState<boolean>(false);
   const [sync, setSync] = useState(false);
   const [openSyncWarning, setOpenSyncWarning] = useState(false);
 
@@ -115,8 +115,8 @@ const Settings: NextPageWithLayout = () => {
     if (appSettings && !appSettingsError) {
       setSettingsValue('language', appSettings.language);
       setSettingsValue('moyskladIntegration', appSettings.moyskladIntegration);
-      setToken(appSettings.moyskladToken as unknown as string);
-      setSync(appSettings.moyskladSync);
+      setHasAccessToken(appSettings.moyskladIntegration);
+      setSync(!!appSettings.moyskladSync);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appSettings, appSettingsError]);
@@ -236,7 +236,7 @@ const Settings: NextPageWithLayout = () => {
         <AppSettings
           watch={settingsWatch}
           control={settingsControl}
-          token={token}
+          hasToken={hasAccessToken}
           settingsSave={onAppSettingsSave}
           synchronized={sync}
           synchronize={(sync) =>
