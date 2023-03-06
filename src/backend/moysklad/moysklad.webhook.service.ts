@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import {
   MoyskladEvent,
   MoyskladWebhook,
@@ -12,6 +12,7 @@ import { MakeImportDto } from '../import-export/dto/make-import.dto';
 
 @Injectable()
 export class MoyskladWebhookService {
+  private logger = new Logger(MoyskladWebhookService.name);
   constructor(
     @Inject(MoyskladService)
     private readonly moyskladService: MoyskladService,
@@ -36,28 +37,39 @@ export class MoyskladWebhookService {
   private async prepareProduct(event: MoyskladEvent): Promise<MakeImportDto> {
     const eventId = MoyskladWebhookService.strLast(event.meta.href);
     const product = await this.moyskladService.getProduct(eventId ?? '');
-    return await this.moyskladService.toImportDto(
-      product,
-      this.importExport.importGroups,
-    );
+    return await this.moyskladService.toImportDto(product);
   }
 
   public async [WebhookAction.CREATE](event: MoyskladEvent) {
+    this.logger.log(
+      `[MOYSKLAD][CREATE] product event ${event.meta.href} was fired`,
+    );
     const product = await this.prepareProduct(event);
-    return await this.importExport.import([product]);
+    const imported = await this.importExport.import([product]);
+    this.logger.log(`[MOYSKLAD][CREATE] product ${imported[0].id} was created`);
+    return imported;
   }
 
   public async [WebhookAction.UPDATE](event: MoyskladEvent) {
+    this.logger.log(
+      `[MOYSKLAD][UPDATE] product event ${event.meta.href} was fired`,
+    );
     const product = await this.prepareProduct(event);
-    return await this.importExport.update(product);
+    const updated = await this.importExport.update(product);
+    this.logger.log(`[MOYSKLAD][UPDATE] product ${updated[0]} was updated`);
   }
 
   public async [WebhookAction.DELETE](event: MoyskladEvent) {
+    this.logger.log(
+      `[MOYSKLAD][DELETE] product event ${event.meta.href} was fired`,
+    );
     let eventId = MoyskladWebhookService.strLast(event.meta.href);
     if (!eventId) {
       eventId = '';
     }
-    return await this.productsService.deleteFromUUID(eventId);
+    const id = await this.productsService.deleteFromUUID(eventId);
+    this.logger.log(`[MOYSKLAD][DELETE] product ${id} was updated`);
+    return id;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function

@@ -1,5 +1,5 @@
 import { ProductMeasure } from './product-measure.enum';
-import { ProductType } from './product-type.enum';
+import { ProductTypes } from './product-type.enum';
 
 export type MoyskladResponse<T = MoyskladProduct> = {
   context: {
@@ -134,7 +134,7 @@ export type MoyskladProduct = {
   taxSystem: TaxSystem;
   things: string[];
   tnved: string;
-  trackingType: ProductType;
+  trackingType: keyof typeof ProductTypes;
   variantsCount: number;
   volume: number;
   weight: number;

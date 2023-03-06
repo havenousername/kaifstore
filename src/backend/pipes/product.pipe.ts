@@ -28,9 +28,7 @@ export class ProductPipe implements PipeTransform<unknown> {
       discounts: value.discounts ? JSON.parse(value.discounts) : undefined,
       groupId: value.groupId,
       id: +value.id ? +value.id : 0,
-      measurename: value.measurename
-        ? ProductPipe.prepareMeasureName(value.measurename)
-        : undefined,
+      measurename: value?.measurename ?? 'PIECE',
       name: value.name ? String(value.name) : '',
       tax: value.tax,
       discountProhibited: value.discountProhibited ?? false,

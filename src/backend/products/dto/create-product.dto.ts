@@ -6,7 +6,7 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
-import { ProductMeasure } from '../../interfaces/product-measure.enum';
+import { ProductMeasureEnum } from '../../interfaces/product-measure.enum';
 import { ProductType } from '../../interfaces/product-type.enum';
 
 export class CreateProductDto {
@@ -70,7 +70,7 @@ export class CreateProductDto {
     required: false,
   })
   @IsString({ message: 'Should be string' })
-  readonly measurename?: keyof typeof ProductMeasure;
+  readonly measurename?: ProductMeasureEnum;
 
   @ApiProperty({
     example: 1,

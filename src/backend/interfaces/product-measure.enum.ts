@@ -7,4 +7,11 @@ export enum ProductMeasure {
   KIT = 'компл',
 }
 
+export type ProductMeasureEnum =
+  | 'PIECE'
+  | 'LITER'
+  | 'SQUARE_METER'
+  | 'CUBIC_METER'
+  | 'KIT';
+
 export const productMeasures = Object.values(ProductMeasure);

@@ -14,10 +14,12 @@ import { ProductGroup } from '../model/product-groups.model';
 import { Product } from '../model/products.model';
 import { differenceWith } from 'lodash';
 import throwExceptionIfNull from '../utils/throw-exception-if-null';
+import { TimeLogger } from '../utils/logs/time-logger';
 
 @Injectable()
 export class ImportExportService {
   private currencies!: ResponseCurrenciesData;
+  private readonly logger = new TimeLogger(ImportExportService.name);
   constructor(
     private productService: ProductsService,
     private productGroupsService: ProductGroupsService,
@@ -28,9 +30,7 @@ export class ImportExportService {
 
   async importGroups(dto: CreateFromNameDto[]) {
     const results: string[] = [];
-    for (const group of dto) {
-      results.push(...(await this.productGroupsService.createGroups(group)));
-    }
+    results.push(...(await this.productGroupsService.createGroups(dto)));
     return results;
   }
 
@@ -52,9 +52,7 @@ export class ImportExportService {
       tags: [],
       quantity: product.quantity,
       barCodes: product.barCodes,
-      measurename: product.measureName
-        ? ProductPipe.prepareMeasureName(product.measureName)
-        : undefined,
+      measurename: product?.measureName ?? undefined,
       articleNumber: product.articleNumber,
       discounts: [],
       attributes: product.attributes
@@ -71,17 +69,18 @@ export class ImportExportService {
   async update(dto: MakeImportDto, groups?: Map<string, ProductGroup>) {
     const getGroup = async () =>
       throwExceptionIfNull(
-        await this.productGroupsService.getByName(dto.group),
+        await this.productGroupsService.getByName(dto.group, { all: true }),
       );
-    const hasCached = groups && groups.has(dto.name);
+    const encodedName = new TextEncoder().encode(dto.name).join();
+    const hasCached = groups && groups.has(encodedName);
 
     const group: ProductGroup = hasCached
       ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        (groups!.get(dto.name) as ProductGroup)
+        (groups!.get(encodedName) as ProductGroup)
       : await getGroup();
 
-    if (groups && !hasCached) {
-      groups.set(dto.name, group);
+    if (groups && !hasCached && !groups.has(encodedName)) {
+      groups.set(encodedName, group);
     }
 
     if (groups && group.uuid === null) {
@@ -98,12 +97,10 @@ export class ImportExportService {
   }
 
   async synchronize(
-    toImportDto: (
-      importGroups: (dto: CreateFromNameDto[]) => Promise<string[]>,
-    ) => Promise<MakeImportDto[]>,
-  ): Promise<Product[]> {
+    toImportDto: () => Promise<MakeImportDto[]>,
+  ): Promise<void> {
     const existingProducts = await this.productService.getProducts();
-    const dto = await toImportDto(this.importGroups.bind(this));
+    const dto = await toImportDto();
     const unSyncProducts = differenceWith(
       existingProducts,
       dto,
@@ -121,23 +118,31 @@ export class ImportExportService {
     }
 
     const groups: Map<string, ProductGroup> = new Map<string, ProductGroup>();
-    return Promise.all(
-      dto.map(async (product) => {
-        const existingProduct = await this.productService.getByUUID(
-          product.uuid,
-        );
-        if (existingProduct) {
-          const updated = await this.update(product, groups);
-          if (updated.length === 1) {
-            return existingProduct;
+    this.logger.startTime('Start importing products');
+    const handle = await Promise.allSettled(
+      dto
+        .filter((i) => i.group)
+        .map(async (product) => {
+          const existingProduct = await this.productService.getByUUID(
+            product.uuid,
+          );
+          if (existingProduct) {
+            await this.update(product, groups);
           } else {
-            return updated[1][0];
+            await this.importSingleProduct(product);
           }
-        } else {
-          return this.importSingleProduct(product);
-        }
-      }),
+        }),
     );
+    this.logger.endTime('End importing products');
+    for (const promise of handle) {
+      if (promise.status === 'rejected') {
+        throw new HttpException(
+          `Could not import product. Error: ${promise.reason}`,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+    return;
   }
 
   private async importSingleProduct(product: MakeImportDto): Promise<Product> {
@@ -155,10 +160,9 @@ export class ImportExportService {
     );
   }
 
-  async import(dto: MakeImportDto[]): Promise<boolean> {
+  async import(dto: MakeImportDto[]): Promise<Product[]> {
     try {
-      await Promise.all(dto.map(this.importSingleProduct));
-      return true;
+      return await Promise.all(dto.map((p) => this.importSingleProduct(p)));
     } catch (e) {
       console.error(e);
       throw new HttpException(

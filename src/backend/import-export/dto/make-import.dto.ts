@@ -6,7 +6,7 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
-import { ProductMeasure } from '../../interfaces/product-measure.enum';
+import { ProductMeasureEnum } from '../../interfaces/product-measure.enum';
 import { ProductType } from '../../interfaces/product-type.enum';
 import { Attributes } from '../../interfaces/attributes';
 
@@ -68,11 +68,11 @@ export class MakeImportDto {
   code?: number;
 
   @ApiProperty({
-    example: ProductMeasure.KG,
+    example: 'KG',
     description: 'Product Measure',
   })
   @IsString()
-  measureName?: ProductMeasure;
+  measureName?: ProductMeasureEnum;
 
   @ApiProperty({
     example: false,

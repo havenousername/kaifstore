@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { AppSettings } from '../model/app-settings.model';
 import { UpdateSettingsDto } from './dto/update-settings.dto';
@@ -8,13 +8,11 @@ import { encrypt } from '../utils/crypto';
 import { ImportExportService } from '../import-export/import-export.service';
 import { MoyskladProduct } from '../interfaces/moysklad-api-types';
 import { CreateFromNameDto } from '../product-groups/dto/create-from-name.dto';
-import { Product } from '../model/products.model';
 import { MakeImportDto } from '../import-export/dto/make-import.dto';
 import throwExceptionIfNull from '../utils/throw-exception-if-null';
 
 @Injectable()
 export class AppSettingsService {
-  private readonly logger = new Logger(AppSettings.name);
   constructor(
     @InjectModel(AppSettings) private appSettingsRepository: typeof AppSettings,
     @Inject(forwardRef(() => MoyskladService))
@@ -94,37 +92,38 @@ export class AppSettingsService {
     return data;
   }
 
-  private async syncData(): Promise<Product[]> {
+  private async syncData(): Promise<void> {
     const products = await this.moyskladService.getProducts();
-    const prepareProducts =
-      (products: MoyskladProduct[]) =>
-      async (importGroups: (dto: CreateFromNameDto[]) => Promise<string[]>) => {
-        const result: MakeImportDto[] = [];
-        for (const product of products) {
-          const d1 = new Date();
-          this.logger.log(`Product with id ${product.id} will be imported now`);
-          result.push(
-            await this.moyskladService.toImportDto(product, importGroups),
-          );
-          const d2 = new Date();
-          this.logger.log(
-            `Product with id ${product.id} had been imported now`,
-            [`Duration: ${d2.getTime() - d1.getTime()}`, AppSettings.name],
-          );
-        }
-        return result;
-      };
+    const prepareProducts = (products: MoyskladProduct[]) => async () => {
+      const result: MakeImportDto[] = [];
+      for (const product of products) {
+        result.push(await this.moyskladService.toImportDto(product));
+      }
+      return result;
+    };
+    const groupsHref = new Set<CreateFromNameDto>();
+    for (const product of products) {
+      if (product.group.meta?.href) {
+        groupsHref.add({ name: product.pathName });
+      }
+    }
+
+    await this.importExportService.importGroups([...groupsHref]);
+
     return this.importExportService.synchronize(prepareProducts(products));
   }
 
   async changeSync() {
     const sync = await this.getSettings();
-    if (sync.moyskladSync) {
+    const hasWebhooks = await this.moyskladService.hasWebhooks();
+    if (hasWebhooks) {
       await this.moyskladService.deleteWebhooks();
-    } else {
+    }
+    if (!sync.moyskladSync) {
       await this.syncData();
       await this.moyskladService.createWebhooks();
     }
+
     await this.appSettingsRepository.update(
       { ...sync, moyskladSync: !sync.moyskladSync },
       { where: { id: 1 } },

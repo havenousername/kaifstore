@@ -34,11 +34,13 @@ export class ProductGroupsService {
   }
 
   async createGroups(
-    dto: CreateFromNameDto,
+    dto: CreateFromNameDto[],
     separator = '/',
   ): Promise<string[]> {
     // can come something like dto.name = 'ParentParentGroup/Parent/ChildGroup'
-    const names = dto.name.split(separator);
+    const names = [
+      ...new Set<string>(dto.map((i) => i.name.split(separator)).flat()),
+    ];
     const groups: string[] = [];
     const groupsToCreate: CreateGroupDto[] = [];
     for (let i = 0; i < names.length; i++) {

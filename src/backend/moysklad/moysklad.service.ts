@@ -15,17 +15,22 @@ import {
   MoyskladProduct,
   MoyskladResponse,
   UomMeasure,
+  WebhookAction,
 } from '../interfaces/moysklad-api-types';
 import { AppSettingsService } from '../app-settings/app-settings.service';
 import { InjectModel } from '@nestjs/sequelize';
 import { MoyskladWebhook } from '../model/moysklad-webhook.model';
 import { WEBHOOK_PRODUCT } from '../app/constants';
 import { MakeImportDto } from '../import-export/dto/make-import.dto';
-import { CreateFromNameDto } from '../product-groups/dto/create-from-name.dto';
 import throwExceptionIfNull from '../utils/throw-exception-if-null';
 import fetchTimeout from '../utils/fetchTimeout';
 import strLast from '../utils/last';
 import nullIfException from '../utils/null-if-exception';
+import { ProductTypes } from '../interfaces/product-type.enum';
+import {
+  ProductMeasure,
+  ProductMeasureEnum,
+} from '../interfaces/product-measure.enum';
 
 @Injectable()
 export class MoyskladService {
@@ -38,6 +43,7 @@ export class MoyskladService {
     timestamp: true,
   });
   private static readonly TIMEOUT = 1000;
+  private currentHookData: [WebhookAction, string] = [WebhookAction.CREATE, ''];
   // private employee: MoyskladEmployee;
   constructor(
     @InjectModel(MoyskladWebhook)
@@ -106,7 +112,9 @@ export class MoyskladService {
     method: string;
     headers: Record<string, string>;
     body?: Record<string, any>;
+    timeout?: number;
   }) {
+    props.timeout = props.timeout ?? MoyskladService.TIMEOUT;
     const initOptions: RequestInit = {
       method: props.method,
       headers: {
@@ -122,15 +130,11 @@ export class MoyskladService {
     );
     let data!: Response;
     try {
-      data = await fetchTimeout(
-        props.url,
-        MoyskladService.TIMEOUT,
-        initOptions,
-      );
+      data = await fetchTimeout(props.url, props.timeout, initOptions);
     } catch (e) {
       if ((e as { name: string }).name === 'AbortError') {
         this.logger.error(
-          `Fetch aborted with timeout ${MoyskladService.TIMEOUT} and ${e}`,
+          `Fetch aborted with timeout ${props.timeout} and ${e}`,
         );
       }
       throw new HttpException(
@@ -152,9 +156,13 @@ export class MoyskladService {
   }
 
   private static get rootUrl(): string {
-    return process.env.NGROK_URL
-      ? process.env.NGROK_URL
+    return process.env.HTTPS
+      ? process.env.HTTPS
       : process.env.NEXT_PUBLIC_ROOT_URL ?? '';
+  }
+
+  private static get productHookUrl(): string {
+    return MoyskladService.rootUrl + '/v1/moysklad' + WEBHOOK_PRODUCT;
   }
 
   private async makeHookRequest(entity: string, action: string) {
@@ -165,23 +173,30 @@ export class MoyskladService {
         'Content-Type': 'application/json',
       },
       body: {
-        url: MoyskladService.rootUrl + '/v1/moysklad' + WEBHOOK_PRODUCT,
+        url: MoyskladService.productHookUrl,
         action,
         entityType: entity,
       },
+      timeout: 2000,
     });
   }
 
   private async createProductCreatedHook(): Promise<MoyskladHookResponse> {
-    return await this.makeHookRequest('product', 'CREATE');
+    this.currentHookData[0] = WebhookAction.CREATE;
+    this.currentHookData[1] = MoyskladService.productHookUrl;
+    return await this.makeHookRequest('product', this.currentHookData[0]);
   }
 
   private async createProductUpdatedHook(): Promise<MoyskladHookResponse> {
-    return await this.makeHookRequest('product', 'UPDATE');
+    this.currentHookData[0] = WebhookAction.UPDATE;
+    this.currentHookData[1] = MoyskladService.productHookUrl;
+    return await this.makeHookRequest('product', this.currentHookData[0]);
   }
 
   private async createProductRemovedHook(): Promise<MoyskladHookResponse> {
-    return await this.makeHookRequest('product', 'DELETE');
+    this.currentHookData[0] = WebhookAction.DELETE;
+    this.currentHookData[1] = MoyskladService.productHookUrl;
+    return await this.makeHookRequest('product', this.currentHookData[0]);
   }
 
   private async deleteProductCreatedHook(id: string) {
@@ -194,7 +209,7 @@ export class MoyskladService {
 
   async getProducts(): Promise<MoyskladProduct[]> {
     await this.checkOnAuth();
-    this.logger.log(`Getting products from ${this.api.auth}`);
+    this.logger.log('Getting products from moysklad');
     const data = await fetch(this.api.productUrl, {
       method: 'GET',
       redirect: 'follow',
@@ -206,6 +221,27 @@ export class MoyskladService {
 
     const jsonData: MoyskladResponse = await data.json();
     return jsonData.rows;
+  }
+
+  async getWebhooks(): Promise<MoyskladHookResponse[]> {
+    await this.checkOnAuth();
+    const data = await this.makeRequest<MoyskladResponse<MoyskladHookResponse>>(
+      {
+        url: this.api.webhookUrl,
+        method: 'GET',
+        headers: {},
+      },
+    );
+
+    return data.rows;
+  }
+
+  async removeCurrentUrlWebhooks(url: string, action: WebhookAction) {
+    await this.checkOnAuth();
+    const hooks = await this.getWebhooks();
+    hooks
+      .filter((hook) => hook.action === action && hook.url === url)
+      .map((hook) => this.deleteProductCreatedHook(hook.id));
   }
 
   private async getItem<T>(
@@ -284,28 +320,46 @@ export class MoyskladService {
     return this.getItem(this.api.productUrl, id, 'images');
   }
 
+  private async createWebhook(
+    hookCreator: () => Promise<MoyskladHookResponse>,
+    attemptsLimit = 10,
+    attempts = 0,
+  ) {
+    if (attempts === attemptsLimit) {
+      return;
+    }
+    try {
+      const hook = await hookCreator();
+      await this.moyskladWebhookRepository.create({
+        url: hook.url,
+        action: hook.action,
+        uuid: hook.id,
+      });
+    } catch (e) {
+      if (e instanceof HttpException && e.getResponse()[0].code === 30003) {
+        this.logger.warn(
+          `Such webhook already exists. Error message: ${
+            e.getResponse()[0].error
+          }. More info: ${e.getResponse()[0].moreInfo}`,
+        );
+        this.logger.log('Trying to delete unrecognized hook. Please wait...');
+        await this.removeCurrentUrlWebhooks(
+          this.currentHookData[1],
+          this.currentHookData[0],
+        );
+        attempts += 1;
+        await this.createWebhook(hookCreator, attemptsLimit, attempts);
+      } else {
+        throw e;
+      }
+    }
+  }
+
   async createWebhooks() {
     await this.checkOnAuth();
-    const onCreateHook = await this.createProductCreatedHook();
-    await this.moyskladWebhookRepository.create({
-      url: onCreateHook.url,
-      action: onCreateHook.action,
-      uuid: onCreateHook.id,
-    });
-
-    const onUpdateHook = await this.createProductUpdatedHook();
-    await this.moyskladWebhookRepository.create({
-      url: onUpdateHook.url,
-      action: onUpdateHook.action,
-      uuid: onUpdateHook.id,
-    });
-
-    const onDeleteHook = await this.createProductRemovedHook();
-    await this.moyskladWebhookRepository.create({
-      url: onDeleteHook.url,
-      action: onDeleteHook.action,
-      uuid: onDeleteHook.id,
-    });
+    await this.createWebhook(this.createProductCreatedHook.bind(this));
+    await this.createWebhook(this.createProductUpdatedHook.bind(this));
+    await this.createWebhook(this.createProductRemovedHook.bind(this));
   }
 
   async deleteWebhooks() {
@@ -325,16 +379,18 @@ export class MoyskladService {
     }
   }
 
+  async hasWebhooks() {
+    const size = await this.moyskladWebhookRepository.count();
+    return size > 0;
+  }
+
   async getBearer() {
     const settings = await this.appSettingsService.getSettings();
     return settings.moyskladAccessToken;
   }
 
-  async toImportDto(
-    product: MoyskladProduct,
-    importGroups: (dto: CreateFromNameDto[]) => Promise<string[]>,
-  ): Promise<MakeImportDto> {
-    const groupNames = await importGroups([{ name: product.pathName }]);
+  async toImportDto(product: MoyskladProduct): Promise<MakeImportDto> {
+    const groupName = strLast(product.pathName);
 
     const uomId = strLast(product.uom?.meta?.href ?? '');
     const uomMeasure = uomId
@@ -354,28 +410,37 @@ export class MoyskladService {
         : null;
     }
 
-    const imageId = product.images.meta?.href.split('/').at(-2);
-    this.logger.log(`Start image load ${imageId}`);
+    //const webhooks = await this.getWebhooks();
+
+    // const imageId = product.images.meta?.href.split('/').at(-2);
+    // this.logger.log(`Start image load ${imageId}`);
     // const imageResponse = null;
     // ? await nullIfException(this.getImages(imageId), this.logger)
     // : null;
     // const bearer = await this.getBearer();
 
+    // console.log(MoyskladService.rootUrl);
+    // debugger;
+
     return {
       uuid: product.id,
       name: product.name,
-      group: groupNames[0],
+      group: groupName ?? '',
       price:
         product.salePrices.length > 0 ? product.salePrices[0].value / 100 : 0,
       costPrice: product.buyPrice.value / 100,
       description: product.description,
       code: !isNaN(+product.code) ? +product.code : 0,
-      productType: product.trackingType,
+      productType: ProductTypes[product.trackingType],
       tax: product?.taxSystem,
       allowToSell: !product.archived,
       quantity: product.volume,
       barCodes: product.barcodes ? product.barcodes.map((b) => b.ean13) : [],
-      measureName: uomMeasure?.name,
+      measureName: uomMeasure?.name
+        ? (Object.entries(ProductMeasure).find(
+            ([_, value]) => uomMeasure.name === value,
+          ) as unknown as ProductMeasureEnum)
+        : undefined,
       articleNumber: !isNaN(+product.article) ? +product.article : 0,
       attributes: product.attributes
         ? product.attributes.map((a) => ({ name: a.type, value: a.name }))
