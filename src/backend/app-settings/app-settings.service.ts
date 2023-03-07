@@ -95,7 +95,7 @@ export class AppSettingsService {
   private async syncData(): Promise<void> {
     const products = await this.moyskladService.getProducts();
     const prepareProducts = (products: MoyskladProduct[]) => async () => {
-      const result: MakeImportDto[] = [];
+      const result: (Omit<MakeImportDto, 'group'> & { group?: string })[] = [];
       for (const product of products) {
         result.push(await this.moyskladService.toImportDto(product));
       }
@@ -107,9 +107,7 @@ export class AppSettingsService {
         groupsHref.add({ name: product.pathName });
       }
     }
-
     await this.importExportService.importGroups([...groupsHref]);
-
     return this.importExportService.synchronize(prepareProducts(products));
   }
 

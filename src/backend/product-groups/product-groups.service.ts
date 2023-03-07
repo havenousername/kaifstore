@@ -15,9 +15,11 @@ import { CreateFromNameDto } from './dto/create-from-name.dto';
 import { v4 } from 'uuid';
 import { PaginateOptions, PaginateService } from 'nestjs-sequelize-paginate';
 import { ModelCtor } from 'sequelize-typescript';
+import { Mutable } from '../interfaces/mutable';
 
 @Injectable()
 export class ProductGroupsService {
+  private static NO_GROUP_GROUP = '8bc0c9aa-2359-11ec-836d-7c8ae156c759';
   constructor(
     @InjectModel(ProductGroup) private groupRepository: typeof ProductGroup,
     @Inject(forwardRef(() => ProductsService))
@@ -33,29 +35,50 @@ export class ProductGroupsService {
     return this.groupRepository.bulkCreate(dto);
   }
 
+  async getNoGroup() {
+    const group = await this.getByUuid(ProductGroupsService.NO_GROUP_GROUP);
+    if (!group) {
+      throw new HttpException(
+        'Default no group group doesnt exist',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+    return group;
+  }
+
   async createGroups(
-    dto: CreateFromNameDto[],
+    dto: CreateFromNameDto,
     separator = '/',
   ): Promise<string[]> {
     // can come something like dto.name = 'ParentParentGroup/Parent/ChildGroup'
     const names = [
-      ...new Set<string>(dto.map((i) => i.name.split(separator)).flat()),
+      ...new Set<string>([...dto.name.split(separator).filter((i) => !!i)]),
     ];
+    // [ParentParentGroup, Parent, ChildGroup]
     const groups: string[] = [];
+    const groupsIds: string[] = [];
     const groupsToCreate: CreateGroupDto[] = [];
     for (let i = 0; i < names.length; i++) {
       const group = await this.getByName(names[i], { all: true });
       if (group === null) {
         const uuid = v4();
-        groupsToCreate.push({
+        const repoGroup: Mutable<CreateGroupDto> = {
           uuid,
           name: names[i],
-          groupId: i !== 0 ? groups[i - 1] : undefined,
-        });
+        };
+        if (i !== 0) {
+          repoGroup.groupId = groupsIds[i - 1];
+        }
+        groupsIds.push(uuid);
+        groupsToCreate.push(repoGroup);
+      } else {
+        groupsIds.push(group.uuid);
       }
       groups.push(names[i]);
     }
-    await this.createMultiple(groupsToCreate);
+    for (const group of groupsToCreate) {
+      await this.create(group);
+    }
 
     return groups;
   }

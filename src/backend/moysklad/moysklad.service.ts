@@ -32,6 +32,8 @@ import {
   ProductMeasureEnum,
 } from '../interfaces/product-measure.enum';
 
+type MakeImportDtoUngrouped = Omit<MakeImportDto, 'group'> & { group?: string };
+
 @Injectable()
 export class MoyskladService {
   private api: MoyskladApi;
@@ -125,9 +127,9 @@ export class MoyskladService {
     if (props.body) {
       initOptions.body = JSON.stringify(props.body);
     }
-    this.logger.log(
-      `Sending request to ${props.url} with method ${props.method}`,
-    );
+    // this.logger.log(
+    //   `Sending request to ${props.url} with method ${props.method}`,
+    // );
     let data!: Response;
     try {
       data = await fetchTimeout(props.url, props.timeout, initOptions);
@@ -198,7 +200,6 @@ export class MoyskladService {
     this.currentHookData[1] = MoyskladService.productHookUrl;
     return await this.makeHookRequest('product', this.currentHookData[0]);
   }
-
   private async deleteProductCreatedHook(id: string) {
     return await this.makeRequest({
       url: this.api.webhookUrl + '/' + id,
@@ -207,20 +208,38 @@ export class MoyskladService {
     });
   }
 
+  private async getChunkOfProducts(
+    offset = 0,
+    limit = 1000,
+  ): Promise<MoyskladResponse> {
+    await this.checkOnAuth();
+    const data = await fetch(
+      `${this.api.productUrl}?offset=${offset}&limit=${limit}`,
+      {
+        method: 'GET',
+        redirect: 'follow',
+        headers: {
+          Authorization: this.api.auth,
+        },
+      },
+    );
+
+    return await data.json();
+  }
+
   async getProducts(): Promise<MoyskladProduct[]> {
     await this.checkOnAuth();
     this.logger.log('Getting products from moysklad');
-    const data = await fetch(this.api.productUrl, {
-      method: 'GET',
-      redirect: 'follow',
-      headers: {
-        Authorization: this.api.auth,
-      },
-    });
-    this.logger.log(`Got products from ${this.api.auth}`);
+    const products: MoyskladProduct[] = [];
+    let allFetched = false;
+    while (!allFetched) {
+      const json = await this.getChunkOfProducts(products.length);
+      products.push(...json.rows);
+      allFetched = products.length >= json.meta.size;
+    }
 
-    const jsonData: MoyskladResponse = await data.json();
-    return jsonData.rows;
+    this.logger.log(`Got ${products.length} products`);
+    return products;
   }
 
   async getWebhooks(): Promise<MoyskladHookResponse[]> {
@@ -389,7 +408,7 @@ export class MoyskladService {
     return settings.moyskladAccessToken;
   }
 
-  async toImportDto(product: MoyskladProduct): Promise<MakeImportDto> {
+  async toImportDto(product: MoyskladProduct): Promise<MakeImportDtoUngrouped> {
     const groupName = strLast(product.pathName);
 
     const uomId = strLast(product.uom?.meta?.href ?? '');
@@ -410,22 +429,16 @@ export class MoyskladService {
         : null;
     }
 
-    //const webhooks = await this.getWebhooks();
-
-    // const imageId = product.images.meta?.href.split('/').at(-2);
-    // this.logger.log(`Start image load ${imageId}`);
-    // const imageResponse = null;
-    // ? await nullIfException(this.getImages(imageId), this.logger)
-    // : null;
-    // const bearer = await this.getBearer();
-
-    // console.log(MoyskladService.rootUrl);
-    // debugger;
+    const imageId = product.images.meta?.href.split('/').at(-2);
+    const imageResponse = imageId
+      ? await nullIfException(this.getImages(imageId), this.logger)
+      : null;
+    const bearer = await this.getBearer();
 
     return {
       uuid: product.id,
       name: product.name,
-      group: groupName ?? '',
+      group: groupName,
       price:
         product.salePrices.length > 0 ? product.salePrices[0].value / 100 : 0,
       costPrice: product.buyPrice.value / 100,
@@ -450,7 +463,16 @@ export class MoyskladService {
       discountProhibited: product.discountProhibited,
       useParentVat: product.useParentVat,
       variantsCount: product.variantsCount,
-      images: undefined,
+      // images: undefined,
+      images:
+        imageResponse && bearer
+          ? imageResponse.rows.map((r) => ({
+              url: r.miniature.href,
+              name: r.filename,
+              type: r.miniature.mediaType,
+              bearer,
+            }))
+          : [],
     };
   }
 }

@@ -9,10 +9,12 @@ import { ImportExportService } from '../import-export/import-export.service';
 import { ProductGroupsService } from '../product-groups/product-groups.service';
 import { ProductsService } from '../products/products.service';
 import { MakeImportDto } from '../import-export/dto/make-import.dto';
+import { ProductGroup } from '../model/product-groups.model';
 
 @Injectable()
 export class MoyskladWebhookService {
   private logger = new Logger(MoyskladWebhookService.name);
+  private noGroup: ProductGroup | null = null;
   constructor(
     @Inject(MoyskladService)
     private readonly moyskladService: MoyskladService,
@@ -30,6 +32,13 @@ export class MoyskladWebhookService {
     }
   }
 
+  private async getNoProductGroup() {
+    if (!this.noGroup) {
+      this.noGroup = await this.groupsService.getNoGroup();
+    }
+    return this.noGroup;
+  }
+
   public static strLast(array: string) {
     return array.split('/').at(-1);
   }
@@ -37,7 +46,13 @@ export class MoyskladWebhookService {
   private async prepareProduct(event: MoyskladEvent): Promise<MakeImportDto> {
     const eventId = MoyskladWebhookService.strLast(event.meta.href);
     const product = await this.moyskladService.getProduct(eventId ?? '');
-    return await this.moyskladService.toImportDto(product);
+    const dtoImported = await this.moyskladService.toImportDto(product);
+    return {
+      ...dtoImported,
+      group: dtoImported?.group
+        ? dtoImported.group
+        : (await this.getNoProductGroup()).name,
+    };
   }
 
   public async [WebhookAction.CREATE](event: MoyskladEvent) {

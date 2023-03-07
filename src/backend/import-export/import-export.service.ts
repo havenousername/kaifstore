@@ -30,7 +30,11 @@ export class ImportExportService {
 
   async importGroups(dto: CreateFromNameDto[]) {
     const results: string[] = [];
-    results.push(...(await this.productGroupsService.createGroups(dto)));
+    for (const groupChunk of dto) {
+      results.push(
+        ...(await this.productGroupsService.createGroups(groupChunk)),
+      );
+    }
     return results;
   }
 
@@ -97,10 +101,13 @@ export class ImportExportService {
   }
 
   async synchronize(
-    toImportDto: () => Promise<MakeImportDto[]>,
+    toImportDto: () => Promise<
+      (Omit<MakeImportDto, 'group'> & { group?: string })[]
+    >,
   ): Promise<void> {
     const existingProducts = await this.productService.getProducts();
     const dto = await toImportDto();
+    const noGroup = await this.productGroupsService.getNoGroup();
     const unSyncProducts = differenceWith(
       existingProducts,
       dto,
@@ -118,20 +125,19 @@ export class ImportExportService {
     }
 
     const groups: Map<string, ProductGroup> = new Map<string, ProductGroup>();
-    this.logger.startTime('Start importing products');
+    this.logger.startTime(`Start importing ${dto.length} products`);
     const handle = await Promise.allSettled(
-      dto
-        .filter((i) => i.group)
-        .map(async (product) => {
-          const existingProduct = await this.productService.getByUUID(
-            product.uuid,
-          );
-          if (existingProduct) {
-            await this.update(product, groups);
-          } else {
-            await this.importSingleProduct(product);
-          }
-        }),
+      dto.map(async (pr) => {
+        const product = { ...pr, group: pr.group ? pr.group : noGroup.name };
+        const existingProduct = await this.productService.getByUUID(
+          product.uuid,
+        );
+        if (existingProduct) {
+          await this.update(product, groups);
+        } else {
+          await this.importSingleProduct(product);
+        }
+      }),
     );
     this.logger.endTime('End importing products');
     for (const promise of handle) {
