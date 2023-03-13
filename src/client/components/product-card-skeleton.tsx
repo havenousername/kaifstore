@@ -75,7 +75,9 @@ const ProductCardSkeleton = ({
         <TypographyLineEllipsis
           gutterBottom
           variant={'h5'}
-          onClick={(e) => onCardTitleClick(e, product)}
+          onClick={
+            onCardTitleClick ? (e) => onCardTitleClick(e, product) : () => null
+          }
         >
           {product.name}
         </TypographyLineEllipsis>

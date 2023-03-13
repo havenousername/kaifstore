@@ -37,11 +37,12 @@ import useSWRImmutable from 'swr/immutable';
 import standardFetcher from '../../../api/standard-fetcher';
 import { Product } from '../../../../backend/model/products.model';
 import AppInput from 'src/client/components/input/app-input';
+import { hasTypeProperty } from 'src/client/utils/hasTypeProperty';
 
 const ImportExport: NextPageWithLayout = () => {
   const router = useRouter();
   const { t } = useTranslation();
-  const ref = useRef<HTMLInputElement>();
+  const ref = useRef<HTMLInputElement>(null);
   const snackbar = useContext(SnackbarContext);
   const { initialize, error, data } = useCreateImportGroupsProducts();
   const [rows, setRows] = useState<JsonEntity[]>([]);
@@ -213,18 +214,24 @@ const ImportExport: NextPageWithLayout = () => {
     },
   ]);
 
-  const onChangeImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files[0]) {
+  const onChangeImport = async (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    // debugger;
+    if (!(e.target as HTMLInputElement).files?.[0]) {
       snackbar.changeIsOpen(true);
       snackbar.changeSeverity('error');
       snackbar.changeMessage(t('Alert.UploadError', { error: '' }));
       return;
     }
-    const buffer = await e.target.files[0].arrayBuffer();
+    const buffer = await (
+      e.target as HTMLInputElement
+    ).files?.[0].arrayBuffer();
     const workbook = read(buffer);
 
-    const transformToNumber = (num: unknown) =>
-      num ? +num.toString().replace(',', '.') : undefined;
+    const transformToNumber = (num: unknown) => {
+      return num ? +(num as string).toString().replace(',', '.') : undefined;
+    };
 
     const transformToBoolean = (bool?: string) =>
       bool?.toLowerCase() === t('Import.BooleanYes');
@@ -256,11 +263,12 @@ const ImportExport: NextPageWithLayout = () => {
       );
       if (!groupField) {
         console.error('Something went off. Group field is not found');
+        return;
       }
 
-      const jsonEntityAssociations: Record<JsonEntityField, string> | unknown =
-        {};
-      importReqRows.forEach((row) => {
+      const jsonEntityAssociations: Record<JsonEntityField, string> =
+        {} as Record<JsonEntityField, string>;
+      importReqRows.map((row) => {
         jsonEntityAssociations[row.name] = row.field;
       });
       const groups = jsonWorkbook
@@ -281,9 +289,9 @@ const ImportExport: NextPageWithLayout = () => {
             [JsonEntityField.HAS_VARIANTS]: transformToBoolean(
               item[jsonEntityAssociations[JsonEntityField.HAS_VARIANTS]],
             ),
-            [JsonEntityField.CODE]: transformToNumber(
+            [JsonEntityField.CODE]:
               item[jsonEntityAssociations[JsonEntityField.CODE]],
-            ),
+
             [JsonEntityField.MEASURE_NAME]:
               item[jsonEntityAssociations[JsonEntityField.MEASURE_NAME]],
             [JsonEntityField.ALLOW_TO_SELL]: transformToBoolean(
@@ -331,7 +339,7 @@ const ImportExport: NextPageWithLayout = () => {
         if (!hasDuplicateProducts) {
           hasDuplicateProducts =
             products.filter((i) =>
-              savedProducts.find(
+              savedProducts?.find(
                 (product) => product.uuid === i[JsonEntityField.UUID],
               ),
             ).length > 0;
@@ -354,7 +362,11 @@ const ImportExport: NextPageWithLayout = () => {
       console.error(e);
       snackbar.changeIsOpen(true);
       snackbar.changeSeverity('error');
-      snackbar.changeMessage(t('Alert.UploadError', { error: e.message }));
+      snackbar.changeMessage(
+        t('Alert.UploadError', {
+          error: hasTypeProperty(e, 'message') ? e.message : e,
+        }),
+      );
       return;
     }
   };

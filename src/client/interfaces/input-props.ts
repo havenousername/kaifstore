@@ -1,4 +1,4 @@
-import { Control, Path } from 'react-hook-form/dist/types';
+import { Control, FieldValues, Path } from 'react-hook-form/dist/types';
 import {
   FormControlLabelProps,
   FormHelperTextProps,
@@ -12,7 +12,7 @@ import { ReactNode } from 'react';
 import { maskMap } from '../components/input/localized-date-picker';
 import { CheckboxProps } from '@mui/material/Checkbox';
 
-export interface FormInputProps<TFieldValues> {
+export interface FormInputProps<TFieldValues extends FieldValues> {
   name: Path<TFieldValues>;
   control: Control<TFieldValues>;
   appInputProps?: AppInputProps;
@@ -21,20 +21,20 @@ export interface FormInputProps<TFieldValues> {
   sx?: SxProps;
 }
 
-export type FormMultiSelectProps<TFieldValues> = Omit<
+export type FormMultiSelectProps<TFieldValues extends FieldValues> = Omit<
   FormInputProps<TFieldValues>,
   'appInputProps' | 'inputProps'
 > & {
   selectProps: Omit<AppMultiSelect, 'selected' | 'onOptionChange' | 'error'>;
 };
 
-export type FormInputSelect<TFieldValues, Options> = Omit<
+export type FormInputSelect<TFieldValues extends FieldValues, Options> = Omit<
   AppInputSelect<Options>,
   'selected' | 'onChange'
 > &
   Omit<FormInputProps<TFieldValues>, 'appInputProps' | 'inputProps'>;
 
-export type FormSelectProps<TFieldValues> = Omit<
+export type FormSelectProps<TFieldValues extends FieldValues> = Omit<
   FormInputProps<TFieldValues>,
   'appInputProps' | 'inputProps'
 > & {
@@ -44,14 +44,14 @@ export type FormSelectProps<TFieldValues> = Omit<
   >;
 };
 
-export type FormDatePickerProps<TFieldValues> = Omit<
+export type FormDatePickerProps<TFieldValues extends FieldValues> = Omit<
   FormInputProps<TFieldValues>,
   'appInputProps' | 'inputProps'
 > & {
   dateProps: Omit<AppDatePickerProps, 'value' | 'onChange'>;
 };
 
-export type FormCheckboxProps<TFieldValues> = Omit<
+export type FormCheckboxProps<TFieldValues extends FieldValues> = Omit<
   FormInputProps<TFieldValues>,
   'appInputProps' | 'inputProps'
 > & {
@@ -68,7 +68,7 @@ export type AppSelectProps = {
   value: string | string[];
   inputProps?: AppInputProps;
   selectProps?: SelectProps<string | string[]>;
-  onChange(e: SelectChangeEvent, child: ReactNode): void;
+  onChange(e: SelectChangeEvent<string | string[]>, child: ReactNode): void;
   values: SelectValue[];
   error: boolean;
 };

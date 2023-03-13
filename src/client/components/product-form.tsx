@@ -63,7 +63,7 @@ const ProductForm = ({
   setImages: Dispatch<SetStateAction<string[]>>;
 }) => {
   const { t } = useTranslation();
-  const addImageRef = useRef<HTMLInputElement>();
+  const addImageRef = useRef<HTMLInputElement>(null);
   const snackbar = useContext(SnackbarContext);
   const theme = useTheme();
   const router = useRouter();
@@ -79,8 +79,12 @@ const ProductForm = ({
   };
 
   const onClickItemRemove = (slide: number) => {
-    const leftImages = images.filter((_, i) => i !== slide);
-    setImages(leftImages);
+    const leftImages = images?.filter((_, i) => i !== slide);
+    if (leftImages) {
+      setImages(leftImages);
+    } else {
+      console.error('No images to remove');
+    }
   };
 
   const changeImage = (slide: number, fileUrl: string) => {
@@ -89,14 +93,22 @@ const ProductForm = ({
     );
   };
 
-  const onAddNewImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onAddNewImage = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    if (!images) {
+      snackbar.changeSeverity('error');
+      snackbar.changeMessage('An error has occurred while uploading an image');
+      return;
+    }
+
     if (images.length > 9) {
       snackbar.changeIsOpen(true);
       snackbar.changeSeverity('warning');
       snackbar.changeMessage('You can not upload more than 10 images');
       return;
     }
-    if (e.target.files[0]) {
+    if (e.target instanceof HTMLInputElement && e.target.files?.[0]) {
       const fileUrl = URL.createObjectURL(e.target.files[0]);
       setImages((prevState) => [...prevState, fileUrl]);
       snackbar.changeIsOpen(true);
@@ -140,7 +152,8 @@ const ProductForm = ({
               <PlusAddIcon />
               <Typography
                 sx={{
-                  color: images.length > 9 ? 'grey.500' : 'common.white',
+                  color:
+                    !!images && images.length > 9 ? 'grey.500' : 'common.white',
                 }}
               >
                 {t('Products.AddNewImage')}
@@ -154,14 +167,14 @@ const ProductForm = ({
             py: '0.68rem',
             px: '1.5rem',
             border:
-              images.length > 9
+              !!images && images.length > 9
                 ? `1px solid ${theme.palette.grey[500]}`
                 : `1px solid ${theme.palette.common.white}`,
-            pointerEvents: images.length > 9 ? 'none' : 'initial',
+            pointerEvents: !!images && images.length > 9 ? 'none' : 'initial',
           }}
         />
       </Box>
-      {images.length > 0 && (
+      {!!images && images.length > 0 && (
         <Box marginBottom={'1.4rem'}>
           <ProductImagesContext.Provider
             value={{

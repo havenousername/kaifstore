@@ -29,7 +29,7 @@ export type JsonEntity = {
   [JsonEntityField.NAME]: string;
   [JsonEntityField.GROUP]: string;
   [JsonEntityField.HAS_VARIANTS]?: boolean;
-  [JsonEntityField.CODE]?: number;
+  [JsonEntityField.CODE]?: string;
   [JsonEntityField.PARENT_UUID]?: string;
   [JsonEntityField.MEASURE_NAME]?: string;
   [JsonEntityField.ALLOW_TO_SELL]?: boolean;

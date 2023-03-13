@@ -9,12 +9,12 @@ const useLastVisitedProducts = (): [
 ] => {
   const [lastVisitedIds, setLastVisitedIds] = useState<number[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [errors, setErrors] = useState();
+  const [errors, setErrors] = useState<unknown>();
 
   useEffect(() => {
     try {
       const ids = JSON.parse(
-        window.localStorage.getItem('lastVisitedProducts'),
+        window.localStorage.getItem('lastVisitedProducts') ?? '',
       ) as number[];
       setLastVisitedIds(ids ?? []);
     } catch (e) {
@@ -59,7 +59,7 @@ const useLastVisitedProducts = (): [
     }
   };
 
-  return [lastVisitedIds, addToLastVisited, products, errors];
+  return [lastVisitedIds, addToLastVisited, products, errors as string];
 };
 
 export default useLastVisitedProducts;

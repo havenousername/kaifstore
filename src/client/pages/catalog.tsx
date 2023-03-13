@@ -1,11 +1,5 @@
 import { NextPageWithLayout } from '../interfaces/pages-layout';
-import React, {
-  MutableRefObject,
-  ReactElement,
-  useCallback,
-  useEffect,
-  useRef,
-} from 'react';
+import React, { ReactElement, useCallback, useEffect, useRef } from 'react';
 import AppLayout from '../components/functional/app-layout';
 import { Box, Typography } from '@mui/material';
 import ProductsCollection from '../components/products-collection';
@@ -21,9 +15,7 @@ const Catalog: NextPageWithLayout = () => {
   );
   const { products, getMoreProducts, group } = useGetProducts(catalogPath);
   const productsCollectionRef = useRef<HTMLDivElement>();
-  const [isBottom] = useDetectBottomScroll(
-    productsCollectionRef as MutableRefObject<HTMLDivElement>,
-  );
+  const [isBottom] = useDetectBottomScroll(productsCollectionRef);
   const { t } = useTranslation();
 
   useEffect(() => {

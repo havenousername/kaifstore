@@ -4,13 +4,17 @@ import { useRouter } from 'next/router';
 import { ParsedUrlQuery } from 'querystring';
 import { isEqual } from 'lodash';
 import { ProductGroup } from '../../backend/model/product-groups.model';
+import { Product } from 'src/backend/model/products.model';
 
 const useGetProducts = (
   routeName: (page: number, query: string) => string,
 ): FetchResValidations & FetchProducts => {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [products, setProducts] = useState({ items: [], meta: null });
-  const [error, setErrors] = useState(null);
+  const [products, setProducts] = useState<{
+    items: Product[];
+    meta: { nextPage: string | number } | null;
+  }>({ items: [], meta: null });
+  const [error, setErrors] = useState(false);
   const router = useRouter();
   const [currentQuery, setCurrentQuery] = useState<ParsedUrlQuery>();
   const [productsGroup, setProductsGroup] = useState<ProductGroup>();
@@ -21,7 +25,8 @@ const useGetProducts = (
       getProducts(window.location.search.replace('?', ''));
       const url = new URLSearchParams(window.location.search);
       if (url.has('groupId')) {
-        getGroup(url.get('groupId'));
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        getGroup(url.get('groupId')!);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -45,7 +50,7 @@ const useGetProducts = (
           meta: pageProducts.meta,
         });
       } catch (e) {
-        setErrors(e);
+        setErrors(true);
       }
       setCurrentPage(currentPage + 1);
     }
@@ -60,7 +65,7 @@ const useGetProducts = (
         meta: pageProducts.meta,
       });
     } catch (e) {
-      setErrors(e);
+      setErrors(true);
     }
   };
 

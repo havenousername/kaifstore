@@ -41,7 +41,7 @@ const CardMediaWithStatuses = styled(
             maxWidth: 124,
             height: '28px',
             width: '100%',
-            backgroundColor: theme.palette.grey[700],
+            backgroundColor: theme?.palette.grey[700],
             borderRadius: 15,
           }
         : {},
@@ -55,7 +55,7 @@ const FeatureRectangle = styled('div')(({ theme }: { theme?: Theme }) => ({
   maxWidth: 150,
   height: '34px',
   width: '100%',
-  backgroundColor: theme.palette.grey[700],
+  backgroundColor: theme?.palette.grey[700],
   borderRadius: 15,
   display: 'flex',
   alignItems: 'center',
@@ -76,7 +76,7 @@ const ProductMediaCard = ({
               component={'span'}
               fontSize={18}
               sx={{
-                marginRight: '0.5rem',
+                mr: '0.5rem',
               }}
             >
               {newText}

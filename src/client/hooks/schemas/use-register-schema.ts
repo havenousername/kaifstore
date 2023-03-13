@@ -38,6 +38,7 @@ const useRegisterSchema = (t: TFunction) => {
           'validPassword',
           () => t('Validation.Password'),
           (value) => {
+            if (!value) return false;
             const hasUpperCase = /[A-Z]/.test(value);
             const hasLowerCase = /[a-z]/.test(value);
             const hasNumber = /[0-9]/.test(value);
@@ -77,7 +78,7 @@ const useRegisterSchema = (t: TFunction) => {
         'validCheckbox',
         () => t('Validation.AgreeCondition'),
         (value) => {
-          return value;
+          return !!value;
         },
       ),
     })

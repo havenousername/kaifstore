@@ -34,7 +34,7 @@ const AppSearchSelect = (props: AppMultiSelect) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const canBeOpen = open && Boolean(anchorEl);
-  const id = canBeOpen ? 'transition-popper' : undefined;
+  const id = canBeOpen ? 'transition-popper' : '';
   const [inputValue, setInputValue] = useState('');
   const [popperModifiers] = useState([
     { name: 'offset', options: { offset: [0, 10] } },
@@ -93,10 +93,14 @@ const AppSearchSelect = (props: AppMultiSelect) => {
         (st) => st.value !== found.value && st.content !== found.content,
       );
       setSelected(filtered);
-      props.onOptionChange(filtered);
+      if (props.onOptionChange) {
+        props.onOptionChange(filtered);
+      }
     } else {
       setSelected((prevState) => [...prevState, value]);
-      props.onOptionChange([...selected, value]);
+      if (props?.onOptionChange) {
+        props?.onOptionChange([...selected, value]);
+      }
     }
 
     setAssignedSelected(true);

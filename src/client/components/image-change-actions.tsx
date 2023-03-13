@@ -13,13 +13,15 @@ const ImageChangeActions: FC<ImageChangeProps> = ({
   const { changeImage, removeImage } = useContext(ProductImagesContext);
   const { t } = useTranslation();
   const theme = useTheme();
-  const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files[0]) {
+  const onChangeInput = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    if (e.target instanceof HTMLInputElement && e.target.files?.[0]) {
       const fileUrl = URL.createObjectURL(e.target.files[0]);
       changeImage(slide, fileUrl);
     }
   };
-  const changeButtonRef = useRef<HTMLInputElement>();
+  const changeButtonRef = useRef<HTMLInputElement>(null);
   return (
     <Box
       display={'flex'}

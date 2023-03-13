@@ -9,7 +9,7 @@ const FileInput: FC<{
   param: number;
   label: string | ReactNode;
   sxLabel?: SxProps;
-  ref: ForwardedRef<HTMLInputElement>;
+  ref: ForwardedRef<HTMLInputElement | null>;
   accept?: string;
 }> = forwardRef(
   (

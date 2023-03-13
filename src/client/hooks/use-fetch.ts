@@ -82,5 +82,5 @@ export default function useFetch<Res>({
     }
   }, [body, contentType, fetchCall, timeout, type, xsrfToken]);
 
-  return [res.data?.res, res.loading, res.error, res.response];
+  return [res.data?.res ?? null, res.loading, res.error, res.response];
 }

@@ -54,7 +54,7 @@ const ProductCardAdmin = ({
             sx={{
               fontWeight: '700',
             }}
-            onClick={(e) => onEdit(e, product)}
+            onClick={(e) => (onEdit ? onEdit(e, product) : null)}
           >
             {editText}
           </AppBaseButton>

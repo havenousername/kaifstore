@@ -1,7 +1,7 @@
 import { TypographyOptions } from '@mui/material/styles/createTypography';
 import { PaletteOptions } from '@mui/material/styles/createPalette';
 
-const typography = (pallete: PaletteOptions): TypographyOptions => ({
+const typography = (palette: PaletteOptions): TypographyOptions => ({
   allVariants: {
     letterSpacing: 'normal',
   },
@@ -10,20 +10,20 @@ const typography = (pallete: PaletteOptions): TypographyOptions => ({
     fontWeight: 700,
     fontSize: '4.2rem',
     lineHeight: 1.2,
-    color: pallete.text.primary,
+    color: palette.text?.primary,
     letterSpacing: '0.2rem',
   },
   h2: {
     fontWeight: 'bold',
     fontSize: '2.25rem',
     lineHeight: 1.3,
-    color: pallete.text.primary,
+    color: palette.text?.primary,
   },
   h3: {
     fontWeight: 'normal',
     fontSize: '1.875rem',
     lineHeight: 1.5,
-    color: pallete.text.primary,
+    color: palette.text?.primary,
   },
   h4: {
     fontWeight: '900',
@@ -46,7 +46,7 @@ const typography = (pallete: PaletteOptions): TypographyOptions => ({
     fontWeight: 'normal',
     fontSize: '1.1em',
     lineHeight: 1.5,
-    color: `${pallete.grey[200]} !important`,
+    color: `${palette.grey?.[200]} !important`,
   },
   subtitle2: {
     fontWeight: 700,
@@ -54,7 +54,7 @@ const typography = (pallete: PaletteOptions): TypographyOptions => ({
     lineHeight: 1.5,
   },
   caption: {
-    color: pallete.text.primary,
+    color: palette.text?.primary,
     fontSize: '0.9rem',
     fontWeight: 600,
   },

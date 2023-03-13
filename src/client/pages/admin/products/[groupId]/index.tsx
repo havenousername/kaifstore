@@ -35,12 +35,12 @@ export function getStaticProps(context) {
   };
 }
 
-const Index: NextPageWithLayout = ({
-  groupId,
-}: {
+type Props = {
   groupId: string;
   children: ReactNode;
-}) => {
+};
+
+const Index: NextPageWithLayout<Props> = ({ groupId }: Props) => {
   const catalogPath = useCallback(
     (currentPage: number, query = '') =>
       `/v1/products?groupId=${groupId}&page=${currentPage}&desc=createdAt&${query}`,

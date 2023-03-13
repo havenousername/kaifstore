@@ -12,7 +12,7 @@ export const fetchCall = async ({
   const toMatchAfter = document.cookie;
   const myRegexp = /XSRF-Token=(.*)/;
   const match = myRegexp.exec(toMatchAfter);
-  const xsrf = match[1];
+  const xsrf = match?.[1];
   const apiPath =
     `${baseUrl}/${path}` +
     params.reduce((prev, param) => prev + `/${param}`, '') +

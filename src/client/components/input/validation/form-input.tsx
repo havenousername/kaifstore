@@ -1,10 +1,10 @@
 import { ReactElement } from 'react';
-import { Controller } from 'react-hook-form';
+import { Controller, FieldValues } from 'react-hook-form';
 import { FormInputProps } from '../../../interfaces/input-props';
 import AppInput from '../app-input';
 import { FormControl, FormHelperText } from '@mui/material';
 
-const FormInput: <TFieldValues>(
+const FormInput: <TFieldValues extends FieldValues>(
   args: FormInputProps<TFieldValues>,
 ) => ReactElement = ({
   control,
@@ -37,7 +37,7 @@ const FormInput: <TFieldValues>(
             <FormHelperText
               error={!!error}
               {...helperProps}
-              sx={{ ...helperProps.sx, height: '3.1rem' }}
+              sx={{ ...helperProps?.sx, height: '3.1rem' }}
             >
               {error.message}
             </FormHelperText>

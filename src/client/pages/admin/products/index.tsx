@@ -199,7 +199,7 @@ const Index = () => {
   const snackbar = useContext(SnackbarContext);
 
   const { initialize, data: removeSuccess, error } = useGroupFetchRemove();
-  const groupsCollectionRef = useRef<HTMLDivElement>();
+  const groupsCollectionRef = useRef<HTMLDivElement>(null);
   const [isBottom] = useDetectBottomScroll(groupsCollectionRef);
 
   const onRemoveGroup = (group: ProductGroup) => {
@@ -317,7 +317,7 @@ const Index = () => {
         )}
       </Box>
       {groups && groups.length > 0 ? (
-        <Grid ref={groupsCollectionRef} container spacing={2}>
+        <Grid component={'div'} ref={groupsCollectionRef} container spacing={2}>
           {groups.map((group, key) => (
             <Grid item xs={10} lg={6} key={key}>
               <GroupCard group={group} onRemove={onRemoveGroup} />

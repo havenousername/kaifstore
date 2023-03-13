@@ -41,7 +41,7 @@ const useNavbarLinks = () => {
         ...state,
         current:
           router.route === state.path ||
-          (state.subPaths && state.subPaths.includes(router.route)),
+          (!!state.subPaths && state.subPaths.includes(router.route)),
       }));
     setNavbars((prevState) => applyCurrent(prevState));
     setAdminNavbars((prev) => applyCurrent(prev));

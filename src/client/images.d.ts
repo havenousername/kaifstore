@@ -16,6 +16,7 @@ declare module '*.jpeg' {
 
 declare module '*.svg' {
   const content: any;
+  const ReactComponent: any;
   export { ReactComponent };
   export default content;
 }

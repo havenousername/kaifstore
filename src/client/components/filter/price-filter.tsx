@@ -24,8 +24,8 @@ const PriceFilter = ({
   const [range, setRange] = useState<[number, number]>(priceRange);
   const { t } = useTranslation();
 
-  const onChangeRange = (range: [number, number]) => {
-    setRange(range);
+  const onChangeRange = (range: [number, number] | number) => {
+    setRange(Array.isArray(range) ? range : range[0]);
   };
 
   const validateRangeChange = (value: number) => {

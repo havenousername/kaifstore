@@ -25,11 +25,13 @@ export async function getServerSideProps(context) {
   };
 }
 
-const Index: NextPageWithLayout = (props: {
+type IndexProps = {
   products: Product[];
   baseUrl: string;
   children: ReactNode;
-}) => {
+};
+
+const Index: NextPageWithLayout<IndexProps> = (props: IndexProps) => {
   const { t } = useTranslation();
   const [products] = useState<Product[]>(props.products);
   const { authenticated } = useContext(AuthenticationContext);

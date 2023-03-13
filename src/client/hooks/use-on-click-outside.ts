@@ -1,9 +1,9 @@
-import { MutableRefObject, useEffect } from 'react';
+import { RefObject, useEffect } from 'react';
 
 function useOnClickOutside(
-  ref: MutableRefObject<HTMLElement>,
+  ref: RefObject<HTMLElement>,
   handler: (event: Event) => void,
-  ignoreElements?: MutableRefObject<HTMLElement>[],
+  ignoreElements?: RefObject<HTMLElement>[],
 ) {
   useEffect(() => {
     const listener = (event: Event) => {

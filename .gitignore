@@ -62,3 +62,4 @@ amplifytools.xcconfig
 
 .env.development
 .env.production
+.elasticbeanstalk/config.yml

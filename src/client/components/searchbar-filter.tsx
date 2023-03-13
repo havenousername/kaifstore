@@ -5,6 +5,7 @@ import React, {
   MutableRefObject,
   ReactElement,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -74,6 +75,8 @@ const SearchbarFilter = ({
     `v1/products/min-price`,
     fetcher,
   );
+  const maxRangeInt = useMemo(() => maxRangeData ?? 0, [maxRangeData]);
+  const minRangeInt = useMemo(() => minRangeData ?? 0, [minRangeData]);
 
   const discountOptions: (ItemProp<number> & { disabled: boolean })[] = [
     { content: 10, label: t('Searchbar.UnderDiscount.10%'), disabled: false },
@@ -88,6 +91,8 @@ const SearchbarFilter = ({
   const [discountAmount, setDiscountAmount] = useState<number | null>(
     initialFilters.current.discountAmount,
   );
+
+  const discount = useMemo(() => discountAmount ?? 0, [discountAmount]);
 
   const handlePriceRange = (pr: [number, number]) => {
     setPriceRange(pr);
@@ -107,9 +112,9 @@ const SearchbarFilter = ({
       content: (
         <PriceFilter
           priceRange={priceRange}
-          initialRange={[minRangeData, maxRangeData]}
-          maxRange={maxRangeData}
-          minRange={minRangeData}
+          initialRange={[minRangeInt, maxRangeInt]}
+          maxRange={maxRangeInt}
+          minRange={minRangeInt}
           onPriceRangeSelect={handlePriceRange}
           onCancelSelect={() => handleOpenPopper(false)}
         />
@@ -121,8 +126,8 @@ const SearchbarFilter = ({
       content: (
         <OptionSelectFilter
           options={discountOptions}
-          value={discountAmount}
-          initialValue={null}
+          value={discount}
+          initialValue={0}
           onSelect={(v) => handleDiscount(v)}
           onCancelSelect={() => handleOpenPopper(false)}
         />
@@ -132,7 +137,7 @@ const SearchbarFilter = ({
   ]);
 
   useEffect(() => {
-    setPriceRange((prevState) => [prevState[0], maxRangeData]);
+    setPriceRange((prevState) => [prevState[0], maxRangeInt]);
     setTabItems((prevState) => [
       {
         ...prevState[0],
@@ -142,7 +147,7 @@ const SearchbarFilter = ({
       },
       ...prevState.slice(1),
     ]);
-  }, [maxRangeData]);
+  }, [maxRangeInt, maxRangeData]);
 
   const [queryPassed, setQueryPassed] = useState({
     discount: false,
@@ -194,7 +199,7 @@ const SearchbarFilter = ({
   }, [discountAmount, queryDiscount]);
 
   useEffect(() => {
-    setPriceRange((prevState) => [minRangeData, prevState[1]]);
+    setPriceRange((prevState) => [minRangeInt, prevState[1]]);
     setTabItems((prevState) => [
       {
         ...prevState[0],
@@ -204,12 +209,12 @@ const SearchbarFilter = ({
       },
       ...prevState.slice(1),
     ]);
-  }, [minRangeData]);
+  }, [minRangeData, minRangeInt]);
 
   const [popperModifiers] = useState([
     { name: 'offset', options: { offset: [0, 10] } },
   ]);
-  const filterRef = useRef<HTMLDivElement>();
+  const filterRef = useRef<HTMLDivElement>(null);
 
   const handleOpenPopper = (b: boolean) => {
     setOpen(b);
@@ -225,7 +230,7 @@ const SearchbarFilter = ({
   };
 
   const canBeOpen = open && Boolean(anchorEl);
-  const id = canBeOpen ? 'transition-popper' : undefined;
+  const id = canBeOpen ? 'transition-popper' : '';
   return (
     <>
       <Box display={'flex'} paddingLeft={4} ref={filterRef}>

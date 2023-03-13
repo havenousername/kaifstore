@@ -1,10 +1,10 @@
 import { FormInputSelect } from '../../../interfaces/input-props';
 import { ReactElement } from 'react';
-import { Controller } from 'react-hook-form';
+import { Controller, FieldValues } from 'react-hook-form';
 import { FormControl, FormHelperText } from '@mui/material';
 import InputSelect from '../input-select';
 
-const FormSelect: <TFieldValues, Options>(
+const FormSelect: <TFieldValues extends FieldValues, Options>(
   args: FormInputSelect<TFieldValues, Options>,
 ) => ReactElement = ({ control, name, helperProps, sx, ...props }) => {
   return (
@@ -16,7 +16,6 @@ const FormSelect: <TFieldValues, Options>(
           <InputSelect
             selected={value}
             onChange={(v) => onChange(v)}
-            options={props.options}
             {...props}
           />
           {error && (

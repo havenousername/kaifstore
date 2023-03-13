@@ -38,10 +38,12 @@ export function getStaticProps(context) {
   };
 }
 
-const ProductDetails: NextPageWithLayout = (props: {
+type Props = {
   productId: string;
   children?: ReactNode;
-}) => {
+};
+
+const ProductDetails: NextPageWithLayout<Props> = (props: Props) => {
   const { t } = useTranslation();
   const fetcher = useFetcher();
   const { data: product } = useSWRImmutable<Product>(
@@ -111,7 +113,7 @@ const ProductDetails: NextPageWithLayout = (props: {
   } = useProductFetchRemove();
 
   const onSubmit = (pr: EditableProduct) => {
-    updateProduct({ ...pr, id: product.id } as EditableProduct, images);
+    updateProduct({ ...pr, id: product?.id } as EditableProduct, images);
   };
 
   const onDelete = (id: number) => {

@@ -115,7 +115,7 @@ const AppCarousel = ({
           {items.map((image, index) => (
             <AppCarouselCardSlide
               src={image}
-              sx={{ maxHeight: sx.maxHeight, ...sxSlider }}
+              sx={{ maxHeight: sx?.maxHeight, ...sxSlider }}
               index={index}
               key={index}
               Actions={contentActions}

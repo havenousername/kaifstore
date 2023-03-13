@@ -70,7 +70,7 @@ const HeaderSearchbar = ({ searchBar }: { searchBar: SearchbarProps }) => {
 
   useEffect(() => {
     if (router.isReady && !queryParsed) {
-      if (!isNaN(+router.query['discount'])) {
+      if (router.query['discount'] && !isNaN(+router.query['discount'])) {
         setQueryDiscount(+decodeURI(router.query['discount'] as string));
       }
 

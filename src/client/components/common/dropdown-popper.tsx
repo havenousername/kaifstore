@@ -1,8 +1,9 @@
 import Fade from '@mui/material/Fade';
 import { Box, Popper, PopperPlacementType, styled } from '@mui/material';
-import React, { MutableRefObject, ReactNode, useRef } from 'react';
+import React, { RefObject, ReactNode, useRef } from 'react';
 import useOnClickOutside from '../../hooks/use-on-click-outside';
 import { SxProps } from '@mui/system';
+import { Options } from '@popperjs/core';
 
 const StyledPopperContent = styled(Box)(({ theme }) => ({
   border: `2px solid ${theme.palette.grey[500]}`,
@@ -27,16 +28,16 @@ const DropdownPopper = ({
   anchorEl: null | HTMLElement;
   children: ReactNode;
   placement?: PopperPlacementType;
-  modifiers?: unknown[];
+  modifiers?: Options['modifiers'];
   handleOpen?: (b: boolean, e: Event) => void;
-  ignoreClickElements?: MutableRefObject<HTMLElement>[];
+  ignoreClickElements?: RefObject<HTMLElement>[];
   sxRoot?: SxProps;
 }) => {
-  const dropdownRef = useRef();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useOnClickOutside(
     dropdownRef,
-    (e) => handleOpen(false, e),
+    (e) => (handleOpen ? handleOpen(false, e) : null),
     ignoreClickElements,
   );
 

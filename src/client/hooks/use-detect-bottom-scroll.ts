@@ -1,13 +1,14 @@
 import {
   Dispatch,
   MutableRefObject,
+  RefObject,
   SetStateAction,
   useEffect,
   useState,
 } from 'react';
 
 const useDetectBottomScroll = (
-  ref: MutableRefObject<Element>,
+  ref: MutableRefObject<Element | undefined> | RefObject<Element | undefined>,
 ): [boolean, Dispatch<SetStateAction<boolean>>] => {
   const [isBottom, setIsBottom] = useState<boolean>(false);
   const onScroll = () => {

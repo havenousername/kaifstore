@@ -17,7 +17,7 @@ const Accordion = styled((props: AccordionProps) => (
   },
   transition: 'all 0.2s ease-in',
   '&:hover': {
-    backgroundColor: expanded ? 'transparent' : theme.palette.background.paper,
+    backgroundColor: expanded ? 'transparent' : theme?.palette.background.paper,
   },
 }));
 
@@ -34,10 +34,10 @@ const AccordionSummary = styled(
     flexDirection: 'row-reverse',
     cursor: 'default !important',
     '&[aria-selected="false"] .MuiTypography-root': {
-      color: theme.palette.grey[200],
+      color: theme?.palette.grey[200],
     },
     '&[aria-selected="true"] .MuiTypography-root': {
-      color: theme.palette.common.white,
+      color: theme?.palette.common.white,
       position: 'relative',
       '&:after': {
         content: `''`,
@@ -47,7 +47,7 @@ const AccordionSummary = styled(
         width: 10,
         height: 10,
         borderRadius: 3,
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: theme?.palette.background.paper,
       },
     },
     '& .MuiAccordionSummary-expandIconWrapper': {
@@ -60,7 +60,7 @@ const AccordionSummary = styled(
       transform: 'rotate(90deg) scale(0.3)',
     },
     '& .MuiAccordionSummary-content': {
-      marginLeft: theme.spacing(1),
+      marginLeft: theme?.spacing(1),
       paddingLeft: showIcon ? 0 : '2.3rem',
     },
   }),

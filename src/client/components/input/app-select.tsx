@@ -1,10 +1,16 @@
 import { StandardInput } from './app-input';
 import { AppSelectProps } from '../../interfaces/input-props';
-import { MenuItem, Select, styled } from '@mui/material';
+import { MenuItem, Select, styled, SelectProps, Theme } from '@mui/material';
 import { ReactElement } from 'react';
 import { ReactComponent as ArrowDownIcon } from '../../assets/icons/arrow-down.svg';
+import { StyledComponent } from '@mui/styles';
+import { MUIStyledCommonProps } from '@mui/system';
 
-const StandardSelect = styled(Select)(() => ({
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const StandardSelect: StyledComponent<
+  SelectProps<string | string[]> & MUIStyledCommonProps<Theme>
+> = styled(Select)(() => ({
   '& svg': {
     position: 'absolute',
     right: '1rem',

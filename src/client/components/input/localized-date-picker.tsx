@@ -62,8 +62,8 @@ const LocalizedDatePicker = ({
         <DatePicker<Date>
           mask={maskMap[locale]}
           value={value}
-          onChange={(newValue: Date, keyboardInputValue) =>
-            onChange(newValue, keyboardInputValue)
+          onChange={(newValue: Date | null, keyboardInputValue) =>
+            onChange(newValue ?? new Date(), keyboardInputValue)
           }
           components={{
             OpenPickerIcon: CalendarIcon,
