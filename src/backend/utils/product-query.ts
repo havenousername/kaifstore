@@ -33,7 +33,7 @@ export const productQueryToArray = (
   if (isString(value.groupId)) {
     query.groupId = value.groupId as unknown as string;
   } else if (isNumber(value.groupId)) {
-    query.groupId = +decodeURI(value.groupId);
+    query.groupId = +decodeURI(value.groupId.toString());
   }
 
   if (value.priceRange) {
