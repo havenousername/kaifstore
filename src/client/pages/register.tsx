@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useContext,
   useState,
+  useEffect,
 } from 'react';
 import background from '../assets/background-register.png';
 import { Box, FormControl, Link, Typography } from '@mui/material';
@@ -22,6 +23,7 @@ import FormDatePicker from '../components/input/validation/form-date-picker';
 import FormCheckbox from '../components/input/validation/form-checkbox';
 import useRegisterSchema from '../hooks/schemas/use-register-schema';
 import useRegister from '../hooks/use-register';
+import { SnackbarContext } from '../context/snackbar.context';
 import { AuthenticationContext } from '../context/authenticated.context';
 import { useRouter } from 'next/router';
 
@@ -30,6 +32,7 @@ const Register: FunctionComponent = () => {
   const schema = useRegisterSchema(t);
   const router = useRouter();
   const { checkAuthentication } = useContext(AuthenticationContext);
+  const snackbar = useContext(SnackbarContext);
 
   const { handleSubmit, control } = useForm<RegisterUser>({
     mode: 'onChange',
@@ -62,14 +65,32 @@ const Register: FunctionComponent = () => {
     await router.push('/');
   };
 
-  const [register] = useRegister(goToPrivateRoute);
+  const [register, , error] = useRegister(goToPrivateRoute);
 
   const onSubmit = (data: RegisterUser) => register(data);
+
+  useEffect(() => {
+    if (error) {
+      snackbar.changeIsOpen(true);
+      snackbar.changeSeverity('error');
+      snackbar.changeAutoHide(3000);
+      snackbar.changeMessage(
+        t('Alert.RegisterError', {
+          error:
+            typeof error === 'object' && 'message' in error
+              ? error.message
+              : error,
+        }),
+      );
+      console.error('A registation error occured', error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error]);
 
   return (
     <BoxedContainer
       background={background.src}
-      title={t('KaifStore')}
+      title={t('Kaifstore')}
       sxBox={{
         width: '100%',
         maxWidth: 650,
@@ -247,7 +268,7 @@ const Register: FunctionComponent = () => {
             control={control}
             checkboxProps={{
               labelProps: {
-                label: t('LoginPage.RememberMe').toString(),
+                label: t('Register.AgreeText').toString(),
               },
             }}
           />

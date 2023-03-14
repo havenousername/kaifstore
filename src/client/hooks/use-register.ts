@@ -1,11 +1,18 @@
 import { useState } from 'react';
 import { RegisterUser } from '../interfaces/registration';
+import { HttpStatus } from '@nestjs/common';
 
 const useRegister = (
   action: () => void,
-): [(r: RegisterUser) => Promise<void>, boolean, string] => {
+): [
+  (r: RegisterUser) => Promise<void>,
+  boolean,
+  string | { message: string; statusCode: HttpStatus } | undefined,
+] => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<any>();
+  const [error, setError] = useState<
+    string | { message: string; statusCode: HttpStatus }
+  >();
   const initiate = async ({
     email,
     firstName,
@@ -33,7 +40,8 @@ const useRegister = (
     setLoading(false);
 
     if (res.status !== 201) {
-      setError(res.json());
+      const error = await res.json();
+      setError(error);
       return;
     }
 
