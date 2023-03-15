@@ -1,6 +1,7 @@
 import { CardMedia, CardMediaProps, styled, Typography } from '@mui/material';
 import { Theme } from '@mui/material/styles';
-import * as React from 'react';
+import { useState } from 'react';
+import Image from 'next/image';
 import { ReactComponent as NewIcon } from '../assets/icons/new.svg';
 
 type CardMediaWithStatusesProps = {
@@ -9,9 +10,20 @@ type CardMediaWithStatusesProps = {
   isNew: boolean;
 };
 
+type ImageFallback = {
+  alt: string;
+  fallbackImage: string;
+};
+
 type ProductMediaProps = {
   newText: string;
 };
+
+const ImageFull = styled(Image)({
+  width: '100%',
+  height: '100%',
+  borderRadius: '1em',
+});
 
 const CardMediaWithStatuses = styled(
   ({
@@ -19,9 +31,18 @@ const CardMediaWithStatuses = styled(
      isFavourite,
      isNew,
      hasDiscount,
-     /* eslint-enable */
+     image,
+     alt,
+     fallbackImage,
     ...rest
-  }: CardMediaProps & CardMediaWithStatusesProps) => <CardMedia {...rest} />,
+  }: CardMediaProps & CardMediaWithStatusesProps & ImageFallback ) => {
+    const [imageError, setImageError] = useState(false);
+    return (
+      <CardMedia {...rest}>
+        <ImageFull src={imageError ? fallbackImage : image} alt={alt} onError={() => setImageError(true)} layout='fill' />
+      </CardMedia>
+    );
+  },
 )(
   ({
     isNew,
@@ -31,6 +52,7 @@ const CardMediaWithStatuses = styled(
     width: '100%',
     height: '16.875rem',
     position: 'relative',
+    backgroundColor: theme?.palette.grey[800],
     '&:before': () =>
       hasDiscount || isNew
         ? {
@@ -65,7 +87,7 @@ const FeatureRectangle = styled('div')(({ theme }: { theme?: Theme }) => ({
 const ProductMediaCard = ({
   newText,
   ...props
-}: CardMediaProps & CardMediaWithStatusesProps & ProductMediaProps) => {
+}: CardMediaProps & CardMediaWithStatusesProps & ProductMediaProps & ImageFallback) => {
   return (
     <>
       <CardMediaWithStatuses {...props}>

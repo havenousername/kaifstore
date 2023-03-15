@@ -59,6 +59,8 @@ const ProductCardSkeleton = ({
             ? noImage.src
             : getHttpUrl(product.images[0])
         }
+        fallbackImage={noImage.src}
+        alt="no image"
         isNew={newIcon.isNew}
         hasDiscount={false}
         isFavourite={false}

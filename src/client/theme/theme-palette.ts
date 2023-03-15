@@ -39,7 +39,8 @@ const grey: Partial<Color> = {
   500: kaifstoreColors.gray,
   600: kaifstoreColors.blackAdmin,
   700: kaifstoreColors.grayBackground,
-  800: kaifstoreColors.blackAlmost,
+  800: kaifstoreColors.blackGrayBackground,
+  900: kaifstoreColors.blackAlmost,
 };
 
 const success: PaletteColorOptions = {
