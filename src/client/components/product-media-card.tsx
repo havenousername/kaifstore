@@ -39,7 +39,7 @@ const CardMediaWithStatuses = styled(
     const [imageError, setImageError] = useState(false);
     return (
       <CardMedia {...rest}>
-        <ImageFull src={imageError ? fallbackImage : image} alt={alt} onError={() => setImageError(true)} layout='fill' />
+        <ImageFull src={imageError || !image ? fallbackImage : image} alt={alt} onError={() => setImageError(true)} layout='fill' />
       </CardMedia>
     );
   },
